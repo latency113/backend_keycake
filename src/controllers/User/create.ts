@@ -57,7 +57,6 @@ export default (app: TypeApplication) =>
         {
             detail: {
                 tags: ["User"],
-                summary: "Create User",
                 requestBody: {
                     content: {
                         "application/json": {

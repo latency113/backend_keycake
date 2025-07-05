@@ -7,8 +7,6 @@ import { FailResponseSchema } from "@/types/global/response.js";
 import { UserOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
 import z from "zod";
 
-const RequestSchema = UserOptionalDefaultsSchema
-
 const ResponseSchema = z.object({
   data: UserOptionalDefaultsSchema.array(),
   message: z.string(),
@@ -81,7 +79,6 @@ export default (app: Elysia) =>
       }
     },
     {
-      body: RequestSchema,
       detail: {
         tags: ["User"],
         responses: {

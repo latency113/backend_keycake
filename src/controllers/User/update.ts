@@ -72,7 +72,6 @@ export default (app: TypeApplication) =>
             },
             detail: {
                 tags: ["User"],
-                summary: "Update User by ID",
                 responses: {
                     200: {
                         description: "User update data success",
