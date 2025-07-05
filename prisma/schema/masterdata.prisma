@@ -1,0 +1,121 @@
+enum Role {
+  ADMIN
+  OFFICER
+  USER
+}
+
+enum CakePound {
+  ONE // 1 ปอนด์
+  TWO // 2 ปอนด์
+  THREE // 3 ปอนด์
+  FOUR // 4 ปอนด์
+  FIVE // 5 ปอนด์
+}
+
+model Branch {
+  id          String @id @default(cuid())
+  name        String @unique
+  groupNumber String // รหัสกลุ่ม เช่น 672020101
+
+  rooms Room[]
+  users User[]
+}
+
+model Room {
+  id       String @id @default(cuid())
+  name     String
+  branchId String
+
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  teams  Team[]
+  orders Order[]
+
+  @@index([branchId], name: "idx_room_branchId")
+}
+
+model User {
+  id       String  @id @default(cuid())
+  fname    String
+  lastname String
+  username String  @unique
+  password String
+  email    String?
+  role     Role    @default(USER)
+  branch   Branch  @relation(fields: [branchId], references: [id])
+  branchId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id     String @id @default(cuid())
+  name   String
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String
+
+  orders Order[]
+}
+
+model Product {
+  id     String @id @default(cuid())
+  name   String
+  price  Float
+  unit   Unit   @relation(fields: [unitId], references: [id])
+  unitId String
+
+  orderItems OrderItem[]
+  cakeCounts CakeCount[]
+}
+
+model Unit {
+  id     String @id @default(cuid())
+  nameTh String
+  nameEn String
+
+  products Product[]
+}
+
+model Order {
+  id           String   @id @default(cuid())
+  customerName String?
+  room         Room     @relation(fields: [roomId], references: [id])
+  roomId       String
+  team         Team?    @relation(fields: [teamId], references: [id])
+  teamId       String?
+  orderDate    DateTime
+  totalPrice   Float
+  book_number  Int
+  number       Int
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId], name: "idx_order_roomId")
+  @@index([teamId], name: "idx_order_teamId")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+  unitPrice Float
+  subtotal  Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CakeCount {
+  id        String    @id @default(cuid())
+  product   Product   @relation(fields: [productId], references: [id])
+  productId String
+  pound     CakePound
+  quantity  Int
+}
