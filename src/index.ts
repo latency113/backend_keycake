@@ -2,9 +2,9 @@ import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import cors from "@elysiajs/cors";
 import controllers from "@/controllers";
-import { config } from 'dotenv';
+import dotenvx from '@dotenvx/dotenvx';
 
-config(); // Load .env file
+dotenvx.config();
 
 const app = new Elysia()
   .use(cors({
