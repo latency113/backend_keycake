@@ -13,7 +13,7 @@ const ResponseSchema = z.object({
 })
 const RequestSchema = BranchPartialSchema.extend({
     name: z.string().optional(),
-    groupNumber: z.string().optional(),
+    group_number: z.string().optional(),
 })
 
 const RequestParamSchema = z.object({
@@ -101,4 +101,3 @@ export default (app: TypeApplication) =>
             }
         }
     )
-

@@ -8,7 +8,7 @@ CREATE TYPE "CakePound" AS ENUM ('ONE', 'TWO', 'THREE', 'FOUR', 'FIVE');
 CREATE TABLE "Branch" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "groupNumber" TEXT NOT NULL,
+    "group_number" TEXT NOT NULL,
 
     CONSTRAINT "Branch_pkey" PRIMARY KEY ("id")
 );
@@ -17,7 +17,7 @@ CREATE TABLE "Branch" (
 CREATE TABLE "Room" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "branchId" TEXT NOT NULL,
+    "branch_id" TEXT NOT NULL,
 
     CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
 );
@@ -31,7 +31,7 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "email" TEXT,
     "role" "Role" NOT NULL DEFAULT 'USER',
-    "branchId" TEXT NOT NULL,
+    "branch_id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -42,7 +42,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Team" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "roomId" TEXT NOT NULL,
+    "room_id" TEXT NOT NULL,
 
     CONSTRAINT "Team_pkey" PRIMARY KEY ("id")
 );
@@ -52,7 +52,7 @@ CREATE TABLE "Product" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
-    "unitId" TEXT NOT NULL,
+    "unit_id" TEXT NOT NULL,
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
@@ -60,8 +60,8 @@ CREATE TABLE "Product" (
 -- CreateTable
 CREATE TABLE "Unit" (
     "id" TEXT NOT NULL,
-    "nameTh" TEXT NOT NULL,
-    "nameEn" TEXT NOT NULL,
+    "name_th" TEXT NOT NULL,
+    "name_en" TEXT NOT NULL,
 
     CONSTRAINT "Unit_pkey" PRIMARY KEY ("id")
 );
@@ -70,8 +70,8 @@ CREATE TABLE "Unit" (
 CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "customerName" TEXT,
-    "roomId" TEXT NOT NULL,
-    "teamId" TEXT,
+    "room_id" TEXT NOT NULL,
+    "team_id" TEXT,
     "orderDate" TIMESTAMP(3) NOT NULL,
     "totalPrice" DOUBLE PRECISION NOT NULL,
     "book_number" INTEGER NOT NULL,
@@ -85,8 +85,8 @@ CREATE TABLE "Order" (
 -- CreateTable
 CREATE TABLE "OrderItem" (
     "id" TEXT NOT NULL,
-    "orderId" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
+    "order_id" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "unitPrice" DOUBLE PRECISION NOT NULL,
     "subtotal" DOUBLE PRECISION NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE "OrderItem" (
 -- CreateTable
 CREATE TABLE "CakeCount" (
     "id" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
     "pound" "CakePound" NOT NULL,
     "quantity" INTEGER NOT NULL,
 
@@ -110,40 +110,40 @@ CREATE TABLE "CakeCount" (
 CREATE UNIQUE INDEX "Branch_name_key" ON "Branch"("name");
 
 -- CreateIndex
-CREATE INDEX "idx_room_branchId" ON "Room"("branchId");
+CREATE INDEX "idx_room_branch_id" ON "Room"("branch_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
-CREATE INDEX "idx_order_roomId" ON "Order"("roomId");
+CREATE INDEX "idx_order_room_id" ON "Order"("room_id");
 
 -- CreateIndex
-CREATE INDEX "idx_order_teamId" ON "Order"("teamId");
+CREATE INDEX "idx_order_team_id" ON "Order"("team_id");
 
 -- AddForeignKey
-ALTER TABLE "Room" ADD CONSTRAINT "Room_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Room" ADD CONSTRAINT "Room_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Team" ADD CONSTRAINT "Team_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Team" ADD CONSTRAINT "Team_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_unitId_fkey" FOREIGN KEY ("unitId") REFERENCES "Unit"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Product" ADD CONSTRAINT "Product_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "Unit"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_team_id_fkey" FOREIGN KEY ("team_id") REFERENCES "Team"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CakeCount" ADD CONSTRAINT "CakeCount_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "CakeCount" ADD CONSTRAINT "CakeCount_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

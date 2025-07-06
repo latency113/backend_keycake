@@ -14,9 +14,11 @@ export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCo
 
 export const BranchScalarFieldEnumSchema = z.enum(['id','name','group_number']);
 
-export const RoomScalarFieldEnumSchema = z.enum(['id','name','branch_id']);
+export const RoomScalarFieldEnumSchema = z.enum(['id','name','branch_id','grade_level_id']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','fname','lastname','username','password','email','role','branch_id','createdAt','updatedAt']);
+export const GradeLevelScalarFieldEnumSchema = z.enum(['id','level','year']);
+
+export const UserScalarFieldEnumSchema = z.enum(['id','fname','lastname','username','password','email','role','createdAt','updatedAt']);
 
 export const TeamScalarFieldEnumSchema = z.enum(['id','name','room_id']);
 
@@ -43,6 +45,10 @@ export type RoleType = `${z.infer<typeof RoleSchema>}`
 export const CakePoundSchema = z.enum(['ONE','TWO','THREE','FOUR','FIVE']);
 
 export type CakePoundType = `${z.infer<typeof CakePoundSchema>}`
+
+export const GradeLevelTypeSchema = z.enum(['VOCATIONAL','HIGHER']);
+
+export type GradeLevelTypeType = `${z.infer<typeof GradeLevelTypeSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -82,14 +88,12 @@ export type BranchOptionalDefaults = z.infer<typeof BranchOptionalDefaultsSchema
 
 export type BranchRelations = {
   rooms: RoomWithRelations[];
-  users: UserWithRelations[];
 };
 
 export type BranchWithRelations = z.infer<typeof BranchSchema> & BranchRelations
 
 export const BranchWithRelationsSchema: z.ZodType<BranchWithRelations> = BranchSchema.merge(z.object({
   rooms: z.lazy(() => RoomWithRelationsSchema).array(),
-  users: z.lazy(() => UserWithRelationsSchema).array(),
 }))
 
 // BRANCH OPTIONAL DEFAULTS RELATION SCHEMA
@@ -97,14 +101,12 @@ export const BranchWithRelationsSchema: z.ZodType<BranchWithRelations> = BranchS
 
 export type BranchOptionalDefaultsRelations = {
   rooms: RoomOptionalDefaultsWithRelations[];
-  users: UserOptionalDefaultsWithRelations[];
 };
 
 export type BranchOptionalDefaultsWithRelations = z.infer<typeof BranchOptionalDefaultsSchema> & BranchOptionalDefaultsRelations
 
 export const BranchOptionalDefaultsWithRelationsSchema: z.ZodType<BranchOptionalDefaultsWithRelations> = BranchOptionalDefaultsSchema.merge(z.object({
   rooms: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema).array(),
-  users: z.lazy(() => UserOptionalDefaultsWithRelationsSchema).array(),
 }))
 
 // BRANCH PARTIAL RELATION SCHEMA
@@ -112,29 +114,33 @@ export const BranchOptionalDefaultsWithRelationsSchema: z.ZodType<BranchOptional
 
 export type BranchPartialRelations = {
   rooms?: RoomPartialWithRelations[];
-  users?: UserPartialWithRelations[];
 };
 
 export type BranchPartialWithRelations = z.infer<typeof BranchPartialSchema> & BranchPartialRelations
 
 export const BranchPartialWithRelationsSchema: z.ZodType<BranchPartialWithRelations> = BranchPartialSchema.merge(z.object({
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-  users: z.lazy(() => UserPartialWithRelationsSchema).array(),
 })).partial()
 
 export type BranchOptionalDefaultsWithPartialRelations = z.infer<typeof BranchOptionalDefaultsSchema> & BranchPartialRelations
 
 export const BranchOptionalDefaultsWithPartialRelationsSchema: z.ZodType<BranchOptionalDefaultsWithPartialRelations> = BranchOptionalDefaultsSchema.merge(z.object({
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-  users: z.lazy(() => UserPartialWithRelationsSchema).array(),
 }).partial())
 
 export type BranchWithPartialRelations = z.infer<typeof BranchSchema> & BranchPartialRelations
 
 export const BranchWithPartialRelationsSchema: z.ZodType<BranchWithPartialRelations> = BranchSchema.merge(z.object({
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-  users: z.lazy(() => UserPartialWithRelationsSchema).array(),
 }).partial())
+
+export type BranchWithDetails = z.infer<typeof BranchSchema> & {
+  gradeLevels: GradeLevelWithRoomCount[];
+};
+
+export const BranchWithDetailsSchema: z.ZodType<BranchWithDetails> = BranchSchema.merge(z.object({
+  gradeLevels: z.lazy(() => GradeLevelWithRoomCountSchema).array(),
+}));
 
 /////////////////////////////////////////
 // ROOM SCHEMA
@@ -144,6 +150,7 @@ export const RoomSchema = z.object({
   id: z.string().cuid(),
   name: z.string(),
   branch_id: z.string(),
+  grade_level_id: z.string(),
 })
 
 export type Room = z.infer<typeof RoomSchema>
@@ -170,6 +177,7 @@ export type RoomOptionalDefaults = z.infer<typeof RoomOptionalDefaultsSchema>
 
 export type RoomRelations = {
   branch: BranchWithRelations;
+  grade_level?: GradeLevelWithRelations | null;
   teams: TeamWithRelations[];
   orders: OrderWithRelations[];
 };
@@ -178,6 +186,7 @@ export type RoomWithRelations = z.infer<typeof RoomSchema> & RoomRelations
 
 export const RoomWithRelationsSchema: z.ZodType<RoomWithRelations> = RoomSchema.merge(z.object({
   branch: z.lazy(() => BranchWithRelationsSchema),
+  grade_level: z.lazy(() => GradeLevelWithRelationsSchema).nullish(),
   teams: z.lazy(() => TeamWithRelationsSchema).array(),
   orders: z.lazy(() => OrderWithRelationsSchema).array(),
 }))
@@ -187,6 +196,7 @@ export const RoomWithRelationsSchema: z.ZodType<RoomWithRelations> = RoomSchema.
 
 export type RoomOptionalDefaultsRelations = {
   branch: BranchOptionalDefaultsWithRelations;
+  grade_level?: GradeLevelOptionalDefaultsWithRelations | null;
   teams: TeamOptionalDefaultsWithRelations[];
   orders: OrderOptionalDefaultsWithRelations[];
 };
@@ -195,6 +205,7 @@ export type RoomOptionalDefaultsWithRelations = z.infer<typeof RoomOptionalDefau
 
 export const RoomOptionalDefaultsWithRelationsSchema: z.ZodType<RoomOptionalDefaultsWithRelations> = RoomOptionalDefaultsSchema.merge(z.object({
   branch: z.lazy(() => BranchOptionalDefaultsWithRelationsSchema),
+  grade_level: z.lazy(() => GradeLevelOptionalDefaultsWithRelationsSchema).nullish(),
   teams: z.lazy(() => TeamOptionalDefaultsWithRelationsSchema).array(),
   orders: z.lazy(() => OrderOptionalDefaultsWithRelationsSchema).array(),
 }))
@@ -204,6 +215,7 @@ export const RoomOptionalDefaultsWithRelationsSchema: z.ZodType<RoomOptionalDefa
 
 export type RoomPartialRelations = {
   branch?: BranchPartialWithRelations;
+  grade_level?: GradeLevelPartialWithRelations | null;
   teams?: TeamPartialWithRelations[];
   orders?: OrderPartialWithRelations[];
 };
@@ -212,6 +224,7 @@ export type RoomPartialWithRelations = z.infer<typeof RoomPartialSchema> & RoomP
 
 export const RoomPartialWithRelationsSchema: z.ZodType<RoomPartialWithRelations> = RoomPartialSchema.merge(z.object({
   branch: z.lazy(() => BranchPartialWithRelationsSchema),
+  grade_level: z.lazy(() => GradeLevelPartialWithRelationsSchema).nullish(),
   teams: z.lazy(() => TeamPartialWithRelationsSchema).array(),
   orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
 })).partial()
@@ -220,6 +233,7 @@ export type RoomOptionalDefaultsWithPartialRelations = z.infer<typeof RoomOption
 
 export const RoomOptionalDefaultsWithPartialRelationsSchema: z.ZodType<RoomOptionalDefaultsWithPartialRelations> = RoomOptionalDefaultsSchema.merge(z.object({
   branch: z.lazy(() => BranchPartialWithRelationsSchema),
+  grade_level: z.lazy(() => GradeLevelPartialWithRelationsSchema).nullish(),
   teams: z.lazy(() => TeamPartialWithRelationsSchema).array(),
   orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
 }).partial())
@@ -228,9 +242,102 @@ export type RoomWithPartialRelations = z.infer<typeof RoomSchema> & RoomPartialR
 
 export const RoomWithPartialRelationsSchema: z.ZodType<RoomWithPartialRelations> = RoomSchema.merge(z.object({
   branch: z.lazy(() => BranchPartialWithRelationsSchema),
+  grade_level: z.lazy(() => GradeLevelPartialWithRelationsSchema).nullish(),
   teams: z.lazy(() => TeamPartialWithRelationsSchema).array(),
   orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
 }).partial())
+
+/////////////////////////////////////////
+// GRADE LEVEL SCHEMA
+/////////////////////////////////////////
+
+export const GradeLevelSchema = z.object({
+  level: GradeLevelTypeSchema,
+  id: z.string().cuid(),
+  year: z.number().int(),
+})
+
+export type GradeLevel = z.infer<typeof GradeLevelSchema>
+
+/////////////////////////////////////////
+// GRADE LEVEL PARTIAL SCHEMA
+/////////////////////////////////////////
+
+export const GradeLevelPartialSchema = GradeLevelSchema.partial()
+
+export type GradeLevelPartial = z.infer<typeof GradeLevelPartialSchema>
+
+// GRADE LEVEL OPTIONAL DEFAULTS SCHEMA
+//------------------------------------------------------
+
+export const GradeLevelOptionalDefaultsSchema = GradeLevelSchema.merge(z.object({
+  id: z.string().cuid().optional(),
+}))
+
+export type GradeLevelOptionalDefaults = z.infer<typeof GradeLevelOptionalDefaultsSchema>
+
+// GRADE LEVEL RELATION SCHEMA
+//------------------------------------------------------
+
+export type GradeLevelRelations = {
+  rooms: RoomWithRelations[];
+};
+
+export type GradeLevelWithRelations = z.infer<typeof GradeLevelSchema> & GradeLevelRelations
+
+export const GradeLevelWithRelationsSchema: z.ZodType<GradeLevelWithRelations> = GradeLevelSchema.merge(z.object({
+  rooms: z.lazy(() => RoomWithRelationsSchema).array(),
+}))
+
+// GRADE LEVEL OPTIONAL DEFAULTS RELATION SCHEMA
+//------------------------------------------------------
+
+export type GradeLevelOptionalDefaultsRelations = {
+  rooms: RoomOptionalDefaultsWithRelations[];
+};
+
+export type GradeLevelOptionalDefaultsWithRelations = z.infer<typeof GradeLevelOptionalDefaultsSchema> & GradeLevelOptionalDefaultsRelations
+
+export const GradeLevelOptionalDefaultsWithRelationsSchema: z.ZodType<GradeLevelOptionalDefaultsWithRelations> = GradeLevelOptionalDefaultsSchema.merge(z.object({
+  rooms: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema).array(),
+}))
+
+// GRADE LEVEL PARTIAL RELATION SCHEMA
+//------------------------------------------------------
+
+export type GradeLevelPartialRelations = {
+  rooms?: RoomPartialWithRelations[];
+};
+
+export type GradeLevelPartialWithRelations = z.infer<typeof GradeLevelPartialSchema> & GradeLevelPartialRelations
+
+export const GradeLevelPartialWithRelationsSchema: z.ZodType<GradeLevelPartialWithRelations> = GradeLevelPartialSchema.merge(z.object({
+  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
+})).partial()
+
+export type GradeLevelOptionalDefaultsWithPartialRelations = z.infer<typeof GradeLevelOptionalDefaultsSchema> & GradeLevelPartialRelations
+
+export const GradeLevelOptionalDefaultsWithPartialRelationsSchema: z.ZodType<GradeLevelOptionalDefaultsWithPartialRelations> = GradeLevelOptionalDefaultsSchema.merge(z.object({
+  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
+}).partial())
+
+export type GradeLevelWithPartialRelations = z.infer<typeof GradeLevelSchema> & GradeLevelPartialRelations
+
+export const GradeLevelWithPartialRelationsSchema: z.ZodType<GradeLevelWithPartialRelations> = GradeLevelSchema.merge(z.object({
+  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
+}).partial())
+
+export type GradeLevelWithRoomCount = z.infer<typeof GradeLevelSchema> & {
+  _count: {
+    rooms: number;
+  };
+};
+
+export const GradeLevelWithRoomCountSchema: z.ZodType<GradeLevelWithRoomCount> = GradeLevelSchema.merge(z.object({
+  _count: z.object({
+    rooms: z.number(),
+  }),
+}));
 
 /////////////////////////////////////////
 // USER SCHEMA
@@ -244,7 +351,6 @@ export const UserSchema = z.object({
   username: z.string(),
   password: z.string(),
   email: z.string().nullish(),
-  branch_id: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -270,57 +376,6 @@ export const UserOptionalDefaultsSchema = UserSchema.merge(z.object({
 }))
 
 export type UserOptionalDefaults = z.infer<typeof UserOptionalDefaultsSchema>
-
-// USER RELATION SCHEMA
-//------------------------------------------------------
-
-export type UserRelations = {
-  branch: BranchWithRelations;
-};
-
-export type UserWithRelations = z.infer<typeof UserSchema> & UserRelations
-
-export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.merge(z.object({
-  branch: z.lazy(() => BranchWithRelationsSchema),
-}))
-
-// USER OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type UserOptionalDefaultsRelations = {
-  branch: BranchOptionalDefaultsWithRelations;
-};
-
-export type UserOptionalDefaultsWithRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserOptionalDefaultsRelations
-
-export const UserOptionalDefaultsWithRelationsSchema: z.ZodType<UserOptionalDefaultsWithRelations> = UserOptionalDefaultsSchema.merge(z.object({
-  branch: z.lazy(() => BranchOptionalDefaultsWithRelationsSchema),
-}))
-
-// USER PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type UserPartialRelations = {
-  branch?: BranchPartialWithRelations;
-};
-
-export type UserPartialWithRelations = z.infer<typeof UserPartialSchema> & UserPartialRelations
-
-export const UserPartialWithRelationsSchema: z.ZodType<UserPartialWithRelations> = UserPartialSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-})).partial()
-
-export type UserOptionalDefaultsWithPartialRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserPartialRelations
-
-export const UserOptionalDefaultsWithPartialRelationsSchema: z.ZodType<UserOptionalDefaultsWithPartialRelations> = UserOptionalDefaultsSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-}).partial())
-
-export type UserWithPartialRelations = z.infer<typeof UserSchema> & UserPartialRelations
-
-export const UserWithPartialRelationsSchema: z.ZodType<UserWithPartialRelations> = UserSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-}).partial())
 
 /////////////////////////////////////////
 // TEAM SCHEMA
@@ -877,7 +932,6 @@ export const CakeCountWithPartialRelationsSchema: z.ZodType<CakeCountWithPartial
 
 export const BranchIncludeSchema: z.ZodType<Prisma.BranchInclude> = z.object({
   rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
-  users: z.union([z.boolean(),z.lazy(() => UserFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => BranchCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -892,7 +946,6 @@ export const BranchCountOutputTypeArgsSchema: z.ZodType<Prisma.BranchCountOutput
 
 export const BranchCountOutputTypeSelectSchema: z.ZodType<Prisma.BranchCountOutputTypeSelect> = z.object({
   rooms: z.boolean().optional(),
-  users: z.boolean().optional(),
 }).strict();
 
 export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
@@ -900,7 +953,6 @@ export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
   name: z.boolean().optional(),
   group_number: z.boolean().optional(),
   rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
-  users: z.union([z.boolean(),z.lazy(() => UserFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => BranchCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -909,6 +961,7 @@ export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
 
 export const RoomIncludeSchema: z.ZodType<Prisma.RoomInclude> = z.object({
   branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
+  grade_level: z.union([z.boolean(),z.lazy(() => GradeLevelArgsSchema)]).optional(),
   teams: z.union([z.boolean(),z.lazy(() => TeamFindManyArgsSchema)]).optional(),
   orders: z.union([z.boolean(),z.lazy(() => OrderFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => RoomCountOutputTypeArgsSchema)]).optional(),
@@ -932,23 +985,45 @@ export const RoomSelectSchema: z.ZodType<Prisma.RoomSelect> = z.object({
   id: z.boolean().optional(),
   name: z.boolean().optional(),
   branch_id: z.boolean().optional(),
+  grade_level_id: z.boolean().optional(),
   branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
+  grade_level: z.union([z.boolean(),z.lazy(() => GradeLevelArgsSchema)]).optional(),
   teams: z.union([z.boolean(),z.lazy(() => TeamFindManyArgsSchema)]).optional(),
   orders: z.union([z.boolean(),z.lazy(() => OrderFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => RoomCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
-// USER
+// GRADE LEVEL
 //------------------------------------------------------
 
-export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
-  branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
+export const GradeLevelIncludeSchema: z.ZodType<Prisma.GradeLevelInclude> = z.object({
+  rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => GradeLevelCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
-export const UserArgsSchema: z.ZodType<Prisma.UserDefaultArgs> = z.object({
-  select: z.lazy(() => UserSelectSchema).optional(),
-  include: z.lazy(() => UserIncludeSchema).optional(),
+export const GradeLevelArgsSchema: z.ZodType<Prisma.GradeLevelDefaultArgs> = z.object({
+  select: z.lazy(() => GradeLevelSelectSchema).optional(),
+  include: z.lazy(() => GradeLevelIncludeSchema).optional(),
 }).strict();
+
+export const GradeLevelCountOutputTypeArgsSchema: z.ZodType<Prisma.GradeLevelCountOutputTypeDefaultArgs> = z.object({
+  select: z.lazy(() => GradeLevelCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const GradeLevelCountOutputTypeSelectSchema: z.ZodType<Prisma.GradeLevelCountOutputTypeSelect> = z.object({
+  rooms: z.boolean().optional(),
+}).strict();
+
+export const GradeLevelSelectSchema: z.ZodType<Prisma.GradeLevelSelect> = z.object({
+  id: z.boolean().optional(),
+  level: z.boolean().optional(),
+  year: z.boolean().optional(),
+  rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => GradeLevelCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+// USER
+//------------------------------------------------------
 
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   id: z.boolean().optional(),
@@ -958,10 +1033,8 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   password: z.boolean().optional(),
   email: z.boolean().optional(),
   role: z.boolean().optional(),
-  branch_id: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
-  branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
 }).strict()
 
 // TEAM
@@ -1157,16 +1230,14 @@ export const BranchWhereInputSchema: z.ZodType<Prisma.BranchWhereInput> = z.obje
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   group_number: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  rooms: z.lazy(() => RoomListRelationFilterSchema).optional(),
-  users: z.lazy(() => UserListRelationFilterSchema).optional()
+  rooms: z.lazy(() => RoomListRelationFilterSchema).optional()
 }).strict();
 
 export const BranchOrderByWithRelationInputSchema: z.ZodType<Prisma.BranchOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   group_number: z.lazy(() => SortOrderSchema).optional(),
-  rooms: z.lazy(() => RoomOrderByRelationAggregateInputSchema).optional(),
-  users: z.lazy(() => UserOrderByRelationAggregateInputSchema).optional()
+  rooms: z.lazy(() => RoomOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInput> = z.union([
@@ -1188,8 +1259,7 @@ export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInp
   OR: z.lazy(() => BranchWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => BranchWhereInputSchema),z.lazy(() => BranchWhereInputSchema).array() ]).optional(),
   group_number: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  rooms: z.lazy(() => RoomListRelationFilterSchema).optional(),
-  users: z.lazy(() => UserListRelationFilterSchema).optional()
+  rooms: z.lazy(() => RoomListRelationFilterSchema).optional()
 }).strict());
 
 export const BranchOrderByWithAggregationInputSchema: z.ZodType<Prisma.BranchOrderByWithAggregationInput> = z.object({
@@ -1217,7 +1287,9 @@ export const RoomWhereInputSchema: z.ZodType<Prisma.RoomWhereInput> = z.object({
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  grade_level_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   branch: z.union([ z.lazy(() => BranchScalarRelationFilterSchema),z.lazy(() => BranchWhereInputSchema) ]).optional(),
+  grade_level: z.union([ z.lazy(() => GradeLevelNullableScalarRelationFilterSchema),z.lazy(() => GradeLevelWhereInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamListRelationFilterSchema).optional(),
   orders: z.lazy(() => OrderListRelationFilterSchema).optional()
 }).strict();
@@ -1226,7 +1298,9 @@ export const RoomOrderByWithRelationInputSchema: z.ZodType<Prisma.RoomOrderByWit
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   branch_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional(),
   branch: z.lazy(() => BranchOrderByWithRelationInputSchema).optional(),
+  grade_level: z.lazy(() => GradeLevelOrderByWithRelationInputSchema).optional(),
   teams: z.lazy(() => TeamOrderByRelationAggregateInputSchema).optional(),
   orders: z.lazy(() => OrderOrderByRelationAggregateInputSchema).optional()
 }).strict();
@@ -1241,7 +1315,9 @@ export const RoomWhereUniqueInputSchema: z.ZodType<Prisma.RoomWhereUniqueInput> 
   NOT: z.union([ z.lazy(() => RoomWhereInputSchema),z.lazy(() => RoomWhereInputSchema).array() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  grade_level_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   branch: z.union([ z.lazy(() => BranchScalarRelationFilterSchema),z.lazy(() => BranchWhereInputSchema) ]).optional(),
+  grade_level: z.union([ z.lazy(() => GradeLevelNullableScalarRelationFilterSchema),z.lazy(() => GradeLevelWhereInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamListRelationFilterSchema).optional(),
   orders: z.lazy(() => OrderListRelationFilterSchema).optional()
 }).strict());
@@ -1250,6 +1326,7 @@ export const RoomOrderByWithAggregationInputSchema: z.ZodType<Prisma.RoomOrderBy
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   branch_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => RoomCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => RoomMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => RoomMinOrderByAggregateInputSchema).optional()
@@ -1262,6 +1339,67 @@ export const RoomScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.RoomScal
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   branch_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  grade_level_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+}).strict();
+
+export const GradeLevelWhereInputSchema: z.ZodType<Prisma.GradeLevelWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => GradeLevelWhereInputSchema),z.lazy(() => GradeLevelWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => GradeLevelWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => GradeLevelWhereInputSchema),z.lazy(() => GradeLevelWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  level: z.union([ z.lazy(() => EnumGradeLevelTypeFilterSchema),z.lazy(() => GradeLevelTypeSchema) ]).optional(),
+  year: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  rooms: z.lazy(() => RoomListRelationFilterSchema).optional()
+}).strict();
+
+export const GradeLevelOrderByWithRelationInputSchema: z.ZodType<Prisma.GradeLevelOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  year: z.lazy(() => SortOrderSchema).optional(),
+  rooms: z.lazy(() => RoomOrderByRelationAggregateInputSchema).optional()
+}).strict();
+
+export const GradeLevelWhereUniqueInputSchema: z.ZodType<Prisma.GradeLevelWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string().cuid(),
+    level_year: z.lazy(() => GradeLevelLevelYearCompoundUniqueInputSchema)
+  }),
+  z.object({
+    id: z.string().cuid(),
+  }),
+  z.object({
+    level_year: z.lazy(() => GradeLevelLevelYearCompoundUniqueInputSchema),
+  }),
+])
+.and(z.object({
+  id: z.string().cuid().optional(),
+  level_year: z.lazy(() => GradeLevelLevelYearCompoundUniqueInputSchema).optional(),
+  AND: z.union([ z.lazy(() => GradeLevelWhereInputSchema),z.lazy(() => GradeLevelWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => GradeLevelWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => GradeLevelWhereInputSchema),z.lazy(() => GradeLevelWhereInputSchema).array() ]).optional(),
+  level: z.union([ z.lazy(() => EnumGradeLevelTypeFilterSchema),z.lazy(() => GradeLevelTypeSchema) ]).optional(),
+  year: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  rooms: z.lazy(() => RoomListRelationFilterSchema).optional()
+}).strict());
+
+export const GradeLevelOrderByWithAggregationInputSchema: z.ZodType<Prisma.GradeLevelOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  year: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => GradeLevelCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => GradeLevelAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => GradeLevelMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => GradeLevelMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => GradeLevelSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const GradeLevelScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.GradeLevelScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => GradeLevelScalarWhereWithAggregatesInputSchema),z.lazy(() => GradeLevelScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => GradeLevelScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => GradeLevelScalarWhereWithAggregatesInputSchema),z.lazy(() => GradeLevelScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  level: z.union([ z.lazy(() => EnumGradeLevelTypeWithAggregatesFilterSchema),z.lazy(() => GradeLevelTypeSchema) ]).optional(),
+  year: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
@@ -1275,10 +1413,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   password: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   email: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   role: z.union([ z.lazy(() => EnumRoleFilterSchema),z.lazy(() => RoleSchema) ]).optional(),
-  branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  branch: z.union([ z.lazy(() => BranchScalarRelationFilterSchema),z.lazy(() => BranchWhereInputSchema) ]).optional(),
 }).strict();
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
@@ -1289,10 +1425,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   password: z.lazy(() => SortOrderSchema).optional(),
   email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  branch: z.lazy(() => BranchOrderByWithRelationInputSchema).optional()
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
@@ -1318,10 +1452,8 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   password: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   email: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   role: z.union([ z.lazy(() => EnumRoleFilterSchema),z.lazy(() => RoleSchema) ]).optional(),
-  branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  branch: z.union([ z.lazy(() => BranchScalarRelationFilterSchema),z.lazy(() => BranchWhereInputSchema) ]).optional(),
 }).strict());
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
@@ -1332,7 +1464,6 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
   password: z.lazy(() => SortOrderSchema).optional(),
   email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => UserCountOrderByAggregateInputSchema).optional(),
@@ -1351,7 +1482,6 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
   password: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   email: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   role: z.union([ z.lazy(() => EnumRoleWithAggregatesFilterSchema),z.lazy(() => RoleSchema) ]).optional(),
-  branch_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
@@ -1744,32 +1874,28 @@ export const BranchCreateInputSchema: z.ZodType<Prisma.BranchCreateInput> = z.ob
   id: z.string().cuid().optional(),
   name: z.string(),
   group_number: z.string(),
-  rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional(),
-  users: z.lazy(() => UserCreateNestedManyWithoutBranchInputSchema).optional()
+  rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedCreateInputSchema: z.ZodType<Prisma.BranchUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   group_number: z.string(),
-  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional(),
-  users: z.lazy(() => UserUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
+  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUpdateInputSchema: z.ZodType<Prisma.BranchUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional(),
-  users: z.lazy(() => UserUpdateManyWithoutBranchNestedInputSchema).optional()
+  rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedUpdateInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional(),
-  users: z.lazy(() => UserUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
+  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchCreateManyInputSchema: z.ZodType<Prisma.BranchCreateManyInput> = z.object({
@@ -1794,6 +1920,7 @@ export const RoomCreateInputSchema: z.ZodType<Prisma.RoomCreateInput> = z.object
   id: z.string().cuid().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
+  grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutRoomInputSchema).optional(),
   orders: z.lazy(() => OrderCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
@@ -1802,6 +1929,7 @@ export const RoomUncheckedCreateInputSchema: z.ZodType<Prisma.RoomUncheckedCreat
   id: z.string().cuid().optional(),
   name: z.string(),
   branch_id: z.string(),
+  grade_level_id: z.string(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutRoomInputSchema).optional(),
   orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
@@ -1810,6 +1938,7 @@ export const RoomUpdateInputSchema: z.ZodType<Prisma.RoomUpdateInput> = z.object
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
+  grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutRoomNestedInputSchema).optional(),
   orders: z.lazy(() => OrderUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
@@ -1818,6 +1947,7 @@ export const RoomUncheckedUpdateInputSchema: z.ZodType<Prisma.RoomUncheckedUpdat
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional(),
   orders: z.lazy(() => OrderUncheckedUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
@@ -1825,7 +1955,8 @@ export const RoomUncheckedUpdateInputSchema: z.ZodType<Prisma.RoomUncheckedUpdat
 export const RoomCreateManyInputSchema: z.ZodType<Prisma.RoomCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  branch_id: z.string()
+  branch_id: z.string(),
+  grade_level_id: z.string()
 }).strict();
 
 export const RoomUpdateManyMutationInputSchema: z.ZodType<Prisma.RoomUpdateManyMutationInput> = z.object({
@@ -1837,6 +1968,53 @@ export const RoomUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RoomUncheckedU
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const GradeLevelCreateInputSchema: z.ZodType<Prisma.GradeLevelCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  level: z.lazy(() => GradeLevelTypeSchema),
+  year: z.number().int(),
+  rooms: z.lazy(() => RoomCreateNestedManyWithoutGrade_levelInputSchema).optional()
+}).strict();
+
+export const GradeLevelUncheckedCreateInputSchema: z.ZodType<Prisma.GradeLevelUncheckedCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  level: z.lazy(() => GradeLevelTypeSchema),
+  year: z.number().int(),
+  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutGrade_levelInputSchema).optional()
+}).strict();
+
+export const GradeLevelUpdateInputSchema: z.ZodType<Prisma.GradeLevelUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  rooms: z.lazy(() => RoomUpdateManyWithoutGrade_levelNestedInputSchema).optional()
+}).strict();
+
+export const GradeLevelUncheckedUpdateInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema).optional()
+}).strict();
+
+export const GradeLevelCreateManyInputSchema: z.ZodType<Prisma.GradeLevelCreateManyInput> = z.object({
+  id: z.string().cuid().optional(),
+  level: z.lazy(() => GradeLevelTypeSchema),
+  year: z.number().int()
+}).strict();
+
+export const GradeLevelUpdateManyMutationInputSchema: z.ZodType<Prisma.GradeLevelUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const GradeLevelUncheckedUpdateManyInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object({
@@ -1848,8 +2026,7 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   email: z.string().optional().nullable(),
   role: z.lazy(() => RoleSchema).optional(),
   createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional(),
-  branch: z.lazy(() => BranchCreateNestedOneWithoutUsersInputSchema)
+  updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
@@ -1860,7 +2037,6 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   password: z.string(),
   email: z.string().optional().nullable(),
   role: z.lazy(() => RoleSchema).optional(),
-  branch_id: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
 }).strict();
@@ -1875,7 +2051,6 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  branch: z.lazy(() => BranchUpdateOneRequiredWithoutUsersNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
@@ -1886,7 +2061,6 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
-  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -1899,7 +2073,6 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = 
   password: z.string(),
   email: z.string().optional().nullable(),
   role: z.lazy(() => RoleSchema).optional(),
-  branch_id: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
 }).strict();
@@ -1924,7 +2097,6 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
   password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
-  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -2313,17 +2485,7 @@ export const RoomListRelationFilterSchema: z.ZodType<Prisma.RoomListRelationFilt
   none: z.lazy(() => RoomWhereInputSchema).optional()
 }).strict();
 
-export const UserListRelationFilterSchema: z.ZodType<Prisma.UserListRelationFilter> = z.object({
-  every: z.lazy(() => UserWhereInputSchema).optional(),
-  some: z.lazy(() => UserWhereInputSchema).optional(),
-  none: z.lazy(() => UserWhereInputSchema).optional()
-}).strict();
-
 export const RoomOrderByRelationAggregateInputSchema: z.ZodType<Prisma.RoomOrderByRelationAggregateInput> = z.object({
-  _count: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const UserOrderByRelationAggregateInputSchema: z.ZodType<Prisma.UserOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -2368,6 +2530,11 @@ export const BranchScalarRelationFilterSchema: z.ZodType<Prisma.BranchScalarRela
   isNot: z.lazy(() => BranchWhereInputSchema).optional()
 }).strict();
 
+export const GradeLevelNullableScalarRelationFilterSchema: z.ZodType<Prisma.GradeLevelNullableScalarRelationFilter> = z.object({
+  is: z.lazy(() => GradeLevelWhereInputSchema).optional().nullable(),
+  isNot: z.lazy(() => GradeLevelWhereInputSchema).optional().nullable()
+}).strict();
+
 export const TeamListRelationFilterSchema: z.ZodType<Prisma.TeamListRelationFilter> = z.object({
   every: z.lazy(() => TeamWhereInputSchema).optional(),
   some: z.lazy(() => TeamWhereInputSchema).optional(),
@@ -2391,19 +2558,97 @@ export const OrderOrderByRelationAggregateInputSchema: z.ZodType<Prisma.OrderOrd
 export const RoomCountOrderByAggregateInputSchema: z.ZodType<Prisma.RoomCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional()
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RoomMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RoomMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional()
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RoomMinOrderByAggregateInputSchema: z.ZodType<Prisma.RoomMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional()
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const EnumGradeLevelTypeFilterSchema: z.ZodType<Prisma.EnumGradeLevelTypeFilter> = z.object({
+  equals: z.lazy(() => GradeLevelTypeSchema).optional(),
+  in: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  notIn: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => NestedEnumGradeLevelTypeFilterSchema) ]).optional(),
+}).strict();
+
+export const IntFilterSchema: z.ZodType<Prisma.IntFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedIntFilterSchema) ]).optional(),
+}).strict();
+
+export const GradeLevelLevelYearCompoundUniqueInputSchema: z.ZodType<Prisma.GradeLevelLevelYearCompoundUniqueInput> = z.object({
+  level: z.lazy(() => GradeLevelTypeSchema),
+  year: z.number()
+}).strict();
+
+export const GradeLevelCountOrderByAggregateInputSchema: z.ZodType<Prisma.GradeLevelCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  year: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const GradeLevelAvgOrderByAggregateInputSchema: z.ZodType<Prisma.GradeLevelAvgOrderByAggregateInput> = z.object({
+  year: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const GradeLevelMaxOrderByAggregateInputSchema: z.ZodType<Prisma.GradeLevelMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  year: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const GradeLevelMinOrderByAggregateInputSchema: z.ZodType<Prisma.GradeLevelMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  year: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const GradeLevelSumOrderByAggregateInputSchema: z.ZodType<Prisma.GradeLevelSumOrderByAggregateInput> = z.object({
+  year: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const EnumGradeLevelTypeWithAggregatesFilterSchema: z.ZodType<Prisma.EnumGradeLevelTypeWithAggregatesFilter> = z.object({
+  equals: z.lazy(() => GradeLevelTypeSchema).optional(),
+  in: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  notIn: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => NestedEnumGradeLevelTypeWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumGradeLevelTypeFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumGradeLevelTypeFilterSchema).optional()
+}).strict();
+
+export const IntWithAggregatesFilterSchema: z.ZodType<Prisma.IntWithAggregatesFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
 export const StringNullableFilterSchema: z.ZodType<Prisma.StringNullableFilter> = z.object({
@@ -2452,7 +2697,6 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
   password: z.lazy(() => SortOrderSchema).optional(),
   email: z.lazy(() => SortOrderSchema).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -2465,7 +2709,6 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
   password: z.lazy(() => SortOrderSchema).optional(),
   email: z.lazy(() => SortOrderSchema).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -2478,7 +2721,6 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
   password: z.lazy(() => SortOrderSchema).optional(),
   email: z.lazy(() => SortOrderSchema).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
-  branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -2657,17 +2899,6 @@ export const UnitMinOrderByAggregateInputSchema: z.ZodType<Prisma.UnitMinOrderBy
   name_en: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const IntFilterSchema: z.ZodType<Prisma.IntFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedIntFilterSchema) ]).optional(),
-}).strict();
-
 export const TeamNullableScalarRelationFilterSchema: z.ZodType<Prisma.TeamNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => TeamWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => TeamWhereInputSchema).optional().nullable()
@@ -2722,22 +2953,6 @@ export const OrderSumOrderByAggregateInputSchema: z.ZodType<Prisma.OrderSumOrder
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
   number: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const IntWithAggregatesFilterSchema: z.ZodType<Prisma.IntWithAggregatesFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
-  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedIntFilterSchema).optional(),
-  _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
 export const OrderScalarRelationFilterSchema: z.ZodType<Prisma.OrderScalarRelationFilter> = z.object({
@@ -2848,25 +3063,11 @@ export const RoomCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.Room
   connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
-export const UserCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.UserCreateNestedManyWithoutBranchInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutBranchInputSchema),z.lazy(() => UserCreateWithoutBranchInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema),z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => UserCreateManyBranchInputEnvelopeSchema).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-}).strict();
-
 export const RoomUncheckedCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedCreateNestedManyWithoutBranchInput> = z.object({
   create: z.union([ z.lazy(() => RoomCreateWithoutBranchInputSchema),z.lazy(() => RoomCreateWithoutBranchInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema),z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
   createMany: z.lazy(() => RoomCreateManyBranchInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
-}).strict();
-
-export const UserUncheckedCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.UserUncheckedCreateNestedManyWithoutBranchInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutBranchInputSchema),z.lazy(() => UserCreateWithoutBranchInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema),z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => UserCreateManyBranchInputEnvelopeSchema).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const StringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.StringFieldUpdateOperationsInput> = z.object({
@@ -2887,20 +3088,6 @@ export const RoomUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.Room
   deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
-export const UserUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.UserUpdateManyWithoutBranchNestedInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutBranchInputSchema),z.lazy(() => UserCreateWithoutBranchInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema),z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => UserUpsertWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => UserUpsertWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => UserCreateManyBranchInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => UserUpdateWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => UserUpdateWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => UserUpdateManyWithWhereWithoutBranchInputSchema),z.lazy(() => UserUpdateManyWithWhereWithoutBranchInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
-}).strict();
-
 export const RoomUncheckedUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutBranchNestedInput> = z.object({
   create: z.union([ z.lazy(() => RoomCreateWithoutBranchInputSchema),z.lazy(() => RoomCreateWithoutBranchInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema),z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
@@ -2915,24 +3102,16 @@ export const RoomUncheckedUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Pr
   deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
-export const UserUncheckedUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutBranchInputSchema),z.lazy(() => UserCreateWithoutBranchInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema),z.lazy(() => UserCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => UserUpsertWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => UserUpsertWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => UserCreateManyBranchInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => UserUpdateWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => UserUpdateWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => UserUpdateManyWithWhereWithoutBranchInputSchema),z.lazy(() => UserUpdateManyWithWhereWithoutBranchInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
-}).strict();
-
 export const BranchCreateNestedOneWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateNestedOneWithoutRoomsInput> = z.object({
   create: z.union([ z.lazy(() => BranchCreateWithoutRoomsInputSchema),z.lazy(() => BranchUncheckedCreateWithoutRoomsInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => BranchCreateOrConnectWithoutRoomsInputSchema).optional(),
   connect: z.lazy(() => BranchWhereUniqueInputSchema).optional()
+}).strict();
+
+export const GradeLevelCreateNestedOneWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelCreateNestedOneWithoutRoomsInput> = z.object({
+  create: z.union([ z.lazy(() => GradeLevelCreateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedCreateWithoutRoomsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => GradeLevelCreateOrConnectWithoutRoomsInputSchema).optional(),
+  connect: z.lazy(() => GradeLevelWhereUniqueInputSchema).optional()
 }).strict();
 
 export const TeamCreateNestedManyWithoutRoomInputSchema: z.ZodType<Prisma.TeamCreateNestedManyWithoutRoomInput> = z.object({
@@ -2969,6 +3148,16 @@ export const BranchUpdateOneRequiredWithoutRoomsNestedInputSchema: z.ZodType<Pri
   upsert: z.lazy(() => BranchUpsertWithoutRoomsInputSchema).optional(),
   connect: z.lazy(() => BranchWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => BranchUpdateToOneWithWhereWithoutRoomsInputSchema),z.lazy(() => BranchUpdateWithoutRoomsInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutRoomsInputSchema) ]).optional(),
+}).strict();
+
+export const GradeLevelUpdateOneWithoutRoomsNestedInputSchema: z.ZodType<Prisma.GradeLevelUpdateOneWithoutRoomsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => GradeLevelCreateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedCreateWithoutRoomsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => GradeLevelCreateOrConnectWithoutRoomsInputSchema).optional(),
+  upsert: z.lazy(() => GradeLevelUpsertWithoutRoomsInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => GradeLevelWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => GradeLevelWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => GradeLevelWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => GradeLevelUpdateToOneWithWhereWithoutRoomsInputSchema),z.lazy(() => GradeLevelUpdateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedUpdateWithoutRoomsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamUpdateManyWithoutRoomNestedInputSchema: z.ZodType<Prisma.TeamUpdateManyWithoutRoomNestedInput> = z.object({
@@ -3027,10 +3216,58 @@ export const OrderUncheckedUpdateManyWithoutRoomNestedInputSchema: z.ZodType<Pri
   deleteMany: z.union([ z.lazy(() => OrderScalarWhereInputSchema),z.lazy(() => OrderScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
-export const BranchCreateNestedOneWithoutUsersInputSchema: z.ZodType<Prisma.BranchCreateNestedOneWithoutUsersInput> = z.object({
-  create: z.union([ z.lazy(() => BranchCreateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedCreateWithoutUsersInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => BranchCreateOrConnectWithoutUsersInputSchema).optional(),
-  connect: z.lazy(() => BranchWhereUniqueInputSchema).optional()
+export const RoomCreateNestedManyWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomCreateNestedManyWithoutGrade_levelInput> = z.object({
+  create: z.union([ z.lazy(() => RoomCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateWithoutGrade_levelInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => RoomCreateManyGrade_levelInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const RoomUncheckedCreateNestedManyWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedCreateNestedManyWithoutGrade_levelInput> = z.object({
+  create: z.union([ z.lazy(() => RoomCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateWithoutGrade_levelInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => RoomCreateManyGrade_levelInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const EnumGradeLevelTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumGradeLevelTypeFieldUpdateOperationsInput> = z.object({
+  set: z.lazy(() => GradeLevelTypeSchema).optional()
+}).strict();
+
+export const IntFieldUpdateOperationsInputSchema: z.ZodType<Prisma.IntFieldUpdateOperationsInput> = z.object({
+  set: z.number().optional(),
+  increment: z.number().optional(),
+  decrement: z.number().optional(),
+  multiply: z.number().optional(),
+  divide: z.number().optional()
+}).strict();
+
+export const RoomUpdateManyWithoutGrade_levelNestedInputSchema: z.ZodType<Prisma.RoomUpdateManyWithoutGrade_levelNestedInput> = z.object({
+  create: z.union([ z.lazy(() => RoomCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateWithoutGrade_levelInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => RoomUpsertWithWhereUniqueWithoutGrade_levelInputSchema),z.lazy(() => RoomUpsertWithWhereUniqueWithoutGrade_levelInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => RoomCreateManyGrade_levelInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => RoomUpdateWithWhereUniqueWithoutGrade_levelInputSchema),z.lazy(() => RoomUpdateWithWhereUniqueWithoutGrade_levelInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => RoomUpdateManyWithWhereWithoutGrade_levelInputSchema),z.lazy(() => RoomUpdateManyWithWhereWithoutGrade_levelInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const RoomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutGrade_levelNestedInput> = z.object({
+  create: z.union([ z.lazy(() => RoomCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateWithoutGrade_levelInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema),z.lazy(() => RoomCreateOrConnectWithoutGrade_levelInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => RoomUpsertWithWhereUniqueWithoutGrade_levelInputSchema),z.lazy(() => RoomUpsertWithWhereUniqueWithoutGrade_levelInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => RoomCreateManyGrade_levelInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => RoomUpdateWithWhereUniqueWithoutGrade_levelInputSchema),z.lazy(() => RoomUpdateWithWhereUniqueWithoutGrade_levelInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => RoomUpdateManyWithWhereWithoutGrade_levelInputSchema),z.lazy(() => RoomUpdateManyWithWhereWithoutGrade_levelInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const NullableStringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableStringFieldUpdateOperationsInput> = z.object({
@@ -3043,14 +3280,6 @@ export const EnumRoleFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumRole
 
 export const DateTimeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.DateTimeFieldUpdateOperationsInput> = z.object({
   set: z.coerce.date().optional()
-}).strict();
-
-export const BranchUpdateOneRequiredWithoutUsersNestedInputSchema: z.ZodType<Prisma.BranchUpdateOneRequiredWithoutUsersNestedInput> = z.object({
-  create: z.union([ z.lazy(() => BranchCreateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedCreateWithoutUsersInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => BranchCreateOrConnectWithoutUsersInputSchema).optional(),
-  upsert: z.lazy(() => BranchUpsertWithoutUsersInputSchema).optional(),
-  connect: z.lazy(() => BranchWhereUniqueInputSchema).optional(),
-  update: z.union([ z.lazy(() => BranchUpdateToOneWithWhereWithoutUsersInputSchema),z.lazy(() => BranchUpdateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutUsersInputSchema) ]).optional(),
 }).strict();
 
 export const RoomCreateNestedOneWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCreateNestedOneWithoutTeamsInput> = z.object({
@@ -3283,14 +3512,6 @@ export const OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema: z.ZodTyp
   connect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
-export const IntFieldUpdateOperationsInputSchema: z.ZodType<Prisma.IntFieldUpdateOperationsInput> = z.object({
-  set: z.number().optional(),
-  increment: z.number().optional(),
-  decrement: z.number().optional(),
-  multiply: z.number().optional(),
-  divide: z.number().optional()
-}).strict();
-
 export const TeamUpdateOneWithoutOrdersNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneWithoutOrdersNestedInput> = z.object({
   create: z.union([ z.lazy(() => TeamCreateWithoutOrdersInputSchema),z.lazy(() => TeamUncheckedCreateWithoutOrdersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutOrdersInputSchema).optional(),
@@ -3425,6 +3646,50 @@ export const NestedIntFilterSchema: z.ZodType<Prisma.NestedIntFilter> = z.object
   not: z.union([ z.number(),z.lazy(() => NestedIntFilterSchema) ]).optional(),
 }).strict();
 
+export const NestedEnumGradeLevelTypeFilterSchema: z.ZodType<Prisma.NestedEnumGradeLevelTypeFilter> = z.object({
+  equals: z.lazy(() => GradeLevelTypeSchema).optional(),
+  in: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  notIn: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => NestedEnumGradeLevelTypeFilterSchema) ]).optional(),
+}).strict();
+
+export const NestedEnumGradeLevelTypeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumGradeLevelTypeWithAggregatesFilter> = z.object({
+  equals: z.lazy(() => GradeLevelTypeSchema).optional(),
+  in: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  notIn: z.lazy(() => GradeLevelTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => NestedEnumGradeLevelTypeWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumGradeLevelTypeFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumGradeLevelTypeFilterSchema).optional()
+}).strict();
+
+export const NestedIntWithAggregatesFilterSchema: z.ZodType<Prisma.NestedIntWithAggregatesFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedIntFilterSchema).optional()
+}).strict();
+
+export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
+}).strict();
+
 export const NestedStringNullableFilterSchema: z.ZodType<Prisma.NestedStringNullableFilter> = z.object({
   equals: z.string().optional().nullable(),
   in: z.string().array().optional().nullable(),
@@ -3509,17 +3774,6 @@ export const NestedDateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDa
   _max: z.lazy(() => NestedDateTimeFilterSchema).optional()
 }).strict();
 
-export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
-}).strict();
-
 export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatWithAggregatesFilter> = z.object({
   equals: z.number().optional(),
   in: z.number().array().optional(),
@@ -3534,22 +3788,6 @@ export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloat
   _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
   _min: z.lazy(() => NestedFloatFilterSchema).optional(),
   _max: z.lazy(() => NestedFloatFilterSchema).optional()
-}).strict();
-
-export const NestedIntWithAggregatesFilterSchema: z.ZodType<Prisma.NestedIntWithAggregatesFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
-  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedIntFilterSchema).optional(),
-  _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
 export const NestedEnumCakePoundFilterSchema: z.ZodType<Prisma.NestedEnumCakePoundFilter> = z.object({
@@ -3572,6 +3810,7 @@ export const NestedEnumCakePoundWithAggregatesFilterSchema: z.ZodType<Prisma.Nes
 export const RoomCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomCreateWithoutBranchInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
+  grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutRoomInputSchema).optional(),
   orders: z.lazy(() => OrderCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
@@ -3579,6 +3818,7 @@ export const RoomCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomCreateWith
 export const RoomUncheckedCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedCreateWithoutBranchInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
+  grade_level_id: z.string(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutRoomInputSchema).optional(),
   orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
@@ -3590,40 +3830,6 @@ export const RoomCreateOrConnectWithoutBranchInputSchema: z.ZodType<Prisma.RoomC
 
 export const RoomCreateManyBranchInputEnvelopeSchema: z.ZodType<Prisma.RoomCreateManyBranchInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => RoomCreateManyBranchInputSchema),z.lazy(() => RoomCreateManyBranchInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
-}).strict();
-
-export const UserCreateWithoutBranchInputSchema: z.ZodType<Prisma.UserCreateWithoutBranchInput> = z.object({
-  id: z.string().cuid().optional(),
-  fname: z.string(),
-  lastname: z.string(),
-  username: z.string(),
-  password: z.string(),
-  email: z.string().optional().nullable(),
-  role: z.lazy(() => RoleSchema).optional(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
-}).strict();
-
-export const UserUncheckedCreateWithoutBranchInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutBranchInput> = z.object({
-  id: z.string().cuid().optional(),
-  fname: z.string(),
-  lastname: z.string(),
-  username: z.string(),
-  password: z.string(),
-  email: z.string().optional().nullable(),
-  role: z.lazy(() => RoleSchema).optional(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
-}).strict();
-
-export const UserCreateOrConnectWithoutBranchInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutBranchInput> = z.object({
-  where: z.lazy(() => UserWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => UserCreateWithoutBranchInputSchema),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema) ]),
-}).strict();
-
-export const UserCreateManyBranchInputEnvelopeSchema: z.ZodType<Prisma.UserCreateManyBranchInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => UserCreateManyBranchInputSchema),z.lazy(() => UserCreateManyBranchInputSchema).array() ]),
   skipDuplicates: z.boolean().optional()
 }).strict();
 
@@ -3650,57 +3856,41 @@ export const RoomScalarWhereInputSchema: z.ZodType<Prisma.RoomScalarWhereInput> 
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-}).strict();
-
-export const UserUpsertWithWhereUniqueWithoutBranchInputSchema: z.ZodType<Prisma.UserUpsertWithWhereUniqueWithoutBranchInput> = z.object({
-  where: z.lazy(() => UserWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => UserUpdateWithoutBranchInputSchema),z.lazy(() => UserUncheckedUpdateWithoutBranchInputSchema) ]),
-  create: z.union([ z.lazy(() => UserCreateWithoutBranchInputSchema),z.lazy(() => UserUncheckedCreateWithoutBranchInputSchema) ]),
-}).strict();
-
-export const UserUpdateWithWhereUniqueWithoutBranchInputSchema: z.ZodType<Prisma.UserUpdateWithWhereUniqueWithoutBranchInput> = z.object({
-  where: z.lazy(() => UserWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => UserUpdateWithoutBranchInputSchema),z.lazy(() => UserUncheckedUpdateWithoutBranchInputSchema) ]),
-}).strict();
-
-export const UserUpdateManyWithWhereWithoutBranchInputSchema: z.ZodType<Prisma.UserUpdateManyWithWhereWithoutBranchInput> = z.object({
-  where: z.lazy(() => UserScalarWhereInputSchema),
-  data: z.union([ z.lazy(() => UserUpdateManyMutationInputSchema),z.lazy(() => UserUncheckedUpdateManyWithoutBranchInputSchema) ]),
-}).strict();
-
-export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> = z.object({
-  AND: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
-  OR: z.lazy(() => UserScalarWhereInputSchema).array().optional(),
-  NOT: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
-  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  fname: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  lastname: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  username: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  password: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  email: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  role: z.union([ z.lazy(() => EnumRoleFilterSchema),z.lazy(() => RoleSchema) ]).optional(),
-  branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  grade_level_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const BranchCreateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateWithoutRoomsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  group_number: z.string(),
-  users: z.lazy(() => UserCreateNestedManyWithoutBranchInputSchema).optional()
+  group_number: z.string()
 }).strict();
 
 export const BranchUncheckedCreateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutRoomsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  group_number: z.string(),
-  users: z.lazy(() => UserUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
+  group_number: z.string()
 }).strict();
 
 export const BranchCreateOrConnectWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateOrConnectWithoutRoomsInput> = z.object({
   where: z.lazy(() => BranchWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => BranchCreateWithoutRoomsInputSchema),z.lazy(() => BranchUncheckedCreateWithoutRoomsInputSchema) ]),
+}).strict();
+
+export const GradeLevelCreateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelCreateWithoutRoomsInput> = z.object({
+  id: z.string().cuid().optional(),
+  level: z.lazy(() => GradeLevelTypeSchema),
+  year: z.number().int()
+}).strict();
+
+export const GradeLevelUncheckedCreateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUncheckedCreateWithoutRoomsInput> = z.object({
+  id: z.string().cuid().optional(),
+  level: z.lazy(() => GradeLevelTypeSchema),
+  year: z.number().int()
+}).strict();
+
+export const GradeLevelCreateOrConnectWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelCreateOrConnectWithoutRoomsInput> = z.object({
+  where: z.lazy(() => GradeLevelWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => GradeLevelCreateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedCreateWithoutRoomsInputSchema) ]),
 }).strict();
 
 export const TeamCreateWithoutRoomInputSchema: z.ZodType<Prisma.TeamCreateWithoutRoomInput> = z.object({
@@ -3776,14 +3966,35 @@ export const BranchUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUpdateW
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  users: z.lazy(() => UserUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutRoomsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  users: z.lazy(() => UserUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
+}).strict();
+
+export const GradeLevelUpsertWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUpsertWithoutRoomsInput> = z.object({
+  update: z.union([ z.lazy(() => GradeLevelUpdateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedUpdateWithoutRoomsInputSchema) ]),
+  create: z.union([ z.lazy(() => GradeLevelCreateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedCreateWithoutRoomsInputSchema) ]),
+  where: z.lazy(() => GradeLevelWhereInputSchema).optional()
+}).strict();
+
+export const GradeLevelUpdateToOneWithWhereWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUpdateToOneWithWhereWithoutRoomsInput> = z.object({
+  where: z.lazy(() => GradeLevelWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => GradeLevelUpdateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedUpdateWithoutRoomsInputSchema) ]),
+}).strict();
+
+export const GradeLevelUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUpdateWithoutRoomsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const GradeLevelUncheckedUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateWithoutRoomsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamUpsertWithWhereUniqueWithoutRoomInputSchema: z.ZodType<Prisma.TeamUpsertWithWhereUniqueWithoutRoomInput> = z.object({
@@ -3843,54 +4054,53 @@ export const OrderScalarWhereInputSchema: z.ZodType<Prisma.OrderScalarWhereInput
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
-export const BranchCreateWithoutUsersInputSchema: z.ZodType<Prisma.BranchCreateWithoutUsersInput> = z.object({
+export const RoomCreateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomCreateWithoutGrade_levelInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  group_number: z.string(),
-  rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional()
+  branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
+  teams: z.lazy(() => TeamCreateNestedManyWithoutRoomInputSchema).optional(),
+  orders: z.lazy(() => OrderCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
 
-export const BranchUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutUsersInput> = z.object({
+export const RoomUncheckedCreateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedCreateWithoutGrade_levelInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  group_number: z.string(),
-  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
+  branch_id: z.string(),
+  teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutRoomInputSchema).optional(),
+  orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
 
-export const BranchCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.BranchCreateOrConnectWithoutUsersInput> = z.object({
-  where: z.lazy(() => BranchWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => BranchCreateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedCreateWithoutUsersInputSchema) ]),
+export const RoomCreateOrConnectWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomCreateOrConnectWithoutGrade_levelInput> = z.object({
+  where: z.lazy(() => RoomWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => RoomCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema) ]),
 }).strict();
 
-export const BranchUpsertWithoutUsersInputSchema: z.ZodType<Prisma.BranchUpsertWithoutUsersInput> = z.object({
-  update: z.union([ z.lazy(() => BranchUpdateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutUsersInputSchema) ]),
-  create: z.union([ z.lazy(() => BranchCreateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedCreateWithoutUsersInputSchema) ]),
-  where: z.lazy(() => BranchWhereInputSchema).optional()
+export const RoomCreateManyGrade_levelInputEnvelopeSchema: z.ZodType<Prisma.RoomCreateManyGrade_levelInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => RoomCreateManyGrade_levelInputSchema),z.lazy(() => RoomCreateManyGrade_levelInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
 }).strict();
 
-export const BranchUpdateToOneWithWhereWithoutUsersInputSchema: z.ZodType<Prisma.BranchUpdateToOneWithWhereWithoutUsersInput> = z.object({
-  where: z.lazy(() => BranchWhereInputSchema).optional(),
-  data: z.union([ z.lazy(() => BranchUpdateWithoutUsersInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutUsersInputSchema) ]),
+export const RoomUpsertWithWhereUniqueWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpsertWithWhereUniqueWithoutGrade_levelInput> = z.object({
+  where: z.lazy(() => RoomWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => RoomUpdateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedUpdateWithoutGrade_levelInputSchema) ]),
+  create: z.union([ z.lazy(() => RoomCreateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedCreateWithoutGrade_levelInputSchema) ]),
 }).strict();
 
-export const BranchUpdateWithoutUsersInputSchema: z.ZodType<Prisma.BranchUpdateWithoutUsersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional()
+export const RoomUpdateWithWhereUniqueWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpdateWithWhereUniqueWithoutGrade_levelInput> = z.object({
+  where: z.lazy(() => RoomWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => RoomUpdateWithoutGrade_levelInputSchema),z.lazy(() => RoomUncheckedUpdateWithoutGrade_levelInputSchema) ]),
 }).strict();
 
-export const BranchUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutUsersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
+export const RoomUpdateManyWithWhereWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpdateManyWithWhereWithoutGrade_levelInput> = z.object({
+  where: z.lazy(() => RoomScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => RoomUpdateManyMutationInputSchema),z.lazy(() => RoomUncheckedUpdateManyWithoutGrade_levelInputSchema) ]),
 }).strict();
 
 export const RoomCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCreateWithoutTeamsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
+  grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
   orders: z.lazy(() => OrderCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
 
@@ -3898,6 +4108,7 @@ export const RoomUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUn
   id: z.string().cuid().optional(),
   name: z.string(),
   branch_id: z.string(),
+  grade_level_id: z.string(),
   orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
 
@@ -3957,6 +4168,7 @@ export const RoomUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUpdateWitho
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
+  grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
   orders: z.lazy(() => OrderUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
 
@@ -3964,6 +4176,7 @@ export const RoomUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUn
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orders: z.lazy(() => OrderUncheckedUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
 
@@ -4204,6 +4417,7 @@ export const RoomCreateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomCreateWith
   id: z.string().cuid().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
+  grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
 
@@ -4211,6 +4425,7 @@ export const RoomUncheckedCreateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomU
   id: z.string().cuid().optional(),
   name: z.string(),
   branch_id: z.string(),
+  grade_level_id: z.string(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutRoomInputSchema).optional()
 }).strict();
 
@@ -4287,6 +4502,7 @@ export const RoomUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomUpdateWith
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
+  grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
 
@@ -4294,6 +4510,7 @@ export const RoomUncheckedUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomU
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
 
@@ -4479,24 +4696,14 @@ export const ProductUncheckedUpdateWithoutCakeCountsInputSchema: z.ZodType<Prism
 
 export const RoomCreateManyBranchInputSchema: z.ZodType<Prisma.RoomCreateManyBranchInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string()
-}).strict();
-
-export const UserCreateManyBranchInputSchema: z.ZodType<Prisma.UserCreateManyBranchInput> = z.object({
-  id: z.string().cuid().optional(),
-  fname: z.string(),
-  lastname: z.string(),
-  username: z.string(),
-  password: z.string(),
-  email: z.string().optional().nullable(),
-  role: z.lazy(() => RoleSchema).optional(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
+  name: z.string(),
+  grade_level_id: z.string()
 }).strict();
 
 export const RoomUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUpdateWithoutBranchInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutRoomNestedInputSchema).optional(),
   orders: z.lazy(() => OrderUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
@@ -4504,6 +4711,7 @@ export const RoomUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUpdateWith
 export const RoomUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateWithoutBranchInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional(),
   orders: z.lazy(() => OrderUncheckedUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
@@ -4511,42 +4719,7 @@ export const RoomUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomU
 export const RoomUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutBranchInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const UserUpdateWithoutBranchInputSchema: z.ZodType<Prisma.UserUpdateWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const UserUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const UserUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamCreateManyRoomInputSchema: z.ZodType<Prisma.TeamCreateManyRoomInput> = z.object({
@@ -4619,6 +4792,34 @@ export const OrderUncheckedUpdateManyWithoutRoomInputSchema: z.ZodType<Prisma.Or
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const RoomCreateManyGrade_levelInputSchema: z.ZodType<Prisma.RoomCreateManyGrade_levelInput> = z.object({
+  id: z.string().cuid().optional(),
+  name: z.string(),
+  branch_id: z.string()
+}).strict();
+
+export const RoomUpdateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpdateWithoutGrade_levelInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUpdateManyWithoutRoomNestedInputSchema).optional(),
+  orders: z.lazy(() => OrderUpdateManyWithoutRoomNestedInputSchema).optional()
+}).strict();
+
+export const RoomUncheckedUpdateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateWithoutGrade_levelInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional(),
+  orders: z.lazy(() => OrderUncheckedUpdateManyWithoutRoomNestedInputSchema).optional()
+}).strict();
+
+export const RoomUncheckedUpdateManyWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutGrade_levelInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderCreateManyTeamInputSchema: z.ZodType<Prisma.OrderCreateManyTeamInput> = z.object({
@@ -4931,9 +5132,70 @@ export const RoomFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.RoomFindUniqueOrT
   where: RoomWhereUniqueInputSchema,
 }).strict() ;
 
+export const GradeLevelFindFirstArgsSchema: z.ZodType<Prisma.GradeLevelFindFirstArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereInputSchema.optional(),
+  orderBy: z.union([ GradeLevelOrderByWithRelationInputSchema.array(),GradeLevelOrderByWithRelationInputSchema ]).optional(),
+  cursor: GradeLevelWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ GradeLevelScalarFieldEnumSchema,GradeLevelScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const GradeLevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GradeLevelFindFirstOrThrowArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereInputSchema.optional(),
+  orderBy: z.union([ GradeLevelOrderByWithRelationInputSchema.array(),GradeLevelOrderByWithRelationInputSchema ]).optional(),
+  cursor: GradeLevelWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ GradeLevelScalarFieldEnumSchema,GradeLevelScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const GradeLevelFindManyArgsSchema: z.ZodType<Prisma.GradeLevelFindManyArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereInputSchema.optional(),
+  orderBy: z.union([ GradeLevelOrderByWithRelationInputSchema.array(),GradeLevelOrderByWithRelationInputSchema ]).optional(),
+  cursor: GradeLevelWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ GradeLevelScalarFieldEnumSchema,GradeLevelScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const GradeLevelAggregateArgsSchema: z.ZodType<Prisma.GradeLevelAggregateArgs> = z.object({
+  where: GradeLevelWhereInputSchema.optional(),
+  orderBy: z.union([ GradeLevelOrderByWithRelationInputSchema.array(),GradeLevelOrderByWithRelationInputSchema ]).optional(),
+  cursor: GradeLevelWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const GradeLevelGroupByArgsSchema: z.ZodType<Prisma.GradeLevelGroupByArgs> = z.object({
+  where: GradeLevelWhereInputSchema.optional(),
+  orderBy: z.union([ GradeLevelOrderByWithAggregationInputSchema.array(),GradeLevelOrderByWithAggregationInputSchema ]).optional(),
+  by: GradeLevelScalarFieldEnumSchema.array(),
+  having: GradeLevelScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const GradeLevelFindUniqueArgsSchema: z.ZodType<Prisma.GradeLevelFindUniqueArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereUniqueInputSchema,
+}).strict() ;
+
+export const GradeLevelFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.GradeLevelFindUniqueOrThrowArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereUniqueInputSchema,
+}).strict() ;
+
 export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereInputSchema.optional(),
   orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
   cursor: UserWhereUniqueInputSchema.optional(),
@@ -4944,7 +5206,6 @@ export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.ob
 
 export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThrowArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereInputSchema.optional(),
   orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
   cursor: UserWhereUniqueInputSchema.optional(),
@@ -4955,7 +5216,6 @@ export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThr
 
 export const UserFindManyArgsSchema: z.ZodType<Prisma.UserFindManyArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereInputSchema.optional(),
   orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
   cursor: UserWhereUniqueInputSchema.optional(),
@@ -4983,13 +5243,11 @@ export const UserGroupByArgsSchema: z.ZodType<Prisma.UserGroupByArgs> = z.object
 
 export const UserFindUniqueArgsSchema: z.ZodType<Prisma.UserFindUniqueArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
 
 export const UserFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.UserFindUniqueOrThrowArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
 
@@ -5473,15 +5731,67 @@ export const RoomDeleteManyArgsSchema: z.ZodType<Prisma.RoomDeleteManyArgs> = z.
   limit: z.number().optional(),
 }).strict() ;
 
+export const GradeLevelCreateArgsSchema: z.ZodType<Prisma.GradeLevelCreateArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  data: z.union([ GradeLevelCreateInputSchema,GradeLevelUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const GradeLevelUpsertArgsSchema: z.ZodType<Prisma.GradeLevelUpsertArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereUniqueInputSchema,
+  create: z.union([ GradeLevelCreateInputSchema,GradeLevelUncheckedCreateInputSchema ]),
+  update: z.union([ GradeLevelUpdateInputSchema,GradeLevelUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const GradeLevelCreateManyArgsSchema: z.ZodType<Prisma.GradeLevelCreateManyArgs> = z.object({
+  data: z.union([ GradeLevelCreateManyInputSchema,GradeLevelCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const GradeLevelCreateManyAndReturnArgsSchema: z.ZodType<Prisma.GradeLevelCreateManyAndReturnArgs> = z.object({
+  data: z.union([ GradeLevelCreateManyInputSchema,GradeLevelCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const GradeLevelDeleteArgsSchema: z.ZodType<Prisma.GradeLevelDeleteArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  where: GradeLevelWhereUniqueInputSchema,
+}).strict() ;
+
+export const GradeLevelUpdateArgsSchema: z.ZodType<Prisma.GradeLevelUpdateArgs> = z.object({
+  select: GradeLevelSelectSchema.optional(),
+  include: GradeLevelIncludeSchema.optional(),
+  data: z.union([ GradeLevelUpdateInputSchema,GradeLevelUncheckedUpdateInputSchema ]),
+  where: GradeLevelWhereUniqueInputSchema,
+}).strict() ;
+
+export const GradeLevelUpdateManyArgsSchema: z.ZodType<Prisma.GradeLevelUpdateManyArgs> = z.object({
+  data: z.union([ GradeLevelUpdateManyMutationInputSchema,GradeLevelUncheckedUpdateManyInputSchema ]),
+  where: GradeLevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const GradeLevelUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.GradeLevelUpdateManyAndReturnArgs> = z.object({
+  data: z.union([ GradeLevelUpdateManyMutationInputSchema,GradeLevelUncheckedUpdateManyInputSchema ]),
+  where: GradeLevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const GradeLevelDeleteManyArgsSchema: z.ZodType<Prisma.GradeLevelDeleteManyArgs> = z.object({
+  where: GradeLevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   data: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]),
 }).strict() ;
 
 export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
   create: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]),
   update: z.union([ UserUpdateInputSchema,UserUncheckedUpdateInputSchema ]),
@@ -5499,13 +5809,11 @@ export const UserCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UserCreateManyA
 
 export const UserDeleteArgsSchema: z.ZodType<Prisma.UserDeleteArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
 
 export const UserUpdateArgsSchema: z.ZodType<Prisma.UserUpdateArgs> = z.object({
   select: UserSelectSchema.optional(),
-  include: UserIncludeSchema.optional(),
   data: z.union([ UserUpdateInputSchema,UserUncheckedUpdateInputSchema ]),
   where: UserWhereUniqueInputSchema,
 }).strict() ;

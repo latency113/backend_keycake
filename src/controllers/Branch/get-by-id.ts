@@ -11,9 +11,6 @@ const ResponseSchema = z.object({
     data: BranchOptionalDefaultsSchema,
     message: z.string(),
 })
-const RequestParamSchema = z.object({
-    id: z.string().min(1, "Branch ID is required"),
-})
 
 export default (app: TypeApplication) =>
     app.get(
@@ -40,27 +37,20 @@ export default (app: TypeApplication) =>
             catch (error) {
                 console.error("Error fetching Branch:", error)
                 const err = ParseError(error)
-                const fail = FailResponseSchema.safeParse({
+                set.status = err.status
+                return {
                     code: err.code,
                     message: err.message,
                     status: err.status,
-                })
-                set.status = err.status
-                if (fail.success) {
-                    return fail.data
-                } else {
-                    return {
-                        code: "RESPONSE_PARSING_FAILED",
-                        message: "Failed to parse error response",
-                        status: 500,
-                    }
                 }
             }
         },
         {
-            params: RequestParamSchema,
             detail: {
-                tags: ["Branch"],
+                tags: ["Masterdata", "Branch"],
+                params: z.object({
+                    id: z.string().min(1, "Branch ID is required"),
+                }),
                 responses: {
                     200: {
                         description: "Branch fetch data success",
@@ -70,14 +60,14 @@ export default (app: TypeApplication) =>
                             },
                         },
                     },
-                    400: {
-                        description: "Branch fetch data fail not found data ",
+                    404: {
+                        description: "Branch not found",
                         content: {
                             "application/json": {
                                 schema: FailResponseSchema.default({
                                     code: "FETCH_FAILED",
                                     message: "Failed to fetch Branch Not Found",
-                                    status: 400,
+                                    status: 404,
                                 }),
                             },
                         },

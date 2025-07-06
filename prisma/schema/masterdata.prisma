@@ -12,21 +12,27 @@ enum CakePound {
   FIVE // 5 ปอนด์
 }
 
+enum GradeLevelType {
+  VOCATIONAL // ปวช.
+  HIGHER // ปวส.
+}
+
 model Branch {
   id           String @id @default(cuid())
   name         String @unique
   group_number String // รหัสกลุ่ม เช่น 672020101
 
   rooms Room[]
-  users User[]
 }
 
 model Room {
-  id       String @id @default(cuid())
-  name     String
-  branch_id String
+  id             String @id @default(cuid())
+  name           String
+  branch_id      String
+  grade_level_id String
 
-  branch Branch @relation(fields: [branch_id], references: [id])
+  branch      Branch      @relation(fields: [branch_id], references: [id])
+  grade_level GradeLevel? @relation(fields: [grade_level_id], references: [id])
 
   teams  Team[]
   orders Order[]
@@ -34,28 +40,35 @@ model Room {
   @@index([branch_id], name: "idx_room_branch_id")
 }
 
-model User {
-  id        String  @id @default(cuid())
-  fname     String
-  lastname  String
-  username  String  @unique
-  password  String
-  email     String?
-  role      Role    @default(USER)
-  branch_id String
+model GradeLevel {
+  id    String         @id @default(cuid())
+  level GradeLevelType // VOCATIONAL / HIGHER
+  year  Int // 1, 2, 3
 
-  branch Branch @relation(fields: [branch_id], references: [id])
+  rooms Room[]
+
+  @@unique([level, year])
+}
+
+model User {
+  id       String  @id @default(cuid())
+  fname    String
+  lastname String
+  username String  @unique
+  password String
+  email    String?
+  role     Role    @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Team {
-  id     String @id @default(cuid())
-  name   String
+  id      String @id @default(cuid())
+  name    String
   room_id String
 
-  room   Room   @relation(fields: [room_id], references: [id])
+  room   Room    @relation(fields: [room_id], references: [id])
   orders Order[]
 }
 

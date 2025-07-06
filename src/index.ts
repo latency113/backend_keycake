@@ -1,41 +1,41 @@
-import { swagger } from "@elysiajs/swagger";
-import { Elysia } from "elysia";
-import cors from "@elysiajs/cors";
-import controllers from "@/controllers";
-import dotenvx from '@dotenvx/dotenvx';
+import dotenvx from "@dotenvx/dotenvx"
+import cors from "@elysiajs/cors"
+import { swagger } from "@elysiajs/swagger"
+import { Elysia } from "elysia"
+import controllers from "@/controllers"
 
-dotenvx.config();
+dotenvx.config()
 
 const app = new Elysia()
-  .use(cors({
+  app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
-    methods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
     credentials: true,
+    methods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
     origin: ["http://localhost:3000"],
   }))
-  .use(controllers())
-  .use(
+  app.use(controllers())
+  app.use(
     swagger({
-      path: "/docs",
       documentation: {
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              bearerFormat: "JWT",
+              scheme: "bearer",
+              type: "http",
+            },
+          },
+        },
         info: {
           title: "Cake documentation",
           version: "0.1.0",
         },
-        components: {
-            securitySchemes: {
-                bearerAuth: {
-                    type: 'http',
-                    scheme: 'bearer',
-                    bearerFormat: 'JWT'
-                }
-            }
-        }
       },
-    })
+      path: "/docs",
+    }),
   )
-  .listen(3001);
+  .listen(3001)
 
 console.log(
-  `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}/docs`
-);
+  `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}/docs`,
+)
