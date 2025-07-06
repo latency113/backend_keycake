@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { UserService } from "./User.service";
-import type { PrismaClient, User } from "@prisma/client";
+import type { PrismaClient, User, Role } from "@prisma/client";
 
 describe("UserService", () => {
   let db: { user: any };
@@ -107,14 +107,24 @@ describe("UserService", () => {
       username: "janesmith",
       password: "pass",
       email: "jane@example.com",
-      role: "USER",
+      role: "USER" as Role,
       branchId: "b1",
       createdAt: new Date(),
       updatedAt: new Date(),
+      branch: { connect: { id: "b1" } },
     };
     const user = await service.onCreate(data);
     expect(user).toBeTruthy();
-    expect(db.user.create).toHaveBeenCalledWith({ data });
+    expect(db.user.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        fname: "Jane",
+        lastname: "Smith",
+        username: "janesmith",
+        email: "jane@example.com",
+        role: "USER",
+        branchId: "b1",
+      }),
+    });
   });
 
   it("should delete a user", async () => {

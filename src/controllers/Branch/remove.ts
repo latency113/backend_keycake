@@ -1,33 +1,36 @@
 import type { TypeApplication } from "@/configure/create-application.js"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { UserService } from "@/services/index.js"
+import { BranchService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { UserOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { BranchOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 import z from "zod"
 
-const RequestSchema = UserOptionalDefaultsSchema
-
 const ResponseSchema = z.object({
-    data: UserOptionalDefaultsSchema,
-    message: z.string().default("User created successfully"),
+    data: BranchOptionalDefaultsSchema,
+    message: z.string(),
+})
+const RequestParamSchema = z.object({
+    id: z.string().min(1, "Branch ID is required"),
 })
 
 export default (app: TypeApplication) =>
-    app.post(
-        "/",
-        async ({ body, set }) => {
+    app.delete(
+        "/:id",
+        async ({ params, set }) => {
             try {
+                const { id } = params
                 const deps = {
-                    UserService: UserService({ db: DatabaseContext }),
+                    BranchService: BranchService({ db: DatabaseContext }),
                 }
-                const result = await deps.UserService.onCreate(body)
-                if (result === null)
-                    throw NewError("Failed to create User", "CREATION_FAILED", 500)
+                const result = await deps.BranchService.onDelete(id)
+                if (!result)
+                    throw NewError("Failed to delete Branch", "DELETE_FAILED", 400)
                 const parse = ResponseSchema.safeParse({
                     data: result,
-                    message: "User created successfully",
+                    message: "Branch deleted successfully",
+
                 })
                 if (!parse.success)
                     throw NewError(`Failed to parse response object: ${JSON.stringify(parse.error)}`, "RESPONSE_PARSING_FAILED", 500)
@@ -35,7 +38,7 @@ export default (app: TypeApplication) =>
                 return parse.data
             }
             catch (error) {
-                console.error("Error creating User:", error)
+                console.error("Error deleting Branch:", error)
                 const err = ParseError(error)
                 const fail = FailResponseSchema.safeParse({
                     code: err.code,
@@ -55,37 +58,39 @@ export default (app: TypeApplication) =>
             }
         },
         {
+            params: RequestParamSchema,
             detail: {
-                tags: ["User"],
-                requestBody: {
-                    content: {
-                        "application/json": {
-                            schema: RequestSchema,
-                            example: {
-                                fname: "",
-                                lastname: "",
-                                username: "",
-                                password: "",
-                                email: "",
-                                branch_id: ""
-                            }
-                        }
-                    }
-                },
+                tags: ["Branch"],
                 responses: {
                     200: {
-                        description: "User creation success",
+                        description: "Branch delete data success",
                         content: {
                             "application/json": {
                                 schema: ResponseSchema,
                             },
                         },
                     },
-                    500: {
-                        description: "User creation fail",
+                    400: {
+                        description: "Branch delete data fail not found data ",
                         content: {
                             "application/json": {
-                                schema: FailResponseSchema,
+                                schema: FailResponseSchema.default({
+                                    code: "DELETE_FAILED",
+                                    message: "Failed to delete Branch",
+                                    status: 400,
+                                }),
+                            },
+                        },
+                    },
+                    500: {
+                        description: "Branch delete data fail",
+                        content: {
+                            "application/json": {
+                                schema: FailResponseSchema.default({
+                                    code: "DELETE_FAILED",
+                                    message: "Failed to delete Branch",
+                                    status: 500,
+                                }),
                             },
                         },
                     },
@@ -93,4 +98,3 @@ export default (app: TypeApplication) =>
             },
         }
     )
-

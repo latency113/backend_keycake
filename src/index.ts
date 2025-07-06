@@ -2,6 +2,9 @@ import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import cors from "@elysiajs/cors";
 import controllers from "@/controllers";
+import { config } from 'dotenv';
+
+config(); // Load .env file
 
 const app = new Elysia()
   .use(cors({
@@ -19,6 +22,15 @@ const app = new Elysia()
           title: "Cake documentation",
           version: "0.1.0",
         },
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT'
+                }
+            }
+        }
       },
     })
   )
