@@ -11,9 +11,6 @@ const ResponseSchema = z.object({
     data: BranchOptionalDefaultsSchema,
     message: z.string(),
 })
-const RequestParamSchema = z.object({
-    id: z.string().min(1, "Branch ID is required"),
-})
 
 export default (app: TypeApplication) =>
     app.delete(
@@ -26,10 +23,10 @@ export default (app: TypeApplication) =>
                 }
                 const result = await deps.BranchService.onDelete(id)
                 if (!result)
-                    throw NewError("Failed to delete Branch", "DELETE_FAILED", 400)
+                    throw NewError("Failed to Delete Branch Not Found", "Delete_FAILED", 404)
                 const parse = ResponseSchema.safeParse({
                     data: result,
-                    message: "Branch deleted successfully",
+                    message: "Branch Deleted successfully",
 
                 })
                 if (!parse.success)
@@ -38,59 +35,48 @@ export default (app: TypeApplication) =>
                 return parse.data
             }
             catch (error) {
-                console.error("Error deleting Branch:", error)
+                console.error("Error Deleting Branch:", error)
                 const err = ParseError(error)
-                const fail = FailResponseSchema.safeParse({
+                set.status = err.status
+                return {
                     code: err.code,
                     message: err.message,
                     status: err.status,
-                })
-                set.status = err.status
-                if (fail.success) {
-                    return fail.data
-                } else {
-                    return {
-                        code: "RESPONSE_PARSING_FAILED",
-                        message: "Failed to parse error response",
-                        status: 500,
-                    }
                 }
             }
         },
         {
-            params: RequestParamSchema,
             detail: {
                 tags: ["Branch"],
+                params: z.object({
+                    id: z.string().min(1, "Branch ID is required"),
+                }),
                 responses: {
                     200: {
-                        description: "Branch delete data success",
+                        description: "Branch Delete data success",
                         content: {
                             "application/json": {
                                 schema: ResponseSchema,
                             },
                         },
                     },
-                    400: {
-                        description: "Branch delete data fail not found data ",
+                    404: {
+                        description: "Branch not found",
                         content: {
                             "application/json": {
                                 schema: FailResponseSchema.default({
-                                    code: "DELETE_FAILED",
-                                    message: "Failed to delete Branch",
-                                    status: 400,
+                                    code: "Delete_FAILED",
+                                    message: "Failed to Delete Branch Not Found",
+                                    status: 404,
                                 }),
                             },
                         },
                     },
                     500: {
-                        description: "Branch delete data fail",
+                        description: "Branch Delete data fail",
                         content: {
                             "application/json": {
-                                schema: FailResponseSchema.default({
-                                    code: "DELETE_FAILED",
-                                    message: "Failed to delete Branch",
-                                    status: 500,
-                                }),
+                                schema: FailResponseSchema,
                             },
                         },
                     },

@@ -3,21 +3,15 @@ import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
 import { BranchService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { BranchOptionalDefaultsSchema, BranchPartialSchema } from "@/types/schema/prisma/index.js"
+import { BranchOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 import z from "zod"
 
+const RequestSchema = BranchOptionalDefaultsSchema
+
 const ResponseSchema = z.object({
     data: BranchOptionalDefaultsSchema,
-    message: z.string(),
-})
-const RequestSchema = BranchPartialSchema.extend({
-    name: z.string().optional(),
-    group_number: z.string().optional(),
-})
-
-const RequestParamSchema = z.object({
-    id: z.string().min(1, "Branch ID is required"),
+    message: z.string().default("Branch updated successfully"),
 })
 
 export default (app: TypeApplication) =>
@@ -25,11 +19,12 @@ export default (app: TypeApplication) =>
         "/:id",
         async ({ params, body, set }) => {
             try {
+                const validBody = RequestSchema.parse(body)
                 const { id } = params
                 const deps = {
                     BranchService: BranchService({ db: DatabaseContext }),
                 }
-                const result = await deps.BranchService.onUpdate(id, body)
+                const result = await deps.BranchService.onUpdate(id, validBody)
                 if (!result)
                     throw NewError("Failed to update Branch", "UPDATE_FAILED", 500)
                 const parse = ResponseSchema.safeParse({
@@ -40,6 +35,7 @@ export default (app: TypeApplication) =>
                     throw NewError(`Failed to parse response object: ${JSON.stringify(parse.error)}`, "RESPONSE_PARSING_FAILED", 500)
                 set.status = 200
                 return parse.data
+                
             }
             catch (error) {
                 console.error("Error updating Branch:", error)
@@ -62,42 +58,37 @@ export default (app: TypeApplication) =>
             }
         },
         {
-            params: RequestParamSchema,
-            body: {
-                schema: RequestSchema
-            },
             detail: {
                 tags: ["Branch"],
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: RequestSchema,
+                            example: {
+                                name: "",
+                                group_number: "",
+                            }
+                        }
+                    }
+                },
                 responses: {
                     200: {
-                        description: "Branch update data success",
+                        description: "Branch update success",
                         content: {
                             "application/json": {
                                 schema: ResponseSchema,
                             },
                         },
                     },
-                    400: {
-                        description: "Branch update data fail not found data ",
-                        content: {
-                            "application/json": {
-                                schema: FailResponseSchema.default({
-                                    code: "UPDATE_FAILED",
-                                    message: "Failed to update Branch Not Found",
-                                    status: 400,
-                                }),
-                            },
-                        },
-                    },
                     500: {
-                        description: "Branch update data fail",
+                        description: "Branch update fail",
                         content: {
                             "application/json": {
                                 schema: FailResponseSchema,
                             },
                         },
-                    }
-                }
-            }
+                    },
+                },
+            },
         }
     )

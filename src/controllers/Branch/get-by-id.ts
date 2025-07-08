@@ -47,7 +47,7 @@ export default (app: TypeApplication) =>
         },
         {
             detail: {
-                tags: ["Masterdata", "Branch"],
+                tags: ["Branch"],
                 params: z.object({
                     id: z.string().min(1, "Branch ID is required"),
                 }),

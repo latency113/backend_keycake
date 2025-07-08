@@ -1,76 +1,97 @@
-import type { TypeApplication } from "@/configure/create-application.js"
-import z from "zod"
-import { NewError, ParseError } from "@/helper/error.js"
-import DatabaseContext from "@/repositories/prisma.js"
-import { RoomService } from "@/services/index.js"
-import {
-  SuccessResponseSchema,
-} from "@/types/global/response.js"
+import type { TypeApplication } from "@/configure/create-application.js";
+import { NewError, ParseError } from "@/helper/error.js";
+import DatabaseContext from "@/repositories/prisma.js";
+import { BranchService } from "@/services/index.js";
+import { FailResponseSchema } from "@/types/global/response.js";
+import { BranchOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
 
-import { RoomPartialSchema, RoomSchema } from "@/types/schema/prisma/index.js"
+import z from "zod";
 
-const ResponseSchema = SuccessResponseSchema.extend({
-  data: RoomSchema,
-})
-const RequestSchema = RoomPartialSchema.pick({ branch_id: true, grade_level_id: true, name: true })
+const RequestSchema = BranchOptionalDefaultsSchema;
 
-const RequestParamSchema = z.object({
-  id: z.string().min(1, "Room ID is required"),
-})
+const ResponseSchema = z.object({
+  data: BranchOptionalDefaultsSchema,
+  message: z.string().default("Branch updated successfully"),
+});
 
 export default (app: TypeApplication) =>
   app.put(
     "/:id",
-    async ({ body, params, set }) => {
+    async ({ params, body, set }) => {
       try {
-        const { id } = params
+        const validBody = RequestSchema.parse(body);
+        const { id } = params;
         const deps = {
-          RoomService: RoomService({ db: DatabaseContext }),
-        }
-        const result = await deps.RoomService.onUpdate(id, body)
+          BranchService: BranchService({ db: DatabaseContext }),
+        };
+        const result = await deps.BranchService.onUpdate(id, validBody);
         if (!result)
-          throw NewError("Failed to update Room", "UPDATE_FAILED", 500)
+          throw NewError("Failed to update Branch", "UPDATE_FAILED", 500);
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Room updated successfully",
-        })
-        if (!parse.success) {
+          message: "Branch updated successfully",
+        });
+        if (!parse.success)
           throw NewError(
             `Failed to parse response object: ${JSON.stringify(parse.error)}`,
             "RESPONSE_PARSING_FAILED",
-            500,
-          )
-        }
-        set.status = 200
-        return parse.data
-      }
-      catch (error) {
-        const err = ParseError(error)
-        set.status = err.status
-        return {
+            500
+          );
+        set.status = 200;
+        return parse.data;
+      } catch (error) {
+        console.error("Error updating Branch:", error);
+        const err = ParseError(error);
+        const fail = FailResponseSchema.safeParse({
           code: err.code,
           message: err.message,
           status: err.status,
+        });
+        set.status = err.status;
+        if (fail.success) {
+          return fail.data;
+        } else {
+          return {
+            code: "RESPONSE_PARSING_FAILED",
+            message: "Failed to parse error response",
+            status: 500,
+          };
         }
       }
     },
     {
-      body: RequestSchema,
       detail: {
+        tags: ["Room"],
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: RequestSchema,
+              example: {
+                branch_id: "",
+                grade_level_id: "",
+                name: "",
+              },
+            },
+          },
+        },
         responses: {
           200: {
+            description: "Branch update success",
             content: {
               "application/json": {
                 schema: ResponseSchema,
               },
             },
-            description: "Room update data success",
           },
-          404: { description: "Room not found" },
-          500: { description: "Internal server error" },
+          500: {
+            description: "Branch update fail",
+            content: {
+              "application/json": {
+                schema: FailResponseSchema,
+              },
+            },
+          },
         },
-        tags: ["Room"],
       },
-      params: RequestParamSchema,
-    },
-  )
+    }
+  );

@@ -1,11 +1,11 @@
-import type { Elysia } from "elysia"
-import z from "zod"
-import { NewError, ParseError } from "@/helper/error.js"
-import DatabaseContext from "@/repositories/prisma.js"
-import { GradeLevelService } from "@/services/index.js"
-import { BaseRequestQuerySchema } from "@/types/global/index.js"
-import { FailResponseSchema } from "@/types/global/response.js"
-import { GradeLevelOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { Elysia } from "elysia";
+import { NewError, ParseError } from "@/helper/error.js";
+import DatabaseContext from "@/repositories/prisma.js";
+import { GradeLevelService } from "@/services/index.js";
+import { BaseRequestQuerySchema } from "@/types/global/index.js";
+import { FailResponseSchema } from "@/types/global/response.js";
+import { GradeLevelOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
+import z from "zod";
 
 const ResponseSchema = z.object({
   data: GradeLevelOptionalDefaultsSchema.array(),
@@ -15,32 +15,32 @@ const ResponseSchema = z.object({
     page: z.number().optional(),
     total: z.number().optional(),
   }),
-})
+});
 
 export default (app: Elysia) =>
   app.get(
     "/",
     async ({ query, set }) => {
       try {
-        const parsed = BaseRequestQuerySchema.safeParse(query)
+        const parsed = BaseRequestQuerySchema.safeParse(query);
         if (!parsed.success) {
-          set.status = 400
+          set.status = 400;
           return {
             code: "INVALID_QUERY",
             message: "Invalid query parameters",
             status: 400,
-          }
+          };
         }
-        const { limit, page } = parsed.data
+        const { limit, page } = parsed.data;
         const deps = {
           GradeLevelService: GradeLevelService({ db: DatabaseContext }),
-        }
+        };
         const [result, total] = await Promise.all([
           deps.GradeLevelService.getAll({ pagination: { limit, page } }),
           deps.GradeLevelService.count(),
-        ])
+        ]);
         if (!result)
-          throw NewError("Failed to fetch GradeLevel", "FETCH_FAILED", 500)
+          throw NewError("Failed to fetch GradeLevel", "FETCH_FAILED", 500);
         const parse = ResponseSchema.safeParse({
           data: result,
           message: "GradeLevel fetched successfully",
@@ -49,59 +49,56 @@ export default (app: Elysia) =>
             page,
             total,
           },
-        })
-        if (!parse.success) {
+        });
+        if (!parse.success)
           throw NewError(
             `Failed to parse response object: ${JSON.stringify(parse.error)}`,
             "RESPONSE_PARSING_FAILED",
-            500,
-          )
-        }
-        set.status = 200
-        return parse.data
-      }
-      catch (error) {
-        console.error("Error fetching GradeLevelType:", error)
-        const err = ParseError(error)
+            500
+          );
+        set.status = 200;
+        return parse.data;
+      } catch (error) {
+        console.error("Error fetching GradeLevelType:", error);
+        const err = ParseError(error);
         const fail = FailResponseSchema.safeParse({
           code: err.code,
           message: err.message,
           status: err.status,
-        })
-        set.status = err.status
+        });
+        set.status = err.status;
         if (fail.success) {
-          return fail.data
-        }
-        else {
+          return fail.data;
+        } else {
           return {
             code: "RESPONSE_PARSING_FAILED",
             message: "Failed to parse error response",
             status: 500,
-          }
+          };
         }
       }
     },
     {
       detail: {
+        tags: ["GradeLevel"],
         responses: {
           200: {
+            description: "GradeLevel fetch success",
             content: {
               "application/json": {
                 schema: ResponseSchema,
               },
             },
-            description: "GradeLevel fetch success",
           },
           500: {
+            description: "GradeLevel fetch fail",
             content: {
               "application/json": {
                 schema: FailResponseSchema,
               },
             },
-            description: "GradeLevel fetch fail",
           },
         },
-        tags: ["GradeLevel"],
       },
-    },
-  )
+    }
+  );

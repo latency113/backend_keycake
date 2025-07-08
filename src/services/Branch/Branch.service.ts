@@ -161,7 +161,19 @@ export function BranchService({ db }: BranchDependencies) {
     async onUpdate(id: string, data: Prisma.BranchUpdateInput): Promise<Branch> {
       console.log(`[BranchService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const result = await db.branch.update({ data, where: { id } })
+        const cleanedData = Object.fromEntries(
+          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
+        );
+
+        if (Object.keys(cleanedData).length === 0) {
+          const branch = await db.branch.findUnique({ where: { id } });
+          if (!branch) {
+            throw new Error(`Record to update not found.`);
+          }
+          return branch;
+        }
+
+        const result = await db.branch.update({ data: cleanedData, where: { id } })
         console.log(`[BranchService] onUpdate completed for id: ${id}`)
         return result
       }
