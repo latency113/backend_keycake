@@ -32,6 +32,10 @@ export const OrderItemScalarFieldEnumSchema = z.enum(['id','order_id','product_i
 
 export const CakeCountScalarFieldEnumSchema = z.enum(['id','product_id','pound','quantity']);
 
+export const CakeRequestScalarFieldEnumSchema = z.enum(['id','requestDate','status','note','user_id','branch_id','createdAt','updatedAt']);
+
+export const CakeRequestItemsScalarFieldEnumSchema = z.enum(['id','request_id','product_id','quantity']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
@@ -49,6 +53,10 @@ export type CakePoundType = `${z.infer<typeof CakePoundSchema>}`
 export const GradeLevelTypeSchema = z.enum(['VOCATIONAL','HIGHER']);
 
 export type GradeLevelTypeType = `${z.infer<typeof GradeLevelTypeSchema>}`
+
+export const RequestStatusSchema = z.enum(['pending','approved','rejected']);
+
+export type RequestStatusType = `${z.infer<typeof RequestStatusSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -88,12 +96,14 @@ export type BranchOptionalDefaults = z.infer<typeof BranchOptionalDefaultsSchema
 
 export type BranchRelations = {
   rooms: RoomWithRelations[];
+  CakeRequest: CakeRequestWithRelations[];
 };
 
 export type BranchWithRelations = z.infer<typeof BranchSchema> & BranchRelations
 
 export const BranchWithRelationsSchema: z.ZodType<BranchWithRelations> = BranchSchema.merge(z.object({
   rooms: z.lazy(() => RoomWithRelationsSchema).array(),
+  CakeRequest: z.lazy(() => CakeRequestWithRelationsSchema).array(),
 }))
 
 // BRANCH OPTIONAL DEFAULTS RELATION SCHEMA
@@ -101,12 +111,14 @@ export const BranchWithRelationsSchema: z.ZodType<BranchWithRelations> = BranchS
 
 export type BranchOptionalDefaultsRelations = {
   rooms: RoomOptionalDefaultsWithRelations[];
+  CakeRequest: CakeRequestOptionalDefaultsWithRelations[];
 };
 
 export type BranchOptionalDefaultsWithRelations = z.infer<typeof BranchOptionalDefaultsSchema> & BranchOptionalDefaultsRelations
 
 export const BranchOptionalDefaultsWithRelationsSchema: z.ZodType<BranchOptionalDefaultsWithRelations> = BranchOptionalDefaultsSchema.merge(z.object({
   rooms: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema).array(),
+  CakeRequest: z.lazy(() => CakeRequestOptionalDefaultsWithRelationsSchema).array(),
 }))
 
 // BRANCH PARTIAL RELATION SCHEMA
@@ -114,33 +126,29 @@ export const BranchOptionalDefaultsWithRelationsSchema: z.ZodType<BranchOptional
 
 export type BranchPartialRelations = {
   rooms?: RoomPartialWithRelations[];
+  CakeRequest?: CakeRequestPartialWithRelations[];
 };
 
 export type BranchPartialWithRelations = z.infer<typeof BranchPartialSchema> & BranchPartialRelations
 
 export const BranchPartialWithRelationsSchema: z.ZodType<BranchPartialWithRelations> = BranchPartialSchema.merge(z.object({
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
+  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
 })).partial()
 
 export type BranchOptionalDefaultsWithPartialRelations = z.infer<typeof BranchOptionalDefaultsSchema> & BranchPartialRelations
 
 export const BranchOptionalDefaultsWithPartialRelationsSchema: z.ZodType<BranchOptionalDefaultsWithPartialRelations> = BranchOptionalDefaultsSchema.merge(z.object({
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
+  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
 }).partial())
 
 export type BranchWithPartialRelations = z.infer<typeof BranchSchema> & BranchPartialRelations
 
 export const BranchWithPartialRelationsSchema: z.ZodType<BranchWithPartialRelations> = BranchSchema.merge(z.object({
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
+  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
 }).partial())
-
-export type BranchWithDetails = z.infer<typeof BranchSchema> & {
-  gradeLevels: GradeLevelWithRoomCount[];
-};
-
-export const BranchWithDetailsSchema: z.ZodType<BranchWithDetails> = BranchSchema.merge(z.object({
-  gradeLevels: z.lazy(() => GradeLevelWithRoomCountSchema).array(),
-}));
 
 /////////////////////////////////////////
 // ROOM SCHEMA
@@ -327,18 +335,6 @@ export const GradeLevelWithPartialRelationsSchema: z.ZodType<GradeLevelWithParti
   rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
 }).partial())
 
-export type GradeLevelWithRoomCount = z.infer<typeof GradeLevelSchema> & {
-  _count: {
-    rooms: number;
-  };
-};
-
-export const GradeLevelWithRoomCountSchema: z.ZodType<GradeLevelWithRoomCount> = GradeLevelSchema.merge(z.object({
-  _count: z.object({
-    rooms: z.number(),
-  }),
-}));
-
 /////////////////////////////////////////
 // USER SCHEMA
 /////////////////////////////////////////
@@ -376,6 +372,57 @@ export const UserOptionalDefaultsSchema = UserSchema.merge(z.object({
 }))
 
 export type UserOptionalDefaults = z.infer<typeof UserOptionalDefaultsSchema>
+
+// USER RELATION SCHEMA
+//------------------------------------------------------
+
+export type UserRelations = {
+  CakeRequest: CakeRequestWithRelations[];
+};
+
+export type UserWithRelations = z.infer<typeof UserSchema> & UserRelations
+
+export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.merge(z.object({
+  CakeRequest: z.lazy(() => CakeRequestWithRelationsSchema).array(),
+}))
+
+// USER OPTIONAL DEFAULTS RELATION SCHEMA
+//------------------------------------------------------
+
+export type UserOptionalDefaultsRelations = {
+  CakeRequest: CakeRequestOptionalDefaultsWithRelations[];
+};
+
+export type UserOptionalDefaultsWithRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserOptionalDefaultsRelations
+
+export const UserOptionalDefaultsWithRelationsSchema: z.ZodType<UserOptionalDefaultsWithRelations> = UserOptionalDefaultsSchema.merge(z.object({
+  CakeRequest: z.lazy(() => CakeRequestOptionalDefaultsWithRelationsSchema).array(),
+}))
+
+// USER PARTIAL RELATION SCHEMA
+//------------------------------------------------------
+
+export type UserPartialRelations = {
+  CakeRequest?: CakeRequestPartialWithRelations[];
+};
+
+export type UserPartialWithRelations = z.infer<typeof UserPartialSchema> & UserPartialRelations
+
+export const UserPartialWithRelationsSchema: z.ZodType<UserPartialWithRelations> = UserPartialSchema.merge(z.object({
+  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
+})).partial()
+
+export type UserOptionalDefaultsWithPartialRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserPartialRelations
+
+export const UserOptionalDefaultsWithPartialRelationsSchema: z.ZodType<UserOptionalDefaultsWithPartialRelations> = UserOptionalDefaultsSchema.merge(z.object({
+  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
+}).partial())
+
+export type UserWithPartialRelations = z.infer<typeof UserSchema> & UserPartialRelations
+
+export const UserWithPartialRelationsSchema: z.ZodType<UserWithPartialRelations> = UserSchema.merge(z.object({
+  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
+}).partial())
 
 /////////////////////////////////////////
 // TEAM SCHEMA
@@ -502,6 +549,7 @@ export type ProductRelations = {
   unit: UnitWithRelations;
   orderItems: OrderItemWithRelations[];
   cakeCounts: CakeCountWithRelations[];
+  items: CakeRequestItemsWithRelations[];
 };
 
 export type ProductWithRelations = z.infer<typeof ProductSchema> & ProductRelations
@@ -510,6 +558,7 @@ export const ProductWithRelationsSchema: z.ZodType<ProductWithRelations> = Produ
   unit: z.lazy(() => UnitWithRelationsSchema),
   orderItems: z.lazy(() => OrderItemWithRelationsSchema).array(),
   cakeCounts: z.lazy(() => CakeCountWithRelationsSchema).array(),
+  items: z.lazy(() => CakeRequestItemsWithRelationsSchema).array(),
 }))
 
 // PRODUCT OPTIONAL DEFAULTS RELATION SCHEMA
@@ -519,6 +568,7 @@ export type ProductOptionalDefaultsRelations = {
   unit: UnitOptionalDefaultsWithRelations;
   orderItems: OrderItemOptionalDefaultsWithRelations[];
   cakeCounts: CakeCountOptionalDefaultsWithRelations[];
+  items: CakeRequestItemsOptionalDefaultsWithRelations[];
 };
 
 export type ProductOptionalDefaultsWithRelations = z.infer<typeof ProductOptionalDefaultsSchema> & ProductOptionalDefaultsRelations
@@ -527,6 +577,7 @@ export const ProductOptionalDefaultsWithRelationsSchema: z.ZodType<ProductOption
   unit: z.lazy(() => UnitOptionalDefaultsWithRelationsSchema),
   orderItems: z.lazy(() => OrderItemOptionalDefaultsWithRelationsSchema).array(),
   cakeCounts: z.lazy(() => CakeCountOptionalDefaultsWithRelationsSchema).array(),
+  items: z.lazy(() => CakeRequestItemsOptionalDefaultsWithRelationsSchema).array(),
 }))
 
 // PRODUCT PARTIAL RELATION SCHEMA
@@ -536,6 +587,7 @@ export type ProductPartialRelations = {
   unit?: UnitPartialWithRelations;
   orderItems?: OrderItemPartialWithRelations[];
   cakeCounts?: CakeCountPartialWithRelations[];
+  items?: CakeRequestItemsPartialWithRelations[];
 };
 
 export type ProductPartialWithRelations = z.infer<typeof ProductPartialSchema> & ProductPartialRelations
@@ -544,6 +596,7 @@ export const ProductPartialWithRelationsSchema: z.ZodType<ProductPartialWithRela
   unit: z.lazy(() => UnitPartialWithRelationsSchema),
   orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
   cakeCounts: z.lazy(() => CakeCountPartialWithRelationsSchema).array(),
+  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
 })).partial()
 
 export type ProductOptionalDefaultsWithPartialRelations = z.infer<typeof ProductOptionalDefaultsSchema> & ProductPartialRelations
@@ -552,6 +605,7 @@ export const ProductOptionalDefaultsWithPartialRelationsSchema: z.ZodType<Produc
   unit: z.lazy(() => UnitPartialWithRelationsSchema),
   orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
   cakeCounts: z.lazy(() => CakeCountPartialWithRelationsSchema).array(),
+  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
 }).partial())
 
 export type ProductWithPartialRelations = z.infer<typeof ProductSchema> & ProductPartialRelations
@@ -560,6 +614,7 @@ export const ProductWithPartialRelationsSchema: z.ZodType<ProductWithPartialRela
   unit: z.lazy(() => UnitPartialWithRelationsSchema),
   orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
   cakeCounts: z.lazy(() => CakeCountPartialWithRelationsSchema).array(),
+  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
 }).partial())
 
 /////////////////////////////////////////
@@ -684,67 +739,67 @@ export type OrderOptionalDefaults = z.infer<typeof OrderOptionalDefaultsSchema>
 //------------------------------------------------------
 
 export type OrderRelations = {
+  orderItems: OrderItemWithRelations[];
   team?: TeamWithRelations | null;
   room: RoomWithRelations;
-  orderItems: OrderItemWithRelations[];
 };
 
 export type OrderWithRelations = z.infer<typeof OrderSchema> & OrderRelations
 
 export const OrderWithRelationsSchema: z.ZodType<OrderWithRelations> = OrderSchema.merge(z.object({
+  orderItems: z.lazy(() => OrderItemWithRelationsSchema).array(),
   team: z.lazy(() => TeamWithRelationsSchema).nullish(),
   room: z.lazy(() => RoomWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemWithRelationsSchema).array(),
 }))
 
 // ORDER OPTIONAL DEFAULTS RELATION SCHEMA
 //------------------------------------------------------
 
 export type OrderOptionalDefaultsRelations = {
+  orderItems: OrderItemOptionalDefaultsWithRelations[];
   team?: TeamOptionalDefaultsWithRelations | null;
   room: RoomOptionalDefaultsWithRelations;
-  orderItems: OrderItemOptionalDefaultsWithRelations[];
 };
 
 export type OrderOptionalDefaultsWithRelations = z.infer<typeof OrderOptionalDefaultsSchema> & OrderOptionalDefaultsRelations
 
 export const OrderOptionalDefaultsWithRelationsSchema: z.ZodType<OrderOptionalDefaultsWithRelations> = OrderOptionalDefaultsSchema.merge(z.object({
+  orderItems: z.lazy(() => OrderItemOptionalDefaultsWithRelationsSchema).array(),
   team: z.lazy(() => TeamOptionalDefaultsWithRelationsSchema).nullish(),
   room: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemOptionalDefaultsWithRelationsSchema).array(),
 }))
 
 // ORDER PARTIAL RELATION SCHEMA
 //------------------------------------------------------
 
 export type OrderPartialRelations = {
+  orderItems?: OrderItemPartialWithRelations[];
   team?: TeamPartialWithRelations | null;
   room?: RoomPartialWithRelations;
-  orderItems?: OrderItemPartialWithRelations[];
 };
 
 export type OrderPartialWithRelations = z.infer<typeof OrderPartialSchema> & OrderPartialRelations
 
 export const OrderPartialWithRelationsSchema: z.ZodType<OrderPartialWithRelations> = OrderPartialSchema.merge(z.object({
+  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
   team: z.lazy(() => TeamPartialWithRelationsSchema).nullish(),
   room: z.lazy(() => RoomPartialWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
 })).partial()
 
 export type OrderOptionalDefaultsWithPartialRelations = z.infer<typeof OrderOptionalDefaultsSchema> & OrderPartialRelations
 
 export const OrderOptionalDefaultsWithPartialRelationsSchema: z.ZodType<OrderOptionalDefaultsWithPartialRelations> = OrderOptionalDefaultsSchema.merge(z.object({
+  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
   team: z.lazy(() => TeamPartialWithRelationsSchema).nullish(),
   room: z.lazy(() => RoomPartialWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
 }).partial())
 
 export type OrderWithPartialRelations = z.infer<typeof OrderSchema> & OrderPartialRelations
 
 export const OrderWithPartialRelationsSchema: z.ZodType<OrderWithPartialRelations> = OrderSchema.merge(z.object({
+  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
   team: z.lazy(() => TeamPartialWithRelationsSchema).nullish(),
   room: z.lazy(() => RoomPartialWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
 }).partial())
 
 /////////////////////////////////////////
@@ -924,6 +979,199 @@ export const CakeCountWithPartialRelationsSchema: z.ZodType<CakeCountWithPartial
 }).partial())
 
 /////////////////////////////////////////
+// CAKE REQUEST SCHEMA
+/////////////////////////////////////////
+
+export const CakeRequestSchema = z.object({
+  status: RequestStatusSchema,
+  id: z.string().cuid(),
+  requestDate: z.coerce.date(),
+  note: z.string().nullish(),
+  user_id: z.string(),
+  branch_id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type CakeRequest = z.infer<typeof CakeRequestSchema>
+
+/////////////////////////////////////////
+// CAKE REQUEST PARTIAL SCHEMA
+/////////////////////////////////////////
+
+export const CakeRequestPartialSchema = CakeRequestSchema.partial()
+
+export type CakeRequestPartial = z.infer<typeof CakeRequestPartialSchema>
+
+// CAKE REQUEST OPTIONAL DEFAULTS SCHEMA
+//------------------------------------------------------
+
+export const CakeRequestOptionalDefaultsSchema = CakeRequestSchema.merge(z.object({
+  status: RequestStatusSchema.optional(),
+  id: z.string().cuid().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+}))
+
+export type CakeRequestOptionalDefaults = z.infer<typeof CakeRequestOptionalDefaultsSchema>
+
+// CAKE REQUEST RELATION SCHEMA
+//------------------------------------------------------
+
+export type CakeRequestRelations = {
+  branch: BranchWithRelations;
+  user: UserWithRelations;
+  items: CakeRequestItemsWithRelations[];
+};
+
+export type CakeRequestWithRelations = z.infer<typeof CakeRequestSchema> & CakeRequestRelations
+
+export const CakeRequestWithRelationsSchema: z.ZodType<CakeRequestWithRelations> = CakeRequestSchema.merge(z.object({
+  branch: z.lazy(() => BranchWithRelationsSchema),
+  user: z.lazy(() => UserWithRelationsSchema),
+  items: z.lazy(() => CakeRequestItemsWithRelationsSchema).array(),
+}))
+
+// CAKE REQUEST OPTIONAL DEFAULTS RELATION SCHEMA
+//------------------------------------------------------
+
+export type CakeRequestOptionalDefaultsRelations = {
+  branch: BranchOptionalDefaultsWithRelations;
+  user: UserOptionalDefaultsWithRelations;
+  items: CakeRequestItemsOptionalDefaultsWithRelations[];
+};
+
+export type CakeRequestOptionalDefaultsWithRelations = z.infer<typeof CakeRequestOptionalDefaultsSchema> & CakeRequestOptionalDefaultsRelations
+
+export const CakeRequestOptionalDefaultsWithRelationsSchema: z.ZodType<CakeRequestOptionalDefaultsWithRelations> = CakeRequestOptionalDefaultsSchema.merge(z.object({
+  branch: z.lazy(() => BranchOptionalDefaultsWithRelationsSchema),
+  user: z.lazy(() => UserOptionalDefaultsWithRelationsSchema),
+  items: z.lazy(() => CakeRequestItemsOptionalDefaultsWithRelationsSchema).array(),
+}))
+
+// CAKE REQUEST PARTIAL RELATION SCHEMA
+//------------------------------------------------------
+
+export type CakeRequestPartialRelations = {
+  branch?: BranchPartialWithRelations;
+  user?: UserPartialWithRelations;
+  items?: CakeRequestItemsPartialWithRelations[];
+};
+
+export type CakeRequestPartialWithRelations = z.infer<typeof CakeRequestPartialSchema> & CakeRequestPartialRelations
+
+export const CakeRequestPartialWithRelationsSchema: z.ZodType<CakeRequestPartialWithRelations> = CakeRequestPartialSchema.merge(z.object({
+  branch: z.lazy(() => BranchPartialWithRelationsSchema),
+  user: z.lazy(() => UserPartialWithRelationsSchema),
+  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
+})).partial()
+
+export type CakeRequestOptionalDefaultsWithPartialRelations = z.infer<typeof CakeRequestOptionalDefaultsSchema> & CakeRequestPartialRelations
+
+export const CakeRequestOptionalDefaultsWithPartialRelationsSchema: z.ZodType<CakeRequestOptionalDefaultsWithPartialRelations> = CakeRequestOptionalDefaultsSchema.merge(z.object({
+  branch: z.lazy(() => BranchPartialWithRelationsSchema),
+  user: z.lazy(() => UserPartialWithRelationsSchema),
+  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
+}).partial())
+
+export type CakeRequestWithPartialRelations = z.infer<typeof CakeRequestSchema> & CakeRequestPartialRelations
+
+export const CakeRequestWithPartialRelationsSchema: z.ZodType<CakeRequestWithPartialRelations> = CakeRequestSchema.merge(z.object({
+  branch: z.lazy(() => BranchPartialWithRelationsSchema),
+  user: z.lazy(() => UserPartialWithRelationsSchema),
+  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
+}).partial())
+
+/////////////////////////////////////////
+// CAKE REQUEST ITEMS SCHEMA
+/////////////////////////////////////////
+
+export const CakeRequestItemsSchema = z.object({
+  id: z.string().cuid(),
+  request_id: z.string(),
+  product_id: z.string(),
+  quantity: z.number().int(),
+})
+
+export type CakeRequestItems = z.infer<typeof CakeRequestItemsSchema>
+
+/////////////////////////////////////////
+// CAKE REQUEST ITEMS PARTIAL SCHEMA
+/////////////////////////////////////////
+
+export const CakeRequestItemsPartialSchema = CakeRequestItemsSchema.partial()
+
+export type CakeRequestItemsPartial = z.infer<typeof CakeRequestItemsPartialSchema>
+
+// CAKE REQUEST ITEMS OPTIONAL DEFAULTS SCHEMA
+//------------------------------------------------------
+
+export const CakeRequestItemsOptionalDefaultsSchema = CakeRequestItemsSchema.merge(z.object({
+  id: z.string().cuid().optional(),
+}))
+
+export type CakeRequestItemsOptionalDefaults = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema>
+
+// CAKE REQUEST ITEMS RELATION SCHEMA
+//------------------------------------------------------
+
+export type CakeRequestItemsRelations = {
+  product: ProductWithRelations;
+  request: CakeRequestWithRelations;
+};
+
+export type CakeRequestItemsWithRelations = z.infer<typeof CakeRequestItemsSchema> & CakeRequestItemsRelations
+
+export const CakeRequestItemsWithRelationsSchema: z.ZodType<CakeRequestItemsWithRelations> = CakeRequestItemsSchema.merge(z.object({
+  product: z.lazy(() => ProductWithRelationsSchema),
+  request: z.lazy(() => CakeRequestWithRelationsSchema),
+}))
+
+// CAKE REQUEST ITEMS OPTIONAL DEFAULTS RELATION SCHEMA
+//------------------------------------------------------
+
+export type CakeRequestItemsOptionalDefaultsRelations = {
+  product: ProductOptionalDefaultsWithRelations;
+  request: CakeRequestOptionalDefaultsWithRelations;
+};
+
+export type CakeRequestItemsOptionalDefaultsWithRelations = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema> & CakeRequestItemsOptionalDefaultsRelations
+
+export const CakeRequestItemsOptionalDefaultsWithRelationsSchema: z.ZodType<CakeRequestItemsOptionalDefaultsWithRelations> = CakeRequestItemsOptionalDefaultsSchema.merge(z.object({
+  product: z.lazy(() => ProductOptionalDefaultsWithRelationsSchema),
+  request: z.lazy(() => CakeRequestOptionalDefaultsWithRelationsSchema),
+}))
+
+// CAKE REQUEST ITEMS PARTIAL RELATION SCHEMA
+//------------------------------------------------------
+
+export type CakeRequestItemsPartialRelations = {
+  product?: ProductPartialWithRelations;
+  request?: CakeRequestPartialWithRelations;
+};
+
+export type CakeRequestItemsPartialWithRelations = z.infer<typeof CakeRequestItemsPartialSchema> & CakeRequestItemsPartialRelations
+
+export const CakeRequestItemsPartialWithRelationsSchema: z.ZodType<CakeRequestItemsPartialWithRelations> = CakeRequestItemsPartialSchema.merge(z.object({
+  product: z.lazy(() => ProductPartialWithRelationsSchema),
+  request: z.lazy(() => CakeRequestPartialWithRelationsSchema),
+})).partial()
+
+export type CakeRequestItemsOptionalDefaultsWithPartialRelations = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema> & CakeRequestItemsPartialRelations
+
+export const CakeRequestItemsOptionalDefaultsWithPartialRelationsSchema: z.ZodType<CakeRequestItemsOptionalDefaultsWithPartialRelations> = CakeRequestItemsOptionalDefaultsSchema.merge(z.object({
+  product: z.lazy(() => ProductPartialWithRelationsSchema),
+  request: z.lazy(() => CakeRequestPartialWithRelationsSchema),
+}).partial())
+
+export type CakeRequestItemsWithPartialRelations = z.infer<typeof CakeRequestItemsSchema> & CakeRequestItemsPartialRelations
+
+export const CakeRequestItemsWithPartialRelationsSchema: z.ZodType<CakeRequestItemsWithPartialRelations> = CakeRequestItemsSchema.merge(z.object({
+  product: z.lazy(() => ProductPartialWithRelationsSchema),
+  request: z.lazy(() => CakeRequestPartialWithRelationsSchema),
+}).partial())
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -932,6 +1180,7 @@ export const CakeCountWithPartialRelationsSchema: z.ZodType<CakeCountWithPartial
 
 export const BranchIncludeSchema: z.ZodType<Prisma.BranchInclude> = z.object({
   rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => BranchCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -946,6 +1195,7 @@ export const BranchCountOutputTypeArgsSchema: z.ZodType<Prisma.BranchCountOutput
 
 export const BranchCountOutputTypeSelectSchema: z.ZodType<Prisma.BranchCountOutputTypeSelect> = z.object({
   rooms: z.boolean().optional(),
+  CakeRequest: z.boolean().optional(),
 }).strict();
 
 export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
@@ -953,6 +1203,7 @@ export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
   name: z.boolean().optional(),
   group_number: z.boolean().optional(),
   rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => BranchCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1025,6 +1276,24 @@ export const GradeLevelSelectSchema: z.ZodType<Prisma.GradeLevelSelect> = z.obje
 // USER
 //------------------------------------------------------
 
+export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+export const UserArgsSchema: z.ZodType<Prisma.UserDefaultArgs> = z.object({
+  select: z.lazy(() => UserSelectSchema).optional(),
+  include: z.lazy(() => UserIncludeSchema).optional(),
+}).strict();
+
+export const UserCountOutputTypeArgsSchema: z.ZodType<Prisma.UserCountOutputTypeDefaultArgs> = z.object({
+  select: z.lazy(() => UserCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTypeSelect> = z.object({
+  CakeRequest: z.boolean().optional(),
+}).strict();
+
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   id: z.boolean().optional(),
   fname: z.boolean().optional(),
@@ -1035,6 +1304,8 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   role: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 // TEAM
@@ -1075,6 +1346,7 @@ export const ProductIncludeSchema: z.ZodType<Prisma.ProductInclude> = z.object({
   unit: z.union([z.boolean(),z.lazy(() => UnitArgsSchema)]).optional(),
   orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
   cakeCounts: z.union([z.boolean(),z.lazy(() => CakeCountFindManyArgsSchema)]).optional(),
+  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1090,6 +1362,7 @@ export const ProductCountOutputTypeArgsSchema: z.ZodType<Prisma.ProductCountOutp
 export const ProductCountOutputTypeSelectSchema: z.ZodType<Prisma.ProductCountOutputTypeSelect> = z.object({
   orderItems: z.boolean().optional(),
   cakeCounts: z.boolean().optional(),
+  items: z.boolean().optional(),
 }).strict();
 
 export const ProductSelectSchema: z.ZodType<Prisma.ProductSelect> = z.object({
@@ -1100,6 +1373,7 @@ export const ProductSelectSchema: z.ZodType<Prisma.ProductSelect> = z.object({
   unit: z.union([z.boolean(),z.lazy(() => UnitArgsSchema)]).optional(),
   orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
   cakeCounts: z.union([z.boolean(),z.lazy(() => CakeCountFindManyArgsSchema)]).optional(),
+  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1136,9 +1410,9 @@ export const UnitSelectSchema: z.ZodType<Prisma.UnitSelect> = z.object({
 //------------------------------------------------------
 
 export const OrderIncludeSchema: z.ZodType<Prisma.OrderInclude> = z.object({
+  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
   room: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => OrderCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1166,9 +1440,9 @@ export const OrderSelectSchema: z.ZodType<Prisma.OrderSelect> = z.object({
   number: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
+  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
   room: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => OrderCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1218,6 +1492,66 @@ export const CakeCountSelectSchema: z.ZodType<Prisma.CakeCountSelect> = z.object
   product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
 }).strict()
 
+// CAKE REQUEST
+//------------------------------------------------------
+
+export const CakeRequestIncludeSchema: z.ZodType<Prisma.CakeRequestInclude> = z.object({
+  branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => CakeRequestCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+export const CakeRequestArgsSchema: z.ZodType<Prisma.CakeRequestDefaultArgs> = z.object({
+  select: z.lazy(() => CakeRequestSelectSchema).optional(),
+  include: z.lazy(() => CakeRequestIncludeSchema).optional(),
+}).strict();
+
+export const CakeRequestCountOutputTypeArgsSchema: z.ZodType<Prisma.CakeRequestCountOutputTypeDefaultArgs> = z.object({
+  select: z.lazy(() => CakeRequestCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const CakeRequestCountOutputTypeSelectSchema: z.ZodType<Prisma.CakeRequestCountOutputTypeSelect> = z.object({
+  items: z.boolean().optional(),
+}).strict();
+
+export const CakeRequestSelectSchema: z.ZodType<Prisma.CakeRequestSelect> = z.object({
+  id: z.boolean().optional(),
+  requestDate: z.boolean().optional(),
+  status: z.boolean().optional(),
+  note: z.boolean().optional(),
+  user_id: z.boolean().optional(),
+  branch_id: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => CakeRequestCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+// CAKE REQUEST ITEMS
+//------------------------------------------------------
+
+export const CakeRequestItemsIncludeSchema: z.ZodType<Prisma.CakeRequestItemsInclude> = z.object({
+  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
+  request: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
+}).strict()
+
+export const CakeRequestItemsArgsSchema: z.ZodType<Prisma.CakeRequestItemsDefaultArgs> = z.object({
+  select: z.lazy(() => CakeRequestItemsSelectSchema).optional(),
+  include: z.lazy(() => CakeRequestItemsIncludeSchema).optional(),
+}).strict();
+
+export const CakeRequestItemsSelectSchema: z.ZodType<Prisma.CakeRequestItemsSelect> = z.object({
+  id: z.boolean().optional(),
+  request_id: z.boolean().optional(),
+  product_id: z.boolean().optional(),
+  quantity: z.boolean().optional(),
+  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
+  request: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
+}).strict()
+
 
 /////////////////////////////////////////
 // INPUT TYPES
@@ -1230,14 +1564,16 @@ export const BranchWhereInputSchema: z.ZodType<Prisma.BranchWhereInput> = z.obje
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   group_number: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  rooms: z.lazy(() => RoomListRelationFilterSchema).optional()
+  rooms: z.lazy(() => RoomListRelationFilterSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestListRelationFilterSchema).optional()
 }).strict();
 
 export const BranchOrderByWithRelationInputSchema: z.ZodType<Prisma.BranchOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   group_number: z.lazy(() => SortOrderSchema).optional(),
-  rooms: z.lazy(() => RoomOrderByRelationAggregateInputSchema).optional()
+  rooms: z.lazy(() => RoomOrderByRelationAggregateInputSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInput> = z.union([
@@ -1259,7 +1595,8 @@ export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInp
   OR: z.lazy(() => BranchWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => BranchWhereInputSchema),z.lazy(() => BranchWhereInputSchema).array() ]).optional(),
   group_number: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  rooms: z.lazy(() => RoomListRelationFilterSchema).optional()
+  rooms: z.lazy(() => RoomListRelationFilterSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestListRelationFilterSchema).optional()
 }).strict());
 
 export const BranchOrderByWithAggregationInputSchema: z.ZodType<Prisma.BranchOrderByWithAggregationInput> = z.object({
@@ -1415,6 +1752,7 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   role: z.union([ z.lazy(() => EnumRoleFilterSchema),z.lazy(() => RoleSchema) ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  CakeRequest: z.lazy(() => CakeRequestListRelationFilterSchema).optional()
 }).strict();
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
@@ -1426,7 +1764,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  updatedAt: z.lazy(() => SortOrderSchema).optional()
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
@@ -1454,6 +1793,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   role: z.union([ z.lazy(() => EnumRoleFilterSchema),z.lazy(() => RoleSchema) ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  CakeRequest: z.lazy(() => CakeRequestListRelationFilterSchema).optional()
 }).strict());
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
@@ -1547,7 +1887,8 @@ export const ProductWhereInputSchema: z.ZodType<Prisma.ProductWhereInput> = z.ob
   unit_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   unit: z.union([ z.lazy(() => UnitScalarRelationFilterSchema),z.lazy(() => UnitWhereInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountListRelationFilterSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountListRelationFilterSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsListRelationFilterSchema).optional()
 }).strict();
 
 export const ProductOrderByWithRelationInputSchema: z.ZodType<Prisma.ProductOrderByWithRelationInput> = z.object({
@@ -1557,7 +1898,8 @@ export const ProductOrderByWithRelationInputSchema: z.ZodType<Prisma.ProductOrde
   unit_id: z.lazy(() => SortOrderSchema).optional(),
   unit: z.lazy(() => UnitOrderByWithRelationInputSchema).optional(),
   orderItems: z.lazy(() => OrderItemOrderByRelationAggregateInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountOrderByRelationAggregateInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountOrderByRelationAggregateInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const ProductWhereUniqueInputSchema: z.ZodType<Prisma.ProductWhereUniqueInput> = z.object({
@@ -1573,7 +1915,8 @@ export const ProductWhereUniqueInputSchema: z.ZodType<Prisma.ProductWhereUniqueI
   unit_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   unit: z.union([ z.lazy(() => UnitScalarRelationFilterSchema),z.lazy(() => UnitWhereInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountListRelationFilterSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountListRelationFilterSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsListRelationFilterSchema).optional()
 }).strict());
 
 export const ProductOrderByWithAggregationInputSchema: z.ZodType<Prisma.ProductOrderByWithAggregationInput> = z.object({
@@ -1660,9 +2003,9 @@ export const OrderWhereInputSchema: z.ZodType<Prisma.OrderWhereInput> = z.object
   number: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional(),
   team: z.union([ z.lazy(() => TeamNullableScalarRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   room: z.union([ z.lazy(() => RoomScalarRelationFilterSchema),z.lazy(() => RoomWhereInputSchema) ]).optional(),
-  orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional()
 }).strict();
 
 export const OrderOrderByWithRelationInputSchema: z.ZodType<Prisma.OrderOrderByWithRelationInput> = z.object({
@@ -1676,9 +2019,9 @@ export const OrderOrderByWithRelationInputSchema: z.ZodType<Prisma.OrderOrderByW
   number: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  orderItems: z.lazy(() => OrderItemOrderByRelationAggregateInputSchema).optional(),
   team: z.lazy(() => TeamOrderByWithRelationInputSchema).optional(),
-  room: z.lazy(() => RoomOrderByWithRelationInputSchema).optional(),
-  orderItems: z.lazy(() => OrderItemOrderByRelationAggregateInputSchema).optional()
+  room: z.lazy(() => RoomOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const OrderWhereUniqueInputSchema: z.ZodType<Prisma.OrderWhereUniqueInput> = z.object({
@@ -1698,9 +2041,9 @@ export const OrderWhereUniqueInputSchema: z.ZodType<Prisma.OrderWhereUniqueInput
   number: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional(),
   team: z.union([ z.lazy(() => TeamNullableScalarRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   room: z.union([ z.lazy(() => RoomScalarRelationFilterSchema),z.lazy(() => RoomWhereInputSchema) ]).optional(),
-  orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional()
 }).strict());
 
 export const OrderOrderByWithAggregationInputSchema: z.ZodType<Prisma.OrderOrderByWithAggregationInput> = z.object({
@@ -1870,32 +2213,173 @@ export const CakeCountScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Cak
   quantity: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
+export const CakeRequestWhereInputSchema: z.ZodType<Prisma.CakeRequestWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CakeRequestWhereInputSchema),z.lazy(() => CakeRequestWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestWhereInputSchema),z.lazy(() => CakeRequestWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  requestDate: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  status: z.union([ z.lazy(() => EnumRequestStatusFilterSchema),z.lazy(() => RequestStatusSchema) ]).optional(),
+  note: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  user_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  branch: z.union([ z.lazy(() => BranchScalarRelationFilterSchema),z.lazy(() => BranchWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  items: z.lazy(() => CakeRequestItemsListRelationFilterSchema).optional()
+}).strict();
+
+export const CakeRequestOrderByWithRelationInputSchema: z.ZodType<Prisma.CakeRequestOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  requestDate: z.lazy(() => SortOrderSchema).optional(),
+  status: z.lazy(() => SortOrderSchema).optional(),
+  note: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  branch: z.lazy(() => BranchOrderByWithRelationInputSchema).optional(),
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsOrderByRelationAggregateInputSchema).optional()
+}).strict();
+
+export const CakeRequestWhereUniqueInputSchema: z.ZodType<Prisma.CakeRequestWhereUniqueInput> = z.object({
+  id: z.string().cuid()
+})
+.and(z.object({
+  id: z.string().cuid().optional(),
+  AND: z.union([ z.lazy(() => CakeRequestWhereInputSchema),z.lazy(() => CakeRequestWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestWhereInputSchema),z.lazy(() => CakeRequestWhereInputSchema).array() ]).optional(),
+  requestDate: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  status: z.union([ z.lazy(() => EnumRequestStatusFilterSchema),z.lazy(() => RequestStatusSchema) ]).optional(),
+  note: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  user_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  branch: z.union([ z.lazy(() => BranchScalarRelationFilterSchema),z.lazy(() => BranchWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  items: z.lazy(() => CakeRequestItemsListRelationFilterSchema).optional()
+}).strict());
+
+export const CakeRequestOrderByWithAggregationInputSchema: z.ZodType<Prisma.CakeRequestOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  requestDate: z.lazy(() => SortOrderSchema).optional(),
+  status: z.lazy(() => SortOrderSchema).optional(),
+  note: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => CakeRequestCountOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => CakeRequestMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => CakeRequestMinOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const CakeRequestScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CakeRequestScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => CakeRequestScalarWhereWithAggregatesInputSchema),z.lazy(() => CakeRequestScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestScalarWhereWithAggregatesInputSchema),z.lazy(() => CakeRequestScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  requestDate: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  status: z.union([ z.lazy(() => EnumRequestStatusWithAggregatesFilterSchema),z.lazy(() => RequestStatusSchema) ]).optional(),
+  note: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  user_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  branch_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+}).strict();
+
+export const CakeRequestItemsWhereInputSchema: z.ZodType<Prisma.CakeRequestItemsWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CakeRequestItemsWhereInputSchema),z.lazy(() => CakeRequestItemsWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestItemsWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestItemsWhereInputSchema),z.lazy(() => CakeRequestItemsWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  request_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  product_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  quantity: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  product: z.union([ z.lazy(() => ProductScalarRelationFilterSchema),z.lazy(() => ProductWhereInputSchema) ]).optional(),
+  request: z.union([ z.lazy(() => CakeRequestScalarRelationFilterSchema),z.lazy(() => CakeRequestWhereInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsOrderByWithRelationInputSchema: z.ZodType<Prisma.CakeRequestItemsOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  request_id: z.lazy(() => SortOrderSchema).optional(),
+  product_id: z.lazy(() => SortOrderSchema).optional(),
+  quantity: z.lazy(() => SortOrderSchema).optional(),
+  product: z.lazy(() => ProductOrderByWithRelationInputSchema).optional(),
+  request: z.lazy(() => CakeRequestOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsWhereUniqueInputSchema: z.ZodType<Prisma.CakeRequestItemsWhereUniqueInput> = z.object({
+  id: z.string().cuid()
+})
+.and(z.object({
+  id: z.string().cuid().optional(),
+  AND: z.union([ z.lazy(() => CakeRequestItemsWhereInputSchema),z.lazy(() => CakeRequestItemsWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestItemsWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestItemsWhereInputSchema),z.lazy(() => CakeRequestItemsWhereInputSchema).array() ]).optional(),
+  request_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  product_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  quantity: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  product: z.union([ z.lazy(() => ProductScalarRelationFilterSchema),z.lazy(() => ProductWhereInputSchema) ]).optional(),
+  request: z.union([ z.lazy(() => CakeRequestScalarRelationFilterSchema),z.lazy(() => CakeRequestWhereInputSchema) ]).optional(),
+}).strict());
+
+export const CakeRequestItemsOrderByWithAggregationInputSchema: z.ZodType<Prisma.CakeRequestItemsOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  request_id: z.lazy(() => SortOrderSchema).optional(),
+  product_id: z.lazy(() => SortOrderSchema).optional(),
+  quantity: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => CakeRequestItemsCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => CakeRequestItemsAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => CakeRequestItemsMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => CakeRequestItemsMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => CakeRequestItemsSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CakeRequestItemsScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => CakeRequestItemsScalarWhereWithAggregatesInputSchema),z.lazy(() => CakeRequestItemsScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestItemsScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestItemsScalarWhereWithAggregatesInputSchema),z.lazy(() => CakeRequestItemsScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  request_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  product_id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  quantity: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
 export const BranchCreateInputSchema: z.ZodType<Prisma.BranchCreateInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   group_number: z.string(),
-  rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional()
+  rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedCreateInputSchema: z.ZodType<Prisma.BranchUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   group_number: z.string(),
-  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
+  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUpdateInputSchema: z.ZodType<Prisma.BranchUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional()
+  rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedUpdateInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
+  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchCreateManyInputSchema: z.ZodType<Prisma.BranchCreateManyInput> = z.object({
@@ -2026,7 +2510,8 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   email: z.string().optional().nullable(),
   role: z.lazy(() => RoleSchema).optional(),
   createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
+  updatedAt: z.coerce.date().optional(),
+  CakeRequest: z.lazy(() => CakeRequestCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
@@ -2038,7 +2523,8 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   email: z.string().optional().nullable(),
   role: z.lazy(() => RoleSchema).optional(),
   createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
+  updatedAt: z.coerce.date().optional(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object({
@@ -2051,6 +2537,7 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
@@ -2063,6 +2550,7 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = z.object({
@@ -2152,7 +2640,8 @@ export const ProductCreateInputSchema: z.ZodType<Prisma.ProductCreateInput> = z.
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
   orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutProductInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedCreateInputSchema: z.ZodType<Prisma.ProductUncheckedCreateInput> = z.object({
@@ -2161,7 +2650,8 @@ export const ProductUncheckedCreateInputSchema: z.ZodType<Prisma.ProductUnchecke
   price: z.number(),
   unit_id: z.string(),
   orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductUpdateInputSchema: z.ZodType<Prisma.ProductUpdateInput> = z.object({
@@ -2170,7 +2660,8 @@ export const ProductUpdateInputSchema: z.ZodType<Prisma.ProductUpdateInput> = z.
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedUpdateInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateInput> = z.object({
@@ -2179,7 +2670,8 @@ export const ProductUncheckedUpdateInputSchema: z.ZodType<Prisma.ProductUnchecke
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductCreateManyInputSchema: z.ZodType<Prisma.ProductCreateManyInput> = z.object({
@@ -2257,9 +2749,9 @@ export const OrderCreateInputSchema: z.ZodType<Prisma.OrderCreateInput> = z.obje
   number: z.number().int(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutOrdersInputSchema).optional(),
-  room: z.lazy(() => RoomCreateNestedOneWithoutOrdersInputSchema),
-  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional()
+  room: z.lazy(() => RoomCreateNestedOneWithoutOrdersInputSchema)
 }).strict();
 
 export const OrderUncheckedCreateInputSchema: z.ZodType<Prisma.OrderUncheckedCreateInput> = z.object({
@@ -2285,9 +2777,9 @@ export const OrderUpdateInputSchema: z.ZodType<Prisma.OrderUpdateInput> = z.obje
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutOrdersNestedInputSchema).optional(),
-  room: z.lazy(() => RoomUpdateOneRequiredWithoutOrdersNestedInputSchema).optional(),
-  orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional()
+  room: z.lazy(() => RoomUpdateOneRequiredWithoutOrdersNestedInputSchema).optional()
 }).strict();
 
 export const OrderUncheckedUpdateInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateInput> = z.object({
@@ -2464,6 +2956,132 @@ export const CakeCountUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeCount
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const CakeRequestCreateInputSchema: z.ZodType<Prisma.CakeRequestCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  branch: z.lazy(() => BranchCreateNestedOneWithoutCakeRequestInputSchema),
+  user: z.lazy(() => UserCreateNestedOneWithoutCakeRequestInputSchema),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutRequestInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedCreateInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  user_id: z.string(),
+  branch_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutRequestInputSchema).optional()
+}).strict();
+
+export const CakeRequestUpdateInputSchema: z.ZodType<Prisma.CakeRequestUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  branch: z.lazy(() => BranchUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedUpdateInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestCreateManyInputSchema: z.ZodType<Prisma.CakeRequestCreateManyInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  user_id: z.string(),
+  branch_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const CakeRequestUpdateManyMutationInputSchema: z.ZodType<Prisma.CakeRequestUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsCreateInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  quantity: z.number().int(),
+  product: z.lazy(() => ProductCreateNestedOneWithoutItemsInputSchema),
+  request: z.lazy(() => CakeRequestCreateNestedOneWithoutItemsInputSchema)
+}).strict();
+
+export const CakeRequestItemsUncheckedCreateInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  request_id: z.string(),
+  product_id: z.string(),
+  quantity: z.number().int()
+}).strict();
+
+export const CakeRequestItemsUpdateInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  product: z.lazy(() => ProductUpdateOneRequiredWithoutItemsNestedInputSchema).optional(),
+  request: z.lazy(() => CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsCreateManyInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyInput> = z.object({
+  id: z.string().cuid().optional(),
+  request_id: z.string(),
+  product_id: z.string(),
+  quantity: z.number().int()
+}).strict();
+
+export const CakeRequestItemsUpdateManyMutationInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
   equals: z.string().optional(),
   in: z.string().array().optional(),
@@ -2485,7 +3103,17 @@ export const RoomListRelationFilterSchema: z.ZodType<Prisma.RoomListRelationFilt
   none: z.lazy(() => RoomWhereInputSchema).optional()
 }).strict();
 
+export const CakeRequestListRelationFilterSchema: z.ZodType<Prisma.CakeRequestListRelationFilter> = z.object({
+  every: z.lazy(() => CakeRequestWhereInputSchema).optional(),
+  some: z.lazy(() => CakeRequestWhereInputSchema).optional(),
+  none: z.lazy(() => CakeRequestWhereInputSchema).optional()
+}).strict();
+
 export const RoomOrderByRelationAggregateInputSchema: z.ZodType<Prisma.RoomOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CakeRequestOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -2818,11 +3446,21 @@ export const CakeCountListRelationFilterSchema: z.ZodType<Prisma.CakeCountListRe
   none: z.lazy(() => CakeCountWhereInputSchema).optional()
 }).strict();
 
+export const CakeRequestItemsListRelationFilterSchema: z.ZodType<Prisma.CakeRequestItemsListRelationFilter> = z.object({
+  every: z.lazy(() => CakeRequestItemsWhereInputSchema).optional(),
+  some: z.lazy(() => CakeRequestItemsWhereInputSchema).optional(),
+  none: z.lazy(() => CakeRequestItemsWhereInputSchema).optional()
+}).strict();
+
 export const OrderItemOrderByRelationAggregateInputSchema: z.ZodType<Prisma.OrderItemOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const CakeCountOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CakeCountOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestItemsOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3056,6 +3694,95 @@ export const EnumCakePoundWithAggregatesFilterSchema: z.ZodType<Prisma.EnumCakeP
   _max: z.lazy(() => NestedEnumCakePoundFilterSchema).optional()
 }).strict();
 
+export const EnumRequestStatusFilterSchema: z.ZodType<Prisma.EnumRequestStatusFilter> = z.object({
+  equals: z.lazy(() => RequestStatusSchema).optional(),
+  in: z.lazy(() => RequestStatusSchema).array().optional(),
+  notIn: z.lazy(() => RequestStatusSchema).array().optional(),
+  not: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => NestedEnumRequestStatusFilterSchema) ]).optional(),
+}).strict();
+
+export const UserScalarRelationFilterSchema: z.ZodType<Prisma.UserScalarRelationFilter> = z.object({
+  is: z.lazy(() => UserWhereInputSchema).optional(),
+  isNot: z.lazy(() => UserWhereInputSchema).optional()
+}).strict();
+
+export const CakeRequestCountOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  requestDate: z.lazy(() => SortOrderSchema).optional(),
+  status: z.lazy(() => SortOrderSchema).optional(),
+  note: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  requestDate: z.lazy(() => SortOrderSchema).optional(),
+  status: z.lazy(() => SortOrderSchema).optional(),
+  note: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestMinOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  requestDate: z.lazy(() => SortOrderSchema).optional(),
+  status: z.lazy(() => SortOrderSchema).optional(),
+  note: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  branch_id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const EnumRequestStatusWithAggregatesFilterSchema: z.ZodType<Prisma.EnumRequestStatusWithAggregatesFilter> = z.object({
+  equals: z.lazy(() => RequestStatusSchema).optional(),
+  in: z.lazy(() => RequestStatusSchema).array().optional(),
+  notIn: z.lazy(() => RequestStatusSchema).array().optional(),
+  not: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => NestedEnumRequestStatusWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional()
+}).strict();
+
+export const CakeRequestScalarRelationFilterSchema: z.ZodType<Prisma.CakeRequestScalarRelationFilter> = z.object({
+  is: z.lazy(() => CakeRequestWhereInputSchema).optional(),
+  isNot: z.lazy(() => CakeRequestWhereInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsCountOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  request_id: z.lazy(() => SortOrderSchema).optional(),
+  product_id: z.lazy(() => SortOrderSchema).optional(),
+  quantity: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestItemsAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsAvgOrderByAggregateInput> = z.object({
+  quantity: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestItemsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  request_id: z.lazy(() => SortOrderSchema).optional(),
+  product_id: z.lazy(() => SortOrderSchema).optional(),
+  quantity: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestItemsMinOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  request_id: z.lazy(() => SortOrderSchema).optional(),
+  product_id: z.lazy(() => SortOrderSchema).optional(),
+  quantity: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CakeRequestItemsSumOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsSumOrderByAggregateInput> = z.object({
+  quantity: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
 export const RoomCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.RoomCreateNestedManyWithoutBranchInput> = z.object({
   create: z.union([ z.lazy(() => RoomCreateWithoutBranchInputSchema),z.lazy(() => RoomCreateWithoutBranchInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema),z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
@@ -3063,11 +3790,25 @@ export const RoomCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.Room
   connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const CakeRequestCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestCreateNestedManyWithoutBranchInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateWithoutBranchInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyBranchInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const RoomUncheckedCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedCreateNestedManyWithoutBranchInput> = z.object({
   create: z.union([ z.lazy(() => RoomCreateWithoutBranchInputSchema),z.lazy(() => RoomCreateWithoutBranchInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema),z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
   createMany: z.lazy(() => RoomCreateManyBranchInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => RoomWhereUniqueInputSchema),z.lazy(() => RoomWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestUncheckedCreateNestedManyWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateNestedManyWithoutBranchInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateWithoutBranchInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyBranchInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const StringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.StringFieldUpdateOperationsInput> = z.object({
@@ -3088,6 +3829,20 @@ export const RoomUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.Room
   deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const CakeRequestUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.CakeRequestUpdateManyWithoutBranchNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateWithoutBranchInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyBranchInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestUpdateManyWithWhereWithoutBranchInputSchema),z.lazy(() => CakeRequestUpdateManyWithWhereWithoutBranchInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestScalarWhereInputSchema),z.lazy(() => CakeRequestScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const RoomUncheckedUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutBranchNestedInput> = z.object({
   create: z.union([ z.lazy(() => RoomCreateWithoutBranchInputSchema),z.lazy(() => RoomCreateWithoutBranchInputSchema).array(),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema),z.lazy(() => RoomUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema),z.lazy(() => RoomCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
@@ -3100,6 +3855,20 @@ export const RoomUncheckedUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Pr
   update: z.union([ z.lazy(() => RoomUpdateWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => RoomUpdateWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => RoomUpdateManyWithWhereWithoutBranchInputSchema),z.lazy(() => RoomUpdateManyWithWhereWithoutBranchInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestUncheckedUpdateManyWithoutBranchNestedInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyWithoutBranchNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateWithoutBranchInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutBranchInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyBranchInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutBranchInputSchema),z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutBranchInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestUpdateManyWithWhereWithoutBranchInputSchema),z.lazy(() => CakeRequestUpdateManyWithWhereWithoutBranchInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestScalarWhereInputSchema),z.lazy(() => CakeRequestScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const BranchCreateNestedOneWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateNestedOneWithoutRoomsInput> = z.object({
@@ -3270,6 +4039,20 @@ export const RoomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema: z.ZodTy
   deleteMany: z.union([ z.lazy(() => RoomScalarWhereInputSchema),z.lazy(() => RoomScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const CakeRequestCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestCreateWithoutUserInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestCreateWithoutUserInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const NullableStringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableStringFieldUpdateOperationsInput> = z.object({
   set: z.string().optional().nullable()
 }).strict();
@@ -3280,6 +4063,34 @@ export const EnumRoleFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumRole
 
 export const DateTimeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.DateTimeFieldUpdateOperationsInput> = z.object({
   set: z.coerce.date().optional()
+}).strict();
+
+export const CakeRequestUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.CakeRequestUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestCreateWithoutUserInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => CakeRequestUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestScalarWhereInputSchema),z.lazy(() => CakeRequestScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestCreateWithoutUserInputSchema).array(),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema),z.lazy(() => CakeRequestCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CakeRequestUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestWhereUniqueInputSchema),z.lazy(() => CakeRequestWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => CakeRequestUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestScalarWhereInputSchema),z.lazy(() => CakeRequestScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const RoomCreateNestedOneWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCreateNestedOneWithoutTeamsInput> = z.object({
@@ -3358,6 +4169,13 @@ export const CakeCountCreateNestedManyWithoutProductInputSchema: z.ZodType<Prism
   connect: z.union([ z.lazy(() => CakeCountWhereUniqueInputSchema),z.lazy(() => CakeCountWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const CakeRequestItemsCreateNestedManyWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateNestedManyWithoutProductInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyProductInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const OrderItemUncheckedCreateNestedManyWithoutProductInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateNestedManyWithoutProductInput> = z.object({
   create: z.union([ z.lazy(() => OrderItemCreateWithoutProductInputSchema),z.lazy(() => OrderItemCreateWithoutProductInputSchema).array(),z.lazy(() => OrderItemUncheckedCreateWithoutProductInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutProductInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => OrderItemCreateOrConnectWithoutProductInputSchema),z.lazy(() => OrderItemCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
@@ -3370,6 +4188,13 @@ export const CakeCountUncheckedCreateNestedManyWithoutProductInputSchema: z.ZodT
   connectOrCreate: z.union([ z.lazy(() => CakeCountCreateOrConnectWithoutProductInputSchema),z.lazy(() => CakeCountCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
   createMany: z.lazy(() => CakeCountCreateManyProductInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => CakeCountWhereUniqueInputSchema),z.lazy(() => CakeCountWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedCreateNestedManyWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateNestedManyWithoutProductInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyProductInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const FloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.FloatFieldUpdateOperationsInput> = z.object({
@@ -3416,6 +4241,20 @@ export const CakeCountUpdateManyWithoutProductNestedInputSchema: z.ZodType<Prism
   deleteMany: z.union([ z.lazy(() => CakeCountScalarWhereInputSchema),z.lazy(() => CakeCountScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const CakeRequestItemsUpdateManyWithoutProductNestedInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyWithoutProductNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyProductInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutProductInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutProductInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestItemsScalarWhereInputSchema),z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateManyWithoutProductNestedInput> = z.object({
   create: z.union([ z.lazy(() => OrderItemCreateWithoutProductInputSchema),z.lazy(() => OrderItemCreateWithoutProductInputSchema).array(),z.lazy(() => OrderItemUncheckedCreateWithoutProductInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutProductInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => OrderItemCreateOrConnectWithoutProductInputSchema),z.lazy(() => OrderItemCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
@@ -3442,6 +4281,20 @@ export const CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema: z.ZodT
   update: z.union([ z.lazy(() => CakeCountUpdateWithWhereUniqueWithoutProductInputSchema),z.lazy(() => CakeCountUpdateWithWhereUniqueWithoutProductInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => CakeCountUpdateManyWithWhereWithoutProductInputSchema),z.lazy(() => CakeCountUpdateManyWithWhereWithoutProductInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => CakeCountScalarWhereInputSchema),z.lazy(() => CakeCountScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutProductInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyProductInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutProductInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutProductInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestItemsScalarWhereInputSchema),z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const ProductCreateNestedManyWithoutUnitInputSchema: z.ZodType<Prisma.ProductCreateNestedManyWithoutUnitInput> = z.object({
@@ -3486,6 +4339,13 @@ export const ProductUncheckedUpdateManyWithoutUnitNestedInputSchema: z.ZodType<P
   deleteMany: z.union([ z.lazy(() => ProductScalarWhereInputSchema),z.lazy(() => ProductScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const OrderItemCreateNestedManyWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateNestedManyWithoutOrderInput> = z.object({
+  create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemCreateWithoutOrderInputSchema).array(),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema),z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => OrderItemCreateManyOrderInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const TeamCreateNestedOneWithoutOrdersInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutOrdersInput> = z.object({
   create: z.union([ z.lazy(() => TeamCreateWithoutOrdersInputSchema),z.lazy(() => TeamUncheckedCreateWithoutOrdersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutOrdersInputSchema).optional(),
@@ -3498,18 +4358,25 @@ export const RoomCreateNestedOneWithoutOrdersInputSchema: z.ZodType<Prisma.RoomC
   connect: z.lazy(() => RoomWhereUniqueInputSchema).optional()
 }).strict();
 
-export const OrderItemCreateNestedManyWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateNestedManyWithoutOrderInput> = z.object({
+export const OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput> = z.object({
   create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemCreateWithoutOrderInputSchema).array(),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema),z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema).array() ]).optional(),
   createMany: z.lazy(() => OrderItemCreateManyOrderInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
-export const OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput> = z.object({
+export const OrderItemUpdateManyWithoutOrderNestedInputSchema: z.ZodType<Prisma.OrderItemUpdateManyWithoutOrderNestedInput> = z.object({
   create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemCreateWithoutOrderInputSchema).array(),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema),z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => OrderItemUpsertWithWhereUniqueWithoutOrderInputSchema),z.lazy(() => OrderItemUpsertWithWhereUniqueWithoutOrderInputSchema).array() ]).optional(),
   createMany: z.lazy(() => OrderItemCreateManyOrderInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
   connect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => OrderItemUpdateWithWhereUniqueWithoutOrderInputSchema),z.lazy(() => OrderItemUpdateWithWhereUniqueWithoutOrderInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => OrderItemUpdateManyWithWhereWithoutOrderInputSchema),z.lazy(() => OrderItemUpdateManyWithWhereWithoutOrderInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => OrderItemScalarWhereInputSchema),z.lazy(() => OrderItemScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const TeamUpdateOneWithoutOrdersNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneWithoutOrdersNestedInput> = z.object({
@@ -3528,20 +4395,6 @@ export const RoomUpdateOneRequiredWithoutOrdersNestedInputSchema: z.ZodType<Pris
   upsert: z.lazy(() => RoomUpsertWithoutOrdersInputSchema).optional(),
   connect: z.lazy(() => RoomWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => RoomUpdateToOneWithWhereWithoutOrdersInputSchema),z.lazy(() => RoomUpdateWithoutOrdersInputSchema),z.lazy(() => RoomUncheckedUpdateWithoutOrdersInputSchema) ]).optional(),
-}).strict();
-
-export const OrderItemUpdateManyWithoutOrderNestedInputSchema: z.ZodType<Prisma.OrderItemUpdateManyWithoutOrderNestedInput> = z.object({
-  create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemCreateWithoutOrderInputSchema).array(),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema),z.lazy(() => OrderItemCreateOrConnectWithoutOrderInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => OrderItemUpsertWithWhereUniqueWithoutOrderInputSchema),z.lazy(() => OrderItemUpsertWithWhereUniqueWithoutOrderInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => OrderItemCreateManyOrderInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => OrderItemWhereUniqueInputSchema),z.lazy(() => OrderItemWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => OrderItemUpdateWithWhereUniqueWithoutOrderInputSchema),z.lazy(() => OrderItemUpdateWithWhereUniqueWithoutOrderInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => OrderItemUpdateManyWithWhereWithoutOrderInputSchema),z.lazy(() => OrderItemUpdateManyWithWhereWithoutOrderInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => OrderItemScalarWhereInputSchema),z.lazy(() => OrderItemScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const OrderItemUncheckedUpdateManyWithoutOrderNestedInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput> = z.object({
@@ -3602,6 +4455,108 @@ export const ProductUpdateOneRequiredWithoutCakeCountsNestedInputSchema: z.ZodTy
   upsert: z.lazy(() => ProductUpsertWithoutCakeCountsInputSchema).optional(),
   connect: z.lazy(() => ProductWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => ProductUpdateToOneWithWhereWithoutCakeCountsInputSchema),z.lazy(() => ProductUpdateWithoutCakeCountsInputSchema),z.lazy(() => ProductUncheckedUpdateWithoutCakeCountsInputSchema) ]).optional(),
+}).strict();
+
+export const BranchCreateNestedOneWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchCreateNestedOneWithoutCakeRequestInput> = z.object({
+  create: z.union([ z.lazy(() => BranchCreateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedCreateWithoutCakeRequestInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => BranchCreateOrConnectWithoutCakeRequestInputSchema).optional(),
+  connect: z.lazy(() => BranchWhereUniqueInputSchema).optional()
+}).strict();
+
+export const UserCreateNestedOneWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutCakeRequestInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedCreateWithoutCakeRequestInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutCakeRequestInputSchema).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsCreateNestedManyWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateNestedManyWithoutRequestInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyRequestInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedCreateNestedManyWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateNestedManyWithoutRequestInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyRequestInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const EnumRequestStatusFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumRequestStatusFieldUpdateOperationsInput> = z.object({
+  set: z.lazy(() => RequestStatusSchema).optional()
+}).strict();
+
+export const BranchUpdateOneRequiredWithoutCakeRequestNestedInputSchema: z.ZodType<Prisma.BranchUpdateOneRequiredWithoutCakeRequestNestedInput> = z.object({
+  create: z.union([ z.lazy(() => BranchCreateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedCreateWithoutCakeRequestInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => BranchCreateOrConnectWithoutCakeRequestInputSchema).optional(),
+  upsert: z.lazy(() => BranchUpsertWithoutCakeRequestInputSchema).optional(),
+  connect: z.lazy(() => BranchWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => BranchUpdateToOneWithWhereWithoutCakeRequestInputSchema),z.lazy(() => BranchUpdateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutCakeRequestInputSchema) ]).optional(),
+}).strict();
+
+export const UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema: z.ZodType<Prisma.UserUpdateOneRequiredWithoutCakeRequestNestedInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedCreateWithoutCakeRequestInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutCakeRequestInputSchema).optional(),
+  upsert: z.lazy(() => UserUpsertWithoutCakeRequestInputSchema).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutCakeRequestInputSchema),z.lazy(() => UserUpdateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCakeRequestInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUpdateManyWithoutRequestNestedInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyWithoutRequestNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutRequestInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyRequestInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutRequestInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestItemsScalarWhereInputSchema),z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateManyWithoutRequestNestedInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyWithoutRequestNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema).array(),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsCreateOrConnectWithoutRequestInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUpsertWithWhereUniqueWithoutRequestInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CakeRequestItemsCreateManyRequestInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),z.lazy(() => CakeRequestItemsWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUpdateWithWhereUniqueWithoutRequestInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CakeRequestItemsScalarWhereInputSchema),z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const ProductCreateNestedOneWithoutItemsInputSchema: z.ZodType<Prisma.ProductCreateNestedOneWithoutItemsInput> = z.object({
+  create: z.union([ z.lazy(() => ProductCreateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedCreateWithoutItemsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => ProductCreateOrConnectWithoutItemsInputSchema).optional(),
+  connect: z.lazy(() => ProductWhereUniqueInputSchema).optional()
+}).strict();
+
+export const CakeRequestCreateNestedOneWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestCreateNestedOneWithoutItemsInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutItemsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CakeRequestCreateOrConnectWithoutItemsInputSchema).optional(),
+  connect: z.lazy(() => CakeRequestWhereUniqueInputSchema).optional()
+}).strict();
+
+export const ProductUpdateOneRequiredWithoutItemsNestedInputSchema: z.ZodType<Prisma.ProductUpdateOneRequiredWithoutItemsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => ProductCreateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedCreateWithoutItemsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => ProductCreateOrConnectWithoutItemsInputSchema).optional(),
+  upsert: z.lazy(() => ProductUpsertWithoutItemsInputSchema).optional(),
+  connect: z.lazy(() => ProductWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => ProductUpdateToOneWithWhereWithoutItemsInputSchema),z.lazy(() => ProductUpdateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedUpdateWithoutItemsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema: z.ZodType<Prisma.CakeRequestUpdateOneRequiredWithoutItemsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutItemsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CakeRequestCreateOrConnectWithoutItemsInputSchema).optional(),
+  upsert: z.lazy(() => CakeRequestUpsertWithoutItemsInputSchema).optional(),
+  connect: z.lazy(() => CakeRequestWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => CakeRequestUpdateToOneWithWhereWithoutItemsInputSchema),z.lazy(() => CakeRequestUpdateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutItemsInputSchema) ]).optional(),
 }).strict();
 
 export const NestedStringFilterSchema: z.ZodType<Prisma.NestedStringFilter> = z.object({
@@ -3807,6 +4762,23 @@ export const NestedEnumCakePoundWithAggregatesFilterSchema: z.ZodType<Prisma.Nes
   _max: z.lazy(() => NestedEnumCakePoundFilterSchema).optional()
 }).strict();
 
+export const NestedEnumRequestStatusFilterSchema: z.ZodType<Prisma.NestedEnumRequestStatusFilter> = z.object({
+  equals: z.lazy(() => RequestStatusSchema).optional(),
+  in: z.lazy(() => RequestStatusSchema).array().optional(),
+  notIn: z.lazy(() => RequestStatusSchema).array().optional(),
+  not: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => NestedEnumRequestStatusFilterSchema) ]).optional(),
+}).strict();
+
+export const NestedEnumRequestStatusWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumRequestStatusWithAggregatesFilter> = z.object({
+  equals: z.lazy(() => RequestStatusSchema).optional(),
+  in: z.lazy(() => RequestStatusSchema).array().optional(),
+  notIn: z.lazy(() => RequestStatusSchema).array().optional(),
+  not: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => NestedEnumRequestStatusWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional()
+}).strict();
+
 export const RoomCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomCreateWithoutBranchInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
@@ -3830,6 +4802,38 @@ export const RoomCreateOrConnectWithoutBranchInputSchema: z.ZodType<Prisma.RoomC
 
 export const RoomCreateManyBranchInputEnvelopeSchema: z.ZodType<Prisma.RoomCreateManyBranchInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => RoomCreateManyBranchInputSchema),z.lazy(() => RoomCreateManyBranchInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const CakeRequestCreateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestCreateWithoutBranchInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutCakeRequestInputSchema),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutRequestInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedCreateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateWithoutBranchInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  user_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutRequestInputSchema).optional()
+}).strict();
+
+export const CakeRequestCreateOrConnectWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestCreateOrConnectWithoutBranchInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema) ]),
+}).strict();
+
+export const CakeRequestCreateManyBranchInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestCreateManyBranchInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => CakeRequestCreateManyBranchInputSchema),z.lazy(() => CakeRequestCreateManyBranchInputSchema).array() ]),
   skipDuplicates: z.boolean().optional()
 }).strict();
 
@@ -3859,16 +4863,48 @@ export const RoomScalarWhereInputSchema: z.ZodType<Prisma.RoomScalarWhereInput> 
   grade_level_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 
+export const CakeRequestUpsertWithWhereUniqueWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUpsertWithWhereUniqueWithoutBranchInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutBranchInputSchema) ]),
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutBranchInputSchema) ]),
+}).strict();
+
+export const CakeRequestUpdateWithWhereUniqueWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithWhereUniqueWithoutBranchInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestUpdateWithoutBranchInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutBranchInputSchema) ]),
+}).strict();
+
+export const CakeRequestUpdateManyWithWhereWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUpdateManyWithWhereWithoutBranchInput> = z.object({
+  where: z.lazy(() => CakeRequestScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestUpdateManyMutationInputSchema),z.lazy(() => CakeRequestUncheckedUpdateManyWithoutBranchInputSchema) ]),
+}).strict();
+
+export const CakeRequestScalarWhereInputSchema: z.ZodType<Prisma.CakeRequestScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CakeRequestScalarWhereInputSchema),z.lazy(() => CakeRequestScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestScalarWhereInputSchema),z.lazy(() => CakeRequestScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  requestDate: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  status: z.union([ z.lazy(() => EnumRequestStatusFilterSchema),z.lazy(() => RequestStatusSchema) ]).optional(),
+  note: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  user_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  branch_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+}).strict();
+
 export const BranchCreateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateWithoutRoomsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  group_number: z.string()
+  group_number: z.string(),
+  CakeRequest: z.lazy(() => CakeRequestCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedCreateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutRoomsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
-  group_number: z.string()
+  group_number: z.string(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchCreateOrConnectWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateOrConnectWithoutRoomsInput> = z.object({
@@ -3924,8 +4960,8 @@ export const OrderCreateWithoutRoomInputSchema: z.ZodType<Prisma.OrderCreateWith
   number: z.number().int(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  team: z.lazy(() => TeamCreateNestedOneWithoutOrdersInputSchema).optional(),
-  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
+  team: z.lazy(() => TeamCreateNestedOneWithoutOrdersInputSchema).optional()
 }).strict();
 
 export const OrderUncheckedCreateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUncheckedCreateWithoutRoomInput> = z.object({
@@ -3966,12 +5002,14 @@ export const BranchUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUpdateW
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutRoomsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const GradeLevelUpsertWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUpsertWithoutRoomsInput> = z.object({
@@ -4096,6 +5134,54 @@ export const RoomUpdateManyWithWhereWithoutGrade_levelInputSchema: z.ZodType<Pri
   data: z.union([ z.lazy(() => RoomUpdateManyMutationInputSchema),z.lazy(() => RoomUncheckedUpdateManyWithoutGrade_levelInputSchema) ]),
 }).strict();
 
+export const CakeRequestCreateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestCreateWithoutUserInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  branch: z.lazy(() => BranchCreateNestedOneWithoutCakeRequestInputSchema),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutRequestInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateWithoutUserInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  branch_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutRequestInputSchema).optional()
+}).strict();
+
+export const CakeRequestCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestCreateOrConnectWithoutUserInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const CakeRequestCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestCreateManyUserInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => CakeRequestCreateManyUserInputSchema),z.lazy(() => CakeRequestCreateManyUserInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const CakeRequestUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpsertWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutUserInputSchema) ]),
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestUpdateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutUserInputSchema) ]),
+}).strict();
+
+export const CakeRequestUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpdateManyWithWhereWithoutUserInput> = z.object({
+  where: z.lazy(() => CakeRequestScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestUpdateManyMutationInputSchema),z.lazy(() => CakeRequestUncheckedUpdateManyWithoutUserInputSchema) ]),
+}).strict();
+
 export const RoomCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCreateWithoutTeamsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
@@ -4126,8 +5212,8 @@ export const OrderCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderCreateWith
   number: z.number().int(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  room: z.lazy(() => RoomCreateNestedOneWithoutOrdersInputSchema),
-  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
+  room: z.lazy(() => RoomCreateNestedOneWithoutOrdersInputSchema)
 }).strict();
 
 export const OrderUncheckedCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUncheckedCreateWithoutTeamInput> = z.object({
@@ -4265,6 +5351,28 @@ export const CakeCountCreateManyProductInputEnvelopeSchema: z.ZodType<Prisma.Cak
   skipDuplicates: z.boolean().optional()
 }).strict();
 
+export const CakeRequestItemsCreateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateWithoutProductInput> = z.object({
+  id: z.string().cuid().optional(),
+  quantity: z.number().int(),
+  request: z.lazy(() => CakeRequestCreateNestedOneWithoutItemsInputSchema)
+}).strict();
+
+export const CakeRequestItemsUncheckedCreateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateWithoutProductInput> = z.object({
+  id: z.string().cuid().optional(),
+  request_id: z.string(),
+  quantity: z.number().int()
+}).strict();
+
+export const CakeRequestItemsCreateOrConnectWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateOrConnectWithoutProductInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsCreateManyProductInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyProductInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => CakeRequestItemsCreateManyProductInputSchema),z.lazy(() => CakeRequestItemsCreateManyProductInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
 export const UnitUpsertWithoutProductsInputSchema: z.ZodType<Prisma.UnitUpsertWithoutProductsInput> = z.object({
   update: z.union([ z.lazy(() => UnitUpdateWithoutProductsInputSchema),z.lazy(() => UnitUncheckedUpdateWithoutProductsInputSchema) ]),
   create: z.union([ z.lazy(() => UnitCreateWithoutProductsInputSchema),z.lazy(() => UnitUncheckedCreateWithoutProductsInputSchema) ]),
@@ -4344,12 +5452,39 @@ export const CakeCountScalarWhereInputSchema: z.ZodType<Prisma.CakeCountScalarWh
   quantity: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
 }).strict();
 
+export const CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpsertWithWhereUniqueWithoutProductInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateWithoutProductInputSchema) ]),
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsUpdateWithWhereUniqueWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithWhereUniqueWithoutProductInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestItemsUpdateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateWithoutProductInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsUpdateManyWithWhereWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyWithWhereWithoutProductInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestItemsUpdateManyMutationInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsScalarWhereInputSchema: z.ZodType<Prisma.CakeRequestItemsScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CakeRequestItemsScalarWhereInputSchema),z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CakeRequestItemsScalarWhereInputSchema),z.lazy(() => CakeRequestItemsScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  request_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  product_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  quantity: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+}).strict();
+
 export const ProductCreateWithoutUnitInputSchema: z.ZodType<Prisma.ProductCreateWithoutUnitInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   price: z.number(),
   orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutProductInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedCreateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutUnitInput> = z.object({
@@ -4357,7 +5492,8 @@ export const ProductUncheckedCreateWithoutUnitInputSchema: z.ZodType<Prisma.Prod
   name: z.string(),
   price: z.number(),
   orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductCreateOrConnectWithoutUnitInputSchema: z.ZodType<Prisma.ProductCreateOrConnectWithoutUnitInput> = z.object({
@@ -4394,6 +5530,36 @@ export const ProductScalarWhereInputSchema: z.ZodType<Prisma.ProductScalarWhereI
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   price: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   unit_id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+}).strict();
+
+export const OrderItemCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateWithoutOrderInput> = z.object({
+  id: z.string().cuid().optional(),
+  quantity: z.number().int(),
+  unitPrice: z.number(),
+  subtotal: z.number(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  product: z.lazy(() => ProductCreateNestedOneWithoutOrderItemsInputSchema)
+}).strict();
+
+export const OrderItemUncheckedCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateWithoutOrderInput> = z.object({
+  id: z.string().cuid().optional(),
+  product_id: z.string(),
+  quantity: z.number().int(),
+  unitPrice: z.number(),
+  subtotal: z.number(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const OrderItemCreateOrConnectWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateOrConnectWithoutOrderInput> = z.object({
+  where: z.lazy(() => OrderItemWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema) ]),
+}).strict();
+
+export const OrderItemCreateManyOrderInputEnvelopeSchema: z.ZodType<Prisma.OrderItemCreateManyOrderInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => OrderItemCreateManyOrderInputSchema),z.lazy(() => OrderItemCreateManyOrderInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const TeamCreateWithoutOrdersInputSchema: z.ZodType<Prisma.TeamCreateWithoutOrdersInput> = z.object({
@@ -4434,34 +5600,20 @@ export const RoomCreateOrConnectWithoutOrdersInputSchema: z.ZodType<Prisma.RoomC
   create: z.union([ z.lazy(() => RoomCreateWithoutOrdersInputSchema),z.lazy(() => RoomUncheckedCreateWithoutOrdersInputSchema) ]),
 }).strict();
 
-export const OrderItemCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateWithoutOrderInput> = z.object({
-  id: z.string().cuid().optional(),
-  quantity: z.number().int(),
-  unitPrice: z.number(),
-  subtotal: z.number(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional(),
-  product: z.lazy(() => ProductCreateNestedOneWithoutOrderItemsInputSchema)
-}).strict();
-
-export const OrderItemUncheckedCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateWithoutOrderInput> = z.object({
-  id: z.string().cuid().optional(),
-  product_id: z.string(),
-  quantity: z.number().int(),
-  unitPrice: z.number(),
-  subtotal: z.number(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
-}).strict();
-
-export const OrderItemCreateOrConnectWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateOrConnectWithoutOrderInput> = z.object({
+export const OrderItemUpsertWithWhereUniqueWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpsertWithWhereUniqueWithoutOrderInput> = z.object({
   where: z.lazy(() => OrderItemWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => OrderItemUpdateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedUpdateWithoutOrderInputSchema) ]),
   create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema) ]),
 }).strict();
 
-export const OrderItemCreateManyOrderInputEnvelopeSchema: z.ZodType<Prisma.OrderItemCreateManyOrderInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => OrderItemCreateManyOrderInputSchema),z.lazy(() => OrderItemCreateManyOrderInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
+export const OrderItemUpdateWithWhereUniqueWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpdateWithWhereUniqueWithoutOrderInput> = z.object({
+  where: z.lazy(() => OrderItemWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => OrderItemUpdateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedUpdateWithoutOrderInputSchema) ]),
+}).strict();
+
+export const OrderItemUpdateManyWithWhereWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpdateManyWithWhereWithoutOrderInput> = z.object({
+  where: z.lazy(() => OrderItemScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => OrderItemUpdateManyMutationInputSchema),z.lazy(() => OrderItemUncheckedUpdateManyWithoutOrderInputSchema) ]),
 }).strict();
 
 export const TeamUpsertWithoutOrdersInputSchema: z.ZodType<Prisma.TeamUpsertWithoutOrdersInput> = z.object({
@@ -4514,22 +5666,6 @@ export const RoomUncheckedUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomU
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional()
 }).strict();
 
-export const OrderItemUpsertWithWhereUniqueWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpsertWithWhereUniqueWithoutOrderInput> = z.object({
-  where: z.lazy(() => OrderItemWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => OrderItemUpdateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedUpdateWithoutOrderInputSchema) ]),
-  create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema) ]),
-}).strict();
-
-export const OrderItemUpdateWithWhereUniqueWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpdateWithWhereUniqueWithoutOrderInput> = z.object({
-  where: z.lazy(() => OrderItemWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => OrderItemUpdateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedUpdateWithoutOrderInputSchema) ]),
-}).strict();
-
-export const OrderItemUpdateManyWithWhereWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpdateManyWithWhereWithoutOrderInput> = z.object({
-  where: z.lazy(() => OrderItemScalarWhereInputSchema),
-  data: z.union([ z.lazy(() => OrderItemUpdateManyMutationInputSchema),z.lazy(() => OrderItemUncheckedUpdateManyWithoutOrderInputSchema) ]),
-}).strict();
-
 export const OrderCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderCreateWithoutOrderItemsInput> = z.object({
   id: z.string().cuid().optional(),
   customerName: z.string().optional().nullable(),
@@ -4566,7 +5702,8 @@ export const ProductCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.Product
   name: z.string(),
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
-  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutOrderItemsInput> = z.object({
@@ -4574,7 +5711,8 @@ export const ProductUncheckedCreateWithoutOrderItemsInputSchema: z.ZodType<Prism
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
-  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductCreateOrConnectWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductCreateOrConnectWithoutOrderItemsInput> = z.object({
@@ -4635,7 +5773,8 @@ export const ProductUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.Product
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutOrderItemsInput> = z.object({
@@ -4643,7 +5782,8 @@ export const ProductUncheckedUpdateWithoutOrderItemsInputSchema: z.ZodType<Prism
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductCreateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductCreateWithoutCakeCountsInput> = z.object({
@@ -4651,7 +5791,8 @@ export const ProductCreateWithoutCakeCountsInputSchema: z.ZodType<Prisma.Product
   name: z.string(),
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
-  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutProductInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedCreateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutCakeCountsInput> = z.object({
@@ -4659,7 +5800,8 @@ export const ProductUncheckedCreateWithoutCakeCountsInputSchema: z.ZodType<Prism
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
-  orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutProductInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutProductInputSchema).optional()
 }).strict();
 
 export const ProductCreateOrConnectWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductCreateOrConnectWithoutCakeCountsInput> = z.object({
@@ -4683,7 +5825,8 @@ export const ProductUpdateWithoutCakeCountsInputSchema: z.ZodType<Prisma.Product
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
-  orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedUpdateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutCakeCountsInput> = z.object({
@@ -4691,13 +5834,282 @@ export const ProductUncheckedUpdateWithoutCakeCountsInputSchema: z.ZodType<Prism
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+}).strict();
+
+export const BranchCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchCreateWithoutCakeRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  name: z.string(),
+  group_number: z.string(),
+  rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional()
+}).strict();
+
+export const BranchUncheckedCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutCakeRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  name: z.string(),
+  group_number: z.string(),
+  rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
+}).strict();
+
+export const BranchCreateOrConnectWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchCreateOrConnectWithoutCakeRequestInput> = z.object({
+  where: z.lazy(() => BranchWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => BranchCreateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedCreateWithoutCakeRequestInputSchema) ]),
+}).strict();
+
+export const UserCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserCreateWithoutCakeRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  fname: z.string(),
+  lastname: z.string(),
+  username: z.string(),
+  password: z.string(),
+  email: z.string().optional().nullable(),
+  role: z.lazy(() => RoleSchema).optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const UserUncheckedCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutCakeRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  fname: z.string(),
+  lastname: z.string(),
+  username: z.string(),
+  password: z.string(),
+  email: z.string().optional().nullable(),
+  role: z.lazy(() => RoleSchema).optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const UserCreateOrConnectWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutCakeRequestInput> = z.object({
+  where: z.lazy(() => UserWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => UserCreateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedCreateWithoutCakeRequestInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsCreateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateWithoutRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  quantity: z.number().int(),
+  product: z.lazy(() => ProductCreateNestedOneWithoutItemsInputSchema)
+}).strict();
+
+export const CakeRequestItemsUncheckedCreateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateWithoutRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  product_id: z.string(),
+  quantity: z.number().int()
+}).strict();
+
+export const CakeRequestItemsCreateOrConnectWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateOrConnectWithoutRequestInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsCreateManyRequestInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyRequestInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => CakeRequestItemsCreateManyRequestInputSchema),z.lazy(() => CakeRequestItemsCreateManyRequestInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const BranchUpsertWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUpsertWithoutCakeRequestInput> = z.object({
+  update: z.union([ z.lazy(() => BranchUpdateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutCakeRequestInputSchema) ]),
+  create: z.union([ z.lazy(() => BranchCreateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedCreateWithoutCakeRequestInputSchema) ]),
+  where: z.lazy(() => BranchWhereInputSchema).optional()
+}).strict();
+
+export const BranchUpdateToOneWithWhereWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUpdateToOneWithWhereWithoutCakeRequestInput> = z.object({
+  where: z.lazy(() => BranchWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => BranchUpdateWithoutCakeRequestInputSchema),z.lazy(() => BranchUncheckedUpdateWithoutCakeRequestInputSchema) ]),
+}).strict();
+
+export const BranchUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUpdateWithoutCakeRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional()
+}).strict();
+
+export const BranchUncheckedUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutCakeRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
+}).strict();
+
+export const UserUpsertWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUpsertWithoutCakeRequestInput> = z.object({
+  update: z.union([ z.lazy(() => UserUpdateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCakeRequestInputSchema) ]),
+  create: z.union([ z.lazy(() => UserCreateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedCreateWithoutCakeRequestInputSchema) ]),
+  where: z.lazy(() => UserWhereInputSchema).optional()
+}).strict();
+
+export const UserUpdateToOneWithWhereWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutCakeRequestInput> = z.object({
+  where: z.lazy(() => UserWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => UserUpdateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCakeRequestInputSchema) ]),
+}).strict();
+
+export const UserUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUpdateWithoutCakeRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const UserUncheckedUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutCakeRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  password: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.lazy(() => RoleSchema),z.lazy(() => EnumRoleFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUpsertWithWhereUniqueWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUpsertWithWhereUniqueWithoutRequestInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateWithoutRequestInputSchema) ]),
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutRequestInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsUpdateWithWhereUniqueWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithWhereUniqueWithoutRequestInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestItemsUpdateWithoutRequestInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateWithoutRequestInputSchema) ]),
+}).strict();
+
+export const CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyWithWhereWithoutRequestInput> = z.object({
+  where: z.lazy(() => CakeRequestItemsScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => CakeRequestItemsUpdateManyMutationInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema) ]),
+}).strict();
+
+export const ProductCreateWithoutItemsInputSchema: z.ZodType<Prisma.ProductCreateWithoutItemsInput> = z.object({
+  id: z.string().cuid().optional(),
+  name: z.string(),
+  price: z.number(),
+  unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutProductInputSchema).optional(),
+  cakeCounts: z.lazy(() => CakeCountCreateNestedManyWithoutProductInputSchema).optional()
+}).strict();
+
+export const ProductUncheckedCreateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutItemsInput> = z.object({
+  id: z.string().cuid().optional(),
+  name: z.string(),
+  price: z.number(),
+  unit_id: z.string(),
+  orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
+  cakeCounts: z.lazy(() => CakeCountUncheckedCreateNestedManyWithoutProductInputSchema).optional()
+}).strict();
+
+export const ProductCreateOrConnectWithoutItemsInputSchema: z.ZodType<Prisma.ProductCreateOrConnectWithoutItemsInput> = z.object({
+  where: z.lazy(() => ProductWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => ProductCreateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedCreateWithoutItemsInputSchema) ]),
+}).strict();
+
+export const CakeRequestCreateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestCreateWithoutItemsInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  branch: z.lazy(() => BranchCreateNestedOneWithoutCakeRequestInputSchema),
+  user: z.lazy(() => UserCreateNestedOneWithoutCakeRequestInputSchema)
+}).strict();
+
+export const CakeRequestUncheckedCreateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateWithoutItemsInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  user_id: z.string(),
+  branch_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const CakeRequestCreateOrConnectWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestCreateOrConnectWithoutItemsInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutItemsInputSchema) ]),
+}).strict();
+
+export const ProductUpsertWithoutItemsInputSchema: z.ZodType<Prisma.ProductUpsertWithoutItemsInput> = z.object({
+  update: z.union([ z.lazy(() => ProductUpdateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedUpdateWithoutItemsInputSchema) ]),
+  create: z.union([ z.lazy(() => ProductCreateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedCreateWithoutItemsInputSchema) ]),
+  where: z.lazy(() => ProductWhereInputSchema).optional()
+}).strict();
+
+export const ProductUpdateToOneWithWhereWithoutItemsInputSchema: z.ZodType<Prisma.ProductUpdateToOneWithWhereWithoutItemsInput> = z.object({
+  where: z.lazy(() => ProductWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => ProductUpdateWithoutItemsInputSchema),z.lazy(() => ProductUncheckedUpdateWithoutItemsInputSchema) ]),
+}).strict();
+
+export const ProductUpdateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUpdateWithoutItemsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
+  orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional(),
+  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional()
+}).strict();
+
+export const ProductUncheckedUpdateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutItemsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
+  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUpsertWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUpsertWithoutItemsInput> = z.object({
+  update: z.union([ z.lazy(() => CakeRequestUpdateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutItemsInputSchema) ]),
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutItemsInputSchema) ]),
+  where: z.lazy(() => CakeRequestWhereInputSchema).optional()
+}).strict();
+
+export const CakeRequestUpdateToOneWithWhereWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUpdateToOneWithWhereWithoutItemsInput> = z.object({
+  where: z.lazy(() => CakeRequestWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => CakeRequestUpdateWithoutItemsInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutItemsInputSchema) ]),
+}).strict();
+
+export const CakeRequestUpdateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutItemsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  branch: z.lazy(() => BranchUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedUpdateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateWithoutItemsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RoomCreateManyBranchInputSchema: z.ZodType<Prisma.RoomCreateManyBranchInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   grade_level_id: z.string()
+}).strict();
+
+export const CakeRequestCreateManyBranchInputSchema: z.ZodType<Prisma.CakeRequestCreateManyBranchInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  user_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const RoomUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUpdateWithoutBranchInput> = z.object({
@@ -4720,6 +6132,38 @@ export const RoomUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<Prisma.R
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestUpdateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutBranchInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateWithoutBranchInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyWithoutBranchInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamCreateManyRoomInputSchema: z.ZodType<Prisma.TeamCreateManyRoomInput> = z.object({
@@ -4765,8 +6209,8 @@ export const OrderUpdateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUpdateWith
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team: z.lazy(() => TeamUpdateOneWithoutOrdersNestedInputSchema).optional(),
-  orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional(),
+  team: z.lazy(() => TeamUpdateOneWithoutOrdersNestedInputSchema).optional()
 }).strict();
 
 export const OrderUncheckedUpdateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateWithoutRoomInput> = z.object({
@@ -4822,6 +6266,48 @@ export const RoomUncheckedUpdateManyWithoutGrade_levelInputSchema: z.ZodType<Pri
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const CakeRequestCreateManyUserInputSchema: z.ZodType<Prisma.CakeRequestCreateManyUserInput> = z.object({
+  id: z.string().cuid().optional(),
+  requestDate: z.coerce.date(),
+  status: z.lazy(() => RequestStatusSchema).optional(),
+  note: z.string().optional().nullable(),
+  branch_id: z.string(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
+
+export const CakeRequestUpdateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  branch: z.lazy(() => BranchUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutRequestNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyWithoutUserInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
+  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const OrderCreateManyTeamInputSchema: z.ZodType<Prisma.OrderCreateManyTeamInput> = z.object({
   id: z.string().cuid().optional(),
   customerName: z.string().optional().nullable(),
@@ -4843,8 +6329,8 @@ export const OrderUpdateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUpdateWith
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  room: z.lazy(() => RoomUpdateOneRequiredWithoutOrdersNestedInputSchema).optional(),
-  orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional()
+  orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional(),
+  room: z.lazy(() => RoomUpdateOneRequiredWithoutOrdersNestedInputSchema).optional()
 }).strict();
 
 export const OrderUncheckedUpdateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateWithoutTeamInput> = z.object({
@@ -4885,6 +6371,12 @@ export const OrderItemCreateManyProductInputSchema: z.ZodType<Prisma.OrderItemCr
 export const CakeCountCreateManyProductInputSchema: z.ZodType<Prisma.CakeCountCreateManyProductInput> = z.object({
   id: z.string().cuid().optional(),
   pound: z.lazy(() => CakePoundSchema),
+  quantity: z.number().int()
+}).strict();
+
+export const CakeRequestItemsCreateManyProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyProductInput> = z.object({
+  id: z.string().cuid().optional(),
+  request_id: z.string(),
   quantity: z.number().int()
 }).strict();
 
@@ -4936,6 +6428,24 @@ export const CakeCountUncheckedUpdateManyWithoutProductInputSchema: z.ZodType<Pr
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const CakeRequestItemsUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithoutProductInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  request: z.lazy(() => CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateWithoutProductInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateManyWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyWithoutProductInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const ProductCreateManyUnitInputSchema: z.ZodType<Prisma.ProductCreateManyUnitInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
@@ -4947,7 +6457,8 @@ export const ProductUpdateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUpdate
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedUpdateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutUnitInput> = z.object({
@@ -4955,7 +6466,8 @@ export const ProductUncheckedUpdateWithoutUnitInputSchema: z.ZodType<Prisma.Prod
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
-  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+  cakeCounts: z.lazy(() => CakeCountUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
 }).strict();
 
 export const ProductUncheckedUpdateManyWithoutUnitInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateManyWithoutUnitInput> = z.object({
@@ -5002,6 +6514,30 @@ export const OrderItemUncheckedUpdateManyWithoutOrderInputSchema: z.ZodType<Pris
   subtotal: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsCreateManyRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyRequestInput> = z.object({
+  id: z.string().cuid().optional(),
+  product_id: z.string(),
+  quantity: z.number().int()
+}).strict();
+
+export const CakeRequestItemsUpdateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithoutRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  product: z.lazy(() => ProductUpdateOneRequiredWithoutItemsNestedInputSchema).optional()
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateWithoutRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyWithoutRequestInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 /////////////////////////////////////////
@@ -5196,6 +6732,7 @@ export const GradeLevelFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.GradeLevelF
 
 export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereInputSchema.optional(),
   orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
   cursor: UserWhereUniqueInputSchema.optional(),
@@ -5206,6 +6743,7 @@ export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.ob
 
 export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThrowArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereInputSchema.optional(),
   orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
   cursor: UserWhereUniqueInputSchema.optional(),
@@ -5216,6 +6754,7 @@ export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThr
 
 export const UserFindManyArgsSchema: z.ZodType<Prisma.UserFindManyArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereInputSchema.optional(),
   orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
   cursor: UserWhereUniqueInputSchema.optional(),
@@ -5243,11 +6782,13 @@ export const UserGroupByArgsSchema: z.ZodType<Prisma.UserGroupByArgs> = z.object
 
 export const UserFindUniqueArgsSchema: z.ZodType<Prisma.UserFindUniqueArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
 
 export const UserFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.UserFindUniqueOrThrowArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
 
@@ -5623,6 +7164,130 @@ export const CakeCountFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CakeCountFin
   where: CakeCountWhereUniqueInputSchema,
 }).strict() ;
 
+export const CakeRequestFindFirstArgsSchema: z.ZodType<Prisma.CakeRequestFindFirstArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestOrderByWithRelationInputSchema.array(),CakeRequestOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CakeRequestScalarFieldEnumSchema,CakeRequestScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CakeRequestFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CakeRequestFindFirstOrThrowArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestOrderByWithRelationInputSchema.array(),CakeRequestOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CakeRequestScalarFieldEnumSchema,CakeRequestScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CakeRequestFindManyArgsSchema: z.ZodType<Prisma.CakeRequestFindManyArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestOrderByWithRelationInputSchema.array(),CakeRequestOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CakeRequestScalarFieldEnumSchema,CakeRequestScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CakeRequestAggregateArgsSchema: z.ZodType<Prisma.CakeRequestAggregateArgs> = z.object({
+  where: CakeRequestWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestOrderByWithRelationInputSchema.array(),CakeRequestOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestGroupByArgsSchema: z.ZodType<Prisma.CakeRequestGroupByArgs> = z.object({
+  where: CakeRequestWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestOrderByWithAggregationInputSchema.array(),CakeRequestOrderByWithAggregationInputSchema ]).optional(),
+  by: CakeRequestScalarFieldEnumSchema.array(),
+  having: CakeRequestScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestFindUniqueArgsSchema: z.ZodType<Prisma.CakeRequestFindUniqueArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CakeRequestFindUniqueOrThrowArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestItemsFindFirstArgsSchema: z.ZodType<Prisma.CakeRequestItemsFindFirstArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestItemsOrderByWithRelationInputSchema.array(),CakeRequestItemsOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestItemsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CakeRequestItemsScalarFieldEnumSchema,CakeRequestItemsScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CakeRequestItemsFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CakeRequestItemsFindFirstOrThrowArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestItemsOrderByWithRelationInputSchema.array(),CakeRequestItemsOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestItemsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CakeRequestItemsScalarFieldEnumSchema,CakeRequestItemsScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CakeRequestItemsFindManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsFindManyArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestItemsOrderByWithRelationInputSchema.array(),CakeRequestItemsOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestItemsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CakeRequestItemsScalarFieldEnumSchema,CakeRequestItemsScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CakeRequestItemsAggregateArgsSchema: z.ZodType<Prisma.CakeRequestItemsAggregateArgs> = z.object({
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestItemsOrderByWithRelationInputSchema.array(),CakeRequestItemsOrderByWithRelationInputSchema ]).optional(),
+  cursor: CakeRequestItemsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestItemsGroupByArgsSchema: z.ZodType<Prisma.CakeRequestItemsGroupByArgs> = z.object({
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  orderBy: z.union([ CakeRequestItemsOrderByWithAggregationInputSchema.array(),CakeRequestItemsOrderByWithAggregationInputSchema ]).optional(),
+  by: CakeRequestItemsScalarFieldEnumSchema.array(),
+  having: CakeRequestItemsScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestItemsFindUniqueArgsSchema: z.ZodType<Prisma.CakeRequestItemsFindUniqueArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestItemsFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CakeRequestItemsFindUniqueOrThrowArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereUniqueInputSchema,
+}).strict() ;
+
 export const BranchCreateArgsSchema: z.ZodType<Prisma.BranchCreateArgs> = z.object({
   select: BranchSelectSchema.optional(),
   include: BranchIncludeSchema.optional(),
@@ -5787,11 +7452,13 @@ export const GradeLevelDeleteManyArgsSchema: z.ZodType<Prisma.GradeLevelDeleteMa
 
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   data: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]),
 }).strict() ;
 
 export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
   create: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]),
   update: z.union([ UserUpdateInputSchema,UserUncheckedUpdateInputSchema ]),
@@ -5809,11 +7476,13 @@ export const UserCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UserCreateManyA
 
 export const UserDeleteArgsSchema: z.ZodType<Prisma.UserDeleteArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
 
 export const UserUpdateArgsSchema: z.ZodType<Prisma.UserUpdateArgs> = z.object({
   select: UserSelectSchema.optional(),
+  include: UserIncludeSchema.optional(),
   data: z.union([ UserUpdateInputSchema,UserUncheckedUpdateInputSchema ]),
   where: UserWhereUniqueInputSchema,
 }).strict() ;
@@ -6156,5 +7825,113 @@ export const CakeCountUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeCountU
 
 export const CakeCountDeleteManyArgsSchema: z.ZodType<Prisma.CakeCountDeleteManyArgs> = z.object({
   where: CakeCountWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestCreateArgsSchema: z.ZodType<Prisma.CakeRequestCreateArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  data: z.union([ CakeRequestCreateInputSchema,CakeRequestUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const CakeRequestUpsertArgsSchema: z.ZodType<Prisma.CakeRequestUpsertArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereUniqueInputSchema,
+  create: z.union([ CakeRequestCreateInputSchema,CakeRequestUncheckedCreateInputSchema ]),
+  update: z.union([ CakeRequestUpdateInputSchema,CakeRequestUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const CakeRequestCreateManyArgsSchema: z.ZodType<Prisma.CakeRequestCreateManyArgs> = z.object({
+  data: z.union([ CakeRequestCreateManyInputSchema,CakeRequestCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CakeRequestCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestCreateManyAndReturnArgs> = z.object({
+  data: z.union([ CakeRequestCreateManyInputSchema,CakeRequestCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CakeRequestDeleteArgsSchema: z.ZodType<Prisma.CakeRequestDeleteArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  where: CakeRequestWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestUpdateArgsSchema: z.ZodType<Prisma.CakeRequestUpdateArgs> = z.object({
+  select: CakeRequestSelectSchema.optional(),
+  include: CakeRequestIncludeSchema.optional(),
+  data: z.union([ CakeRequestUpdateInputSchema,CakeRequestUncheckedUpdateInputSchema ]),
+  where: CakeRequestWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestUpdateManyArgsSchema: z.ZodType<Prisma.CakeRequestUpdateManyArgs> = z.object({
+  data: z.union([ CakeRequestUpdateManyMutationInputSchema,CakeRequestUncheckedUpdateManyInputSchema ]),
+  where: CakeRequestWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestUpdateManyAndReturnArgs> = z.object({
+  data: z.union([ CakeRequestUpdateManyMutationInputSchema,CakeRequestUncheckedUpdateManyInputSchema ]),
+  where: CakeRequestWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestDeleteManyArgsSchema: z.ZodType<Prisma.CakeRequestDeleteManyArgs> = z.object({
+  where: CakeRequestWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestItemsCreateArgsSchema: z.ZodType<Prisma.CakeRequestItemsCreateArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  data: z.union([ CakeRequestItemsCreateInputSchema,CakeRequestItemsUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const CakeRequestItemsUpsertArgsSchema: z.ZodType<Prisma.CakeRequestItemsUpsertArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereUniqueInputSchema,
+  create: z.union([ CakeRequestItemsCreateInputSchema,CakeRequestItemsUncheckedCreateInputSchema ]),
+  update: z.union([ CakeRequestItemsUpdateInputSchema,CakeRequestItemsUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const CakeRequestItemsCreateManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyArgs> = z.object({
+  data: z.union([ CakeRequestItemsCreateManyInputSchema,CakeRequestItemsCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CakeRequestItemsCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyAndReturnArgs> = z.object({
+  data: z.union([ CakeRequestItemsCreateManyInputSchema,CakeRequestItemsCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CakeRequestItemsDeleteArgsSchema: z.ZodType<Prisma.CakeRequestItemsDeleteArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  where: CakeRequestItemsWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestItemsUpdateArgsSchema: z.ZodType<Prisma.CakeRequestItemsUpdateArgs> = z.object({
+  select: CakeRequestItemsSelectSchema.optional(),
+  include: CakeRequestItemsIncludeSchema.optional(),
+  data: z.union([ CakeRequestItemsUpdateInputSchema,CakeRequestItemsUncheckedUpdateInputSchema ]),
+  where: CakeRequestItemsWhereUniqueInputSchema,
+}).strict() ;
+
+export const CakeRequestItemsUpdateManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyArgs> = z.object({
+  data: z.union([ CakeRequestItemsUpdateManyMutationInputSchema,CakeRequestItemsUncheckedUpdateManyInputSchema ]),
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestItemsUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyAndReturnArgs> = z.object({
+  data: z.union([ CakeRequestItemsUpdateManyMutationInputSchema,CakeRequestItemsUncheckedUpdateManyInputSchema ]),
+  where: CakeRequestItemsWhereInputSchema.optional(),
+  limit: z.number().optional(),
+}).strict() ;
+
+export const CakeRequestItemsDeleteManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsDeleteManyArgs> = z.object({
+  where: CakeRequestItemsWhereInputSchema.optional(),
   limit: z.number().optional(),
 }).strict() ;

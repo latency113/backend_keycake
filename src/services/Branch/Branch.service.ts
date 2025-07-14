@@ -125,7 +125,16 @@ export function BranchService({ db }: BranchDependencies) {
     async getOne(param: TypeBranchWhereInput["where"]): Promise<Branch | null> {
       console.log(`[BranchService] getOne called with param:`, param)
       try {
-        const result = await db.branch.findFirst({ where: param })
+        const result = await db.branch.findFirst({
+          where: param,
+          include: {
+            rooms: {
+              include: {
+                grade_level: true,
+              },
+            },
+          },
+        })
         console.log(`[BranchService] getOne completed, found:`, !!result)
         return result
       }

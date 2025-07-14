@@ -1,32 +1,32 @@
 import type { TypeApplication } from "@/configure/create-application.js"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { BranchService } from "@/services/index.js"
+import { CakeRequestItemsService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { BranchOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js"
+import { CakeRequestItemsOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 import z from "zod"
 
 const ResponseSchema = z.object({
-    data: BranchOptionalDefaultsWithPartialRelationsSchema,
+    data: CakeRequestItemsOptionalDefaultsSchema,
     message: z.string(),
 })
 
 export default (app: TypeApplication) =>
-    app.get(
+    app.delete(
         "/:id",
         async ({ params, set }) => {
             try {
                 const { id } = params
                 const deps = {
-                    BranchService: BranchService({ db: DatabaseContext }),
+                    CakeRequestItemsService: CakeRequestItemsService({ db: DatabaseContext }),
                 }
-                const result = await deps.BranchService.getOne({ id })
+                const result = await deps.CakeRequestItemsService.onDelete(id)
                 if (!result)
-                    throw NewError("Failed to fetch Branch Not Found", "FETCH_FAILED", 404)
+                    throw NewError("Failed to Delete CakeRequestItems Not Found", "Delete_FAILED", 404)
                 const parse = ResponseSchema.safeParse({
                     data: result,
-                    message: "Branch fetched successfully",
+                    message: "CakeRequestItems Deleted successfully",
 
                 })
                 if (!parse.success)
@@ -35,7 +35,7 @@ export default (app: TypeApplication) =>
                 return parse.data
             }
             catch (error) {
-                console.error("Error fetching Branch:", error)
+                console.error("Error Deleting CakeRequestItems:", error)
                 const err = ParseError(error)
                 set.status = err.status
                 return {
@@ -47,13 +47,13 @@ export default (app: TypeApplication) =>
         },
         {
             detail: {
-                tags: ["Branch"],
+                tags: ["CakeRequestItems"],
                 params: z.object({
-                    id: z.string().min(1, "Branch ID is required"),
+                    id: z.string().min(1, "CakeRequestItems ID is required"),
                 }),
                 responses: {
                     200: {
-                        description: "Branch fetch data success",
+                        description: "CakeRequestItems Delete data success",
                         content: {
                             "application/json": {
                                 schema: ResponseSchema,
@@ -61,19 +61,19 @@ export default (app: TypeApplication) =>
                         },
                     },
                     404: {
-                        description: "Branch not found",
+                        description: "CakeRequestItems not found",
                         content: {
                             "application/json": {
                                 schema: FailResponseSchema.default({
-                                    code: "FETCH_FAILED",
-                                    message: "Failed to fetch Branch Not Found",
+                                    code: "Delete_FAILED",
+                                    message: "Failed to Delete CakeRequestItems Not Found",
                                     status: 404,
                                 }),
                             },
                         },
                     },
                     500: {
-                        description: "Branch fetch data fail",
+                        description: "CakeRequestItems Delete data fail",
                         content: {
                             "application/json": {
                                 schema: FailResponseSchema,

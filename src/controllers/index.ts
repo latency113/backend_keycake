@@ -4,6 +4,10 @@ import Branch from "./Branch/index.js"
 import GradeLevel from "./GradeLevel/index.js"
 import Room from "./Room/index.js"
 import User from "./User/index.js"
+import CakeRequest from "./CakeRequest/index.js"
+import CakeRequestItem from "./CakeRequestItem/index.js"
+import Product from "./Product/index.js"
+import Unit from "./Unit/index.js"
 
 export default () => {
   const app = createApplication()
@@ -12,5 +16,9 @@ export default () => {
   app.use(Branch(app))
   app.use(Room(app))
   app.use(GradeLevel(app))
+  app.use(CakeRequest(app))
+  app.use(CakeRequestItem(app))
+  app.use(Product(app))
+  app.use(Unit(app))
   return app
 }

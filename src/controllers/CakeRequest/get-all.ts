@@ -1,14 +1,14 @@
 import { Elysia } from "elysia";
 import { NewError, ParseError } from "@/helper/error.js";
 import DatabaseContext from "@/repositories/prisma.js";
-import { BranchService } from "@/services/index.js";
+import { CakeRequestService } from "@/services/index.js";
 import { BaseRequestQuerySchema } from "@/types/global/index.js";
 import { FailResponseSchema } from "@/types/global/response.js";
-import { BranchOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js";
+import { CakeRequestOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js";
 import z from "zod";
 
 const ResponseSchema = z.object({
-  data: BranchOptionalDefaultsWithPartialRelationsSchema.array(),
+  data: CakeRequestOptionalDefaultsWithPartialRelationsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),
@@ -33,17 +33,17 @@ export default (app: Elysia) =>
         }
         const { limit, page } = parsed.data;
         const deps = {
-          BranchService: BranchService({ db: DatabaseContext }),
+          CakeRequestService: CakeRequestService({ db: DatabaseContext }),
         };
         const [result, total] = await Promise.all([
-          deps.BranchService.getAll({ pagination: { limit, page } }),
-          deps.BranchService.count(),
+          deps.CakeRequestService.getAll({ pagination: { limit, page } }),
+          deps.CakeRequestService.count(),
         ]);
         if (!result)
-          throw NewError("Failed to fetch Branch", "FETCH_FAILED", 500);
+          throw NewError("Failed to fetch CakeRequest", "FETCH_FAILED", 500);
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Branch fetched successfully",
+          message: "CakeRequest fetched successfully",
           meta_data: {
             limit,
             page,
@@ -59,7 +59,7 @@ export default (app: Elysia) =>
         set.status = 200;
         return parse.data;
       } catch (error) {
-        console.error("Error fetching BranchType:", error);
+        console.error("Error fetching CakeRequestType:", error);
         const err = ParseError(error);
         const fail = FailResponseSchema.safeParse({
           code: err.code,
@@ -80,10 +80,10 @@ export default (app: Elysia) =>
     },
     {
       detail: {
-        tags: ["Branch"],
+        tags: ["CakeRequest"],
         responses: {
           200: {
-            description: "Branch fetch success",
+            description: "CakeRequest fetch success",
             content: {
               "application/json": {
                 schema: ResponseSchema,
@@ -91,7 +91,7 @@ export default (app: Elysia) =>
             },
           },
           500: {
-            description: "Branch fetch fail",
+            description: "CakeRequest fetch fail",
             content: {
               "application/json": {
                 schema: FailResponseSchema,
