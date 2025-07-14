@@ -15,18 +15,21 @@ import OrderItem from "./OrderItem/index.js"
 
 export default () => {
   const app = createApplication()
-  app.use(authController)
-  app.use(User(app))
-  app.use(Branch(app))
-  app.use(Room(app))
-  app.use(GradeLevel(app))
-  app.use(Team(app))
-  app.use(Product(app))
-  app.use(Unit(app))
-  app.use(CakeCount(app))
-  app.use(CakeRequest(app))
-  app.use(CakeRequestItem(app))
-  app.use(Order(app))
-  app.use(OrderItem(app))
+  app.group("/api/v1", (app) => {
+    app.use(authController)
+    app.use(User(app))
+    app.use(Branch(app))
+    app.use(Room(app))
+    app.use(GradeLevel(app))
+    app.use(Team(app))
+    app.use(Product(app))
+    app.use(Unit(app))
+    app.use(CakeCount(app))
+    app.use(CakeRequest(app))
+    app.use(CakeRequestItem(app))
+    app.use(Order(app))
+    app.use(OrderItem(app))
+    return app
+  })
   return app
 }
