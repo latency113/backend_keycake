@@ -22,6 +22,10 @@ export function OrderItemService({ db }: OrderItemDependencies) {
       console.log(`[OrderItemService] getAll called with param:`, param)
       try {
         const result = await db.orderItem.findMany({
+          include:{
+            order: true,
+            product: true,
+          },
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
           where: param?.where,
@@ -37,7 +41,7 @@ export function OrderItemService({ db }: OrderItemDependencies) {
     async getById(id: string): Promise<OrderItem | null> {
       console.log(`[OrderItemService] getById called with id: ${id}`)
       try {
-        const result = await db.orderItem.findFirst({ where: { id } })
+        const result = await db.orderItem.findFirst({ where: { id } , include: { order: true, product: true } })
         console.log(`[OrderItemService] getById completed, found:`, !!result)
         return result
       }
@@ -49,7 +53,7 @@ export function OrderItemService({ db }: OrderItemDependencies) {
     async getOne(param: TypeOrderItemWhereInput["where"]): Promise<OrderItem | null> {
       console.log(`[OrderItemService] getOne called with param:`, param)
       try {
-        const result = await db.orderItem.findFirst({ where: param })
+        const result = await db.orderItem.findFirst({ where: param , include: { order: true, product: true } })
         console.log(`[OrderItemService] getOne completed, found:`, !!result)
         return result
       }

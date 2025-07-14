@@ -103,22 +103,23 @@ model Unit {
 
 model Order {
   id           String      @id @default(cuid())
-  customerName String?
-  room_id      String
+  customerName String
+  room_id      String?
   team_id      String?
   orderDate    DateTime
   totalPrice   Float
-  book_number  Int
+  book_number  Int 
   number       Int
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
 
   team Team? @relation(fields: [team_id], references: [id])
-  room Room  @relation(fields: [room_id], references: [id])
+  room Room?  @relation(fields: [room_id], references: [id])
 
   @@index([room_id], name: "idx_order_room_id")
   @@index([team_id], name: "idx_order_team_id")
+  @@unique([book_number, number])
 }
 
 model OrderItem {

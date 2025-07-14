@@ -37,7 +37,7 @@ export function OrderService({ db }: OrderDependencies) {
     async getById(id: string): Promise<Order | null> {
       console.log(`[OrderService] getById called with id: ${id}`)
       try {
-        const result = await db.order.findFirst({ where: { id } })
+        const result = await db.order.findFirst({ where: { id } ,include:{ orderItems:true }})
         console.log(`[OrderService] getById completed, found:`, !!result)
         return result
       }
@@ -49,7 +49,7 @@ export function OrderService({ db }: OrderDependencies) {
     async getOne(param: TypeOrderWhereInput["where"]): Promise<Order | null> {
       console.log(`[OrderService] getOne called with param:`, param)
       try {
-        const result = await db.order.findFirst({ where: param })
+        const result = await db.order.findFirst({ where: param , include:{ orderItems:true } })
         console.log(`[OrderService] getOne completed, found:`, !!result)
         return result
       }

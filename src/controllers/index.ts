@@ -8,6 +8,10 @@ import CakeRequest from "./CakeRequest/index.js"
 import CakeRequestItem from "./CakeRequestItem/index.js"
 import Product from "./Product/index.js"
 import Unit from "./Unit/index.js"
+import Team from "./Team/index.js"
+import CakeCount from "./CakeCount/index.js"
+import Order from "./Order/index.js"
+import OrderItem from "./OrderItem/index.js"
 
 export default () => {
   const app = createApplication()
@@ -16,9 +20,13 @@ export default () => {
   app.use(Branch(app))
   app.use(Room(app))
   app.use(GradeLevel(app))
-  app.use(CakeRequest(app))
-  app.use(CakeRequestItem(app))
+  app.use(Team(app))
   app.use(Product(app))
   app.use(Unit(app))
+  app.use(CakeCount(app))
+  app.use(CakeRequest(app))
+  app.use(CakeRequestItem(app))
+  app.use(Order(app))
+  app.use(OrderItem(app))
   return app
 }
