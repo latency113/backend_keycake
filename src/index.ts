@@ -11,7 +11,6 @@ const app = new Elysia()
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
     methods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
-    origin: ["http://localhost:3000"],
   }))
   app.use(controllers())
   app.use(
