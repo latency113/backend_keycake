@@ -1,5 +1,5 @@
 import type { Branch, Prisma, PrismaClient } from "@prisma/client"
-import type { BranchWithDetails, GradeLevelWithRoomCount, TypeBranchService, TypeBranchWhereInput } from "./Branch.type.js"
+import type { BranchWithRooms, GradeLevelWithRoomCount, TypeBranchService, TypeBranchWhereInput } from "./Branch.type.js"
 
 export type BranchDependencies = {
   db: PrismaClient
@@ -18,7 +18,7 @@ export function BranchService({ db }: BranchDependencies) {
         throw error
       }
     },
-    async getAll(param?: TypeBranchWhereInput): Promise<BranchWithDetails[]> {
+    async getAll(param?: TypeBranchWhereInput): Promise<BranchWithRooms[]> {
       console.log(`[BranchService] getAll called with param:`, param)
       try {
         const branches = await db.branch.findMany({
@@ -34,7 +34,7 @@ export function BranchService({ db }: BranchDependencies) {
           where: param?.where,
         })
 
-        const result: BranchWithDetails[] = branches.map((branch) => {
+        const result: BranchWithRooms[] = branches.map((branch) => {
           const gradeLevelsMap = new Map<string, GradeLevelWithRoomCount>()
 
           branch.rooms.forEach((room) => {
@@ -69,7 +69,7 @@ export function BranchService({ db }: BranchDependencies) {
         throw error
       }
     },
-    async getById(id: string): Promise<BranchWithDetails | null> {
+    async getById(id: string): Promise<BranchWithRooms | null> {
       console.log(`[BranchService] getById called with id: ${id}`)
       try {
         const branch = await db.branch.findFirst({
@@ -109,7 +109,7 @@ export function BranchService({ db }: BranchDependencies) {
           }
         })
 
-        const result: BranchWithDetails = {
+        const result: BranchWithRooms = {
           ...branch,
           gradeLevels: Array.from(gradeLevelsMap.values()),
         }

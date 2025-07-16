@@ -83,8 +83,15 @@ export type BranchPartial = z.infer<typeof BranchPartialSchema>
 
 export const BranchOptionalDefaultsSchema = BranchSchema.merge(z.object({
   id: z.string().optional(),
-  rooms: z.lazy(() => RoomOptionalDefaultsSchema.array()).optional(),
 }))
+
+export const BranchWithRoomsSchema = BranchSchema.merge(z.object({
+  rooms: z.lazy(() => RoomSchema.merge(z.object({
+    grade_level: z.lazy(() => GradeLevelSchema).nullable(),
+  })).array()),
+}));
+
+export type BranchWithRooms = z.infer<typeof BranchWithRoomsSchema>;
 
 export type BranchOptionalDefaults = z.infer<typeof BranchOptionalDefaultsSchema>
 
@@ -114,7 +121,6 @@ export type RoomPartial = z.infer<typeof RoomPartialSchema>
 
 export const RoomOptionalDefaultsSchema = RoomSchema.merge(z.object({
   id: z.string().optional(),
-  branch: z.lazy(() => BranchOptionalDefaultsSchema).optional(),
 }))
 
 export type RoomOptionalDefaults = z.infer<typeof RoomOptionalDefaultsSchema>
@@ -241,7 +247,6 @@ export type ProductPartial = z.infer<typeof ProductPartialSchema>
 
 export const ProductOptionalDefaultsSchema = ProductSchema.merge(z.object({
   id: z.string().optional(),
-  unit: z.lazy(() => UnitOptionalDefaultsSchema).optional(),
 }))
 
 export type ProductOptionalDefaults = z.infer<typeof ProductOptionalDefaultsSchema>
@@ -518,8 +523,7 @@ export const RoomWithBranchSchema = RoomSchema.merge(z.object({
   branch: z.lazy(() => BranchSchema),
 }))
 
-// GRADE LEVEL
-//------------------------------------------------------
+export type RoomWithBranch = z.infer<typeof RoomWithBranchSchema>
 
 export const GradeLevelIncludeSchema: z.ZodType<Prisma.GradeLevelInclude> = z.object({
 }).strict()
@@ -642,6 +646,9 @@ export const ProductSelectSchema: z.ZodType<Prisma.ProductSelect> = z.object({
 export const ProductWithUnitSchema = ProductSchema.merge(z.object({
   unit: z.lazy(() => UnitSchema),
 }))
+
+
+export type ProductWithUnit = z.infer<typeof ProductWithUnitSchema>
 
 // UNIT
 //------------------------------------------------------
