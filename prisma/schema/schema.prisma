@@ -4,7 +4,7 @@ generator client {
 
 generator zod {
   provider                         = "zod-prisma-types"
-  output                           = "./../../src/types/schema/prisma"
+  output                           = "./../../src/types/schema/prisma "
   addIncludeType                   = "true"
   addInputTypeValidation           = "true"
   addSelectType                    = "true"
@@ -15,7 +15,7 @@ generator zod {
   createPartialTypes               = "true"
   prismaClientPath                 = "@prisma/client"
   useDefaultValidators             = "true"
-  useMultipleFiles                 = "false"
+  useMultipleFiles                 = "true"
   validateWhereUniqueInput         = "true"
   writeBarrelFiles                 = "false"
   writeNullishInModelTypes         = "true"
