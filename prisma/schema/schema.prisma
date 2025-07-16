@@ -137,7 +137,7 @@ model Order {
   totalPrice   Float
   book_number  Int
   number       Int
-  phone        Int
+  phone        String
   pickup_date  DateTime
   depository   String
   createdAt    DateTime    @default(now())
