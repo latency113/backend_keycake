@@ -293,7 +293,7 @@ export const OrderSchema = z.object({
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
-  phone: z.number().int(),
+  phone: z.string(),
   pickup_date: z.coerce.date(),
   depository: z.string(),
   createdAt: z.coerce.date(),
