@@ -66,8 +66,8 @@ export default (app: TypeApplication) =>
               schema: RequestSchema,
               example: {
                 customerName: "",
-                room_id: "",
-                team_id: "",
+                room_id: "หากไม่มีให้ลบ field นี้",
+                team_id: "หากไม่มีให้ลบ field นี้",
                 orderDate: "",
                 totalPrice: 0,
                 book_number: 0,
