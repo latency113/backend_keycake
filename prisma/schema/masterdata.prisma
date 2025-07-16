@@ -108,18 +108,21 @@ model Order {
   team_id      String?
   orderDate    DateTime
   totalPrice   Float
-  book_number  Int 
+  book_number  Int
   number       Int
+  phone        Int
+  pickup_date  DateTime
+  depository   String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
 
   team Team? @relation(fields: [team_id], references: [id])
-  room Room?  @relation(fields: [room_id], references: [id])
+  room Room? @relation(fields: [room_id], references: [id])
 
+  @@unique([book_number, number])
   @@index([room_id], name: "idx_order_room_id")
   @@index([team_id], name: "idx_order_team_id")
-  @@unique([book_number, number])
 }
 
 model OrderItem {
