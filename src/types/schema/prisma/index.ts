@@ -10,8 +10,6 @@ import type { Prisma } from '@prisma/client';
 // ENUMS
 /////////////////////////////////////////
 
-export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
-
 export const BranchScalarFieldEnumSchema = z.enum(['id','name','group_number']);
 
 export const RoomScalarFieldEnumSchema = z.enum(['id','name','branch_id','grade_level_id']);
@@ -26,7 +24,7 @@ export const ProductScalarFieldEnumSchema = z.enum(['id','name','price','unit_id
 
 export const UnitScalarFieldEnumSchema = z.enum(['id','name_th','name_en']);
 
-export const OrderScalarFieldEnumSchema = z.enum(['id','customerName','room_id','team_id','orderDate','totalPrice','book_number','number','createdAt','updatedAt']);
+export const OrderScalarFieldEnumSchema = z.enum(['id','customerName','room_id','team_id','orderDate','totalPrice','book_number','number','phone','pickup_date','depository','createdAt','updatedAt']);
 
 export const OrderItemScalarFieldEnumSchema = z.enum(['id','order_id','product_id','quantity','unitPrice','subtotal','createdAt','updatedAt']);
 
@@ -39,8 +37,6 @@ export const CakeRequestItemsScalarFieldEnumSchema = z.enum(['id','request_id','
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
-
-export const NullsOrderSchema = z.enum(['first','last']);
 
 export const RoleSchema = z.enum(['ADMIN','OFFICER','USER']);
 
@@ -67,7 +63,7 @@ export type RequestStatusType = `${z.infer<typeof RequestStatusSchema>}`
 /////////////////////////////////////////
 
 export const BranchSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   name: z.string(),
   group_number: z.string(),
 })
@@ -86,76 +82,18 @@ export type BranchPartial = z.infer<typeof BranchPartialSchema>
 //------------------------------------------------------
 
 export const BranchOptionalDefaultsSchema = BranchSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
+  rooms: z.lazy(() => RoomOptionalDefaultsSchema.array()).optional(),
 }))
 
 export type BranchOptionalDefaults = z.infer<typeof BranchOptionalDefaultsSchema>
-
-// BRANCH RELATION SCHEMA
-//------------------------------------------------------
-
-export type BranchRelations = {
-  rooms: RoomWithRelations[];
-  CakeRequest: CakeRequestWithRelations[];
-};
-
-export type BranchWithRelations = z.infer<typeof BranchSchema> & BranchRelations
-
-export const BranchWithRelationsSchema: z.ZodType<BranchWithRelations> = BranchSchema.merge(z.object({
-  rooms: z.lazy(() => RoomWithRelationsSchema).array(),
-  CakeRequest: z.lazy(() => CakeRequestWithRelationsSchema).array(),
-}))
-
-// BRANCH OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type BranchOptionalDefaultsRelations = {
-  rooms: RoomOptionalDefaultsWithRelations[];
-  CakeRequest: CakeRequestOptionalDefaultsWithRelations[];
-};
-
-export type BranchOptionalDefaultsWithRelations = z.infer<typeof BranchOptionalDefaultsSchema> & BranchOptionalDefaultsRelations
-
-export const BranchOptionalDefaultsWithRelationsSchema: z.ZodType<BranchOptionalDefaultsWithRelations> = BranchOptionalDefaultsSchema.merge(z.object({
-  rooms: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema).array(),
-  CakeRequest: z.lazy(() => CakeRequestOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// BRANCH PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type BranchPartialRelations = {
-  rooms?: RoomPartialWithRelations[];
-  CakeRequest?: CakeRequestPartialWithRelations[];
-};
-
-export type BranchPartialWithRelations = z.infer<typeof BranchPartialSchema> & BranchPartialRelations
-
-export const BranchPartialWithRelationsSchema: z.ZodType<BranchPartialWithRelations> = BranchPartialSchema.merge(z.object({
-  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
-})).partial()
-
-export type BranchOptionalDefaultsWithPartialRelations = z.infer<typeof BranchOptionalDefaultsSchema> & BranchPartialRelations
-
-export const BranchOptionalDefaultsWithPartialRelationsSchema: z.ZodType<BranchOptionalDefaultsWithPartialRelations> = BranchOptionalDefaultsSchema.merge(z.object({
-  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
-}).partial())
-
-export type BranchWithPartialRelations = z.infer<typeof BranchSchema> & BranchPartialRelations
-
-export const BranchWithPartialRelationsSchema: z.ZodType<BranchWithPartialRelations> = BranchSchema.merge(z.object({
-  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
-}).partial())
 
 /////////////////////////////////////////
 // ROOM SCHEMA
 /////////////////////////////////////////
 
 export const RoomSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   name: z.string(),
   branch_id: z.string(),
   grade_level_id: z.string(),
@@ -175,85 +113,11 @@ export type RoomPartial = z.infer<typeof RoomPartialSchema>
 //------------------------------------------------------
 
 export const RoomOptionalDefaultsSchema = RoomSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
+  branch: z.lazy(() => BranchOptionalDefaultsSchema).optional(),
 }))
 
 export type RoomOptionalDefaults = z.infer<typeof RoomOptionalDefaultsSchema>
-
-// ROOM RELATION SCHEMA
-//------------------------------------------------------
-
-export type RoomRelations = {
-  branch: BranchWithRelations;
-  grade_level?: GradeLevelWithRelations | null;
-  teams: TeamWithRelations[];
-  orders: OrderWithRelations[];
-};
-
-export type RoomWithRelations = z.infer<typeof RoomSchema> & RoomRelations
-
-export const RoomWithRelationsSchema: z.ZodType<RoomWithRelations> = RoomSchema.merge(z.object({
-  branch: z.lazy(() => BranchWithRelationsSchema),
-  grade_level: z.lazy(() => GradeLevelWithRelationsSchema).nullish(),
-  teams: z.lazy(() => TeamWithRelationsSchema).array(),
-  orders: z.lazy(() => OrderWithRelationsSchema).array(),
-}))
-
-// ROOM OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type RoomOptionalDefaultsRelations = {
-  branch: BranchOptionalDefaultsWithRelations;
-  grade_level?: GradeLevelOptionalDefaultsWithRelations | null;
-  teams: TeamOptionalDefaultsWithRelations[];
-  orders: OrderOptionalDefaultsWithRelations[];
-};
-
-export type RoomOptionalDefaultsWithRelations = z.infer<typeof RoomOptionalDefaultsSchema> & RoomOptionalDefaultsRelations
-
-export const RoomOptionalDefaultsWithRelationsSchema: z.ZodType<RoomOptionalDefaultsWithRelations> = RoomOptionalDefaultsSchema.merge(z.object({
-  branch: z.lazy(() => BranchOptionalDefaultsWithRelationsSchema),
-  grade_level: z.lazy(() => GradeLevelOptionalDefaultsWithRelationsSchema).nullish(),
-  teams: z.lazy(() => TeamOptionalDefaultsWithRelationsSchema).array(),
-  orders: z.lazy(() => OrderOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// ROOM PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type RoomPartialRelations = {
-  branch?: BranchPartialWithRelations;
-  grade_level?: GradeLevelPartialWithRelations | null;
-  teams?: TeamPartialWithRelations[];
-  orders?: OrderPartialWithRelations[];
-};
-
-export type RoomPartialWithRelations = z.infer<typeof RoomPartialSchema> & RoomPartialRelations
-
-export const RoomPartialWithRelationsSchema: z.ZodType<RoomPartialWithRelations> = RoomPartialSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-  grade_level: z.lazy(() => GradeLevelPartialWithRelationsSchema).nullish(),
-  teams: z.lazy(() => TeamPartialWithRelationsSchema).array(),
-  orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
-})).partial()
-
-export type RoomOptionalDefaultsWithPartialRelations = z.infer<typeof RoomOptionalDefaultsSchema> & RoomPartialRelations
-
-export const RoomOptionalDefaultsWithPartialRelationsSchema: z.ZodType<RoomOptionalDefaultsWithPartialRelations> = RoomOptionalDefaultsSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-  grade_level: z.lazy(() => GradeLevelPartialWithRelationsSchema).nullish(),
-  teams: z.lazy(() => TeamPartialWithRelationsSchema).array(),
-  orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
-}).partial())
-
-export type RoomWithPartialRelations = z.infer<typeof RoomSchema> & RoomPartialRelations
-
-export const RoomWithPartialRelationsSchema: z.ZodType<RoomWithPartialRelations> = RoomSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-  grade_level: z.lazy(() => GradeLevelPartialWithRelationsSchema).nullish(),
-  teams: z.lazy(() => TeamPartialWithRelationsSchema).array(),
-  orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
-}).partial())
 
 /////////////////////////////////////////
 // GRADE LEVEL SCHEMA
@@ -261,7 +125,7 @@ export const RoomWithPartialRelationsSchema: z.ZodType<RoomWithPartialRelations>
 
 export const GradeLevelSchema = z.object({
   level: GradeLevelTypeSchema,
-  id: z.string().cuid(),
+  id: z.string(),
   year: z.number().int(),
 })
 
@@ -279,61 +143,10 @@ export type GradeLevelPartial = z.infer<typeof GradeLevelPartialSchema>
 //------------------------------------------------------
 
 export const GradeLevelOptionalDefaultsSchema = GradeLevelSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
 }))
 
 export type GradeLevelOptionalDefaults = z.infer<typeof GradeLevelOptionalDefaultsSchema>
-
-// GRADE LEVEL RELATION SCHEMA
-//------------------------------------------------------
-
-export type GradeLevelRelations = {
-  rooms: RoomWithRelations[];
-};
-
-export type GradeLevelWithRelations = z.infer<typeof GradeLevelSchema> & GradeLevelRelations
-
-export const GradeLevelWithRelationsSchema: z.ZodType<GradeLevelWithRelations> = GradeLevelSchema.merge(z.object({
-  rooms: z.lazy(() => RoomWithRelationsSchema).array(),
-}))
-
-// GRADE LEVEL OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type GradeLevelOptionalDefaultsRelations = {
-  rooms: RoomOptionalDefaultsWithRelations[];
-};
-
-export type GradeLevelOptionalDefaultsWithRelations = z.infer<typeof GradeLevelOptionalDefaultsSchema> & GradeLevelOptionalDefaultsRelations
-
-export const GradeLevelOptionalDefaultsWithRelationsSchema: z.ZodType<GradeLevelOptionalDefaultsWithRelations> = GradeLevelOptionalDefaultsSchema.merge(z.object({
-  rooms: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// GRADE LEVEL PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type GradeLevelPartialRelations = {
-  rooms?: RoomPartialWithRelations[];
-};
-
-export type GradeLevelPartialWithRelations = z.infer<typeof GradeLevelPartialSchema> & GradeLevelPartialRelations
-
-export const GradeLevelPartialWithRelationsSchema: z.ZodType<GradeLevelPartialWithRelations> = GradeLevelPartialSchema.merge(z.object({
-  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-})).partial()
-
-export type GradeLevelOptionalDefaultsWithPartialRelations = z.infer<typeof GradeLevelOptionalDefaultsSchema> & GradeLevelPartialRelations
-
-export const GradeLevelOptionalDefaultsWithPartialRelationsSchema: z.ZodType<GradeLevelOptionalDefaultsWithPartialRelations> = GradeLevelOptionalDefaultsSchema.merge(z.object({
-  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-}).partial())
-
-export type GradeLevelWithPartialRelations = z.infer<typeof GradeLevelSchema> & GradeLevelPartialRelations
-
-export const GradeLevelWithPartialRelationsSchema: z.ZodType<GradeLevelWithPartialRelations> = GradeLevelSchema.merge(z.object({
-  rooms: z.lazy(() => RoomPartialWithRelationsSchema).array(),
-}).partial())
 
 /////////////////////////////////////////
 // USER SCHEMA
@@ -341,7 +154,7 @@ export const GradeLevelWithPartialRelationsSchema: z.ZodType<GradeLevelWithParti
 
 export const UserSchema = z.object({
   role: RoleSchema,
-  id: z.string().cuid(),
+  id: z.string(),
   fname: z.string(),
   lastname: z.string(),
   username: z.string(),
@@ -366,70 +179,19 @@ export type UserPartial = z.infer<typeof UserPartialSchema>
 
 export const UserOptionalDefaultsSchema = UserSchema.merge(z.object({
   role: RoleSchema.optional(),
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type UserOptionalDefaults = z.infer<typeof UserOptionalDefaultsSchema>
 
-// USER RELATION SCHEMA
-//------------------------------------------------------
-
-export type UserRelations = {
-  CakeRequest: CakeRequestWithRelations[];
-};
-
-export type UserWithRelations = z.infer<typeof UserSchema> & UserRelations
-
-export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.merge(z.object({
-  CakeRequest: z.lazy(() => CakeRequestWithRelationsSchema).array(),
-}))
-
-// USER OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type UserOptionalDefaultsRelations = {
-  CakeRequest: CakeRequestOptionalDefaultsWithRelations[];
-};
-
-export type UserOptionalDefaultsWithRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserOptionalDefaultsRelations
-
-export const UserOptionalDefaultsWithRelationsSchema: z.ZodType<UserOptionalDefaultsWithRelations> = UserOptionalDefaultsSchema.merge(z.object({
-  CakeRequest: z.lazy(() => CakeRequestOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// USER PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type UserPartialRelations = {
-  CakeRequest?: CakeRequestPartialWithRelations[];
-};
-
-export type UserPartialWithRelations = z.infer<typeof UserPartialSchema> & UserPartialRelations
-
-export const UserPartialWithRelationsSchema: z.ZodType<UserPartialWithRelations> = UserPartialSchema.merge(z.object({
-  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
-})).partial()
-
-export type UserOptionalDefaultsWithPartialRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserPartialRelations
-
-export const UserOptionalDefaultsWithPartialRelationsSchema: z.ZodType<UserOptionalDefaultsWithPartialRelations> = UserOptionalDefaultsSchema.merge(z.object({
-  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
-}).partial())
-
-export type UserWithPartialRelations = z.infer<typeof UserSchema> & UserPartialRelations
-
-export const UserWithPartialRelationsSchema: z.ZodType<UserWithPartialRelations> = UserSchema.merge(z.object({
-  CakeRequest: z.lazy(() => CakeRequestPartialWithRelationsSchema).array(),
-}).partial())
-
 /////////////////////////////////////////
 // TEAM SCHEMA
 /////////////////////////////////////////
 
 export const TeamSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   name: z.string(),
   room_id: z.string(),
 })
@@ -448,76 +210,17 @@ export type TeamPartial = z.infer<typeof TeamPartialSchema>
 //------------------------------------------------------
 
 export const TeamOptionalDefaultsSchema = TeamSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
 }))
 
 export type TeamOptionalDefaults = z.infer<typeof TeamOptionalDefaultsSchema>
-
-// TEAM RELATION SCHEMA
-//------------------------------------------------------
-
-export type TeamRelations = {
-  room: RoomWithRelations;
-  orders: OrderWithRelations[];
-};
-
-export type TeamWithRelations = z.infer<typeof TeamSchema> & TeamRelations
-
-export const TeamWithRelationsSchema: z.ZodType<TeamWithRelations> = TeamSchema.merge(z.object({
-  room: z.lazy(() => RoomWithRelationsSchema),
-  orders: z.lazy(() => OrderWithRelationsSchema).array(),
-}))
-
-// TEAM OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type TeamOptionalDefaultsRelations = {
-  room: RoomOptionalDefaultsWithRelations;
-  orders: OrderOptionalDefaultsWithRelations[];
-};
-
-export type TeamOptionalDefaultsWithRelations = z.infer<typeof TeamOptionalDefaultsSchema> & TeamOptionalDefaultsRelations
-
-export const TeamOptionalDefaultsWithRelationsSchema: z.ZodType<TeamOptionalDefaultsWithRelations> = TeamOptionalDefaultsSchema.merge(z.object({
-  room: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema),
-  orders: z.lazy(() => OrderOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// TEAM PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type TeamPartialRelations = {
-  room?: RoomPartialWithRelations;
-  orders?: OrderPartialWithRelations[];
-};
-
-export type TeamPartialWithRelations = z.infer<typeof TeamPartialSchema> & TeamPartialRelations
-
-export const TeamPartialWithRelationsSchema: z.ZodType<TeamPartialWithRelations> = TeamPartialSchema.merge(z.object({
-  room: z.lazy(() => RoomPartialWithRelationsSchema),
-  orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
-})).partial()
-
-export type TeamOptionalDefaultsWithPartialRelations = z.infer<typeof TeamOptionalDefaultsSchema> & TeamPartialRelations
-
-export const TeamOptionalDefaultsWithPartialRelationsSchema: z.ZodType<TeamOptionalDefaultsWithPartialRelations> = TeamOptionalDefaultsSchema.merge(z.object({
-  room: z.lazy(() => RoomPartialWithRelationsSchema),
-  orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
-}).partial())
-
-export type TeamWithPartialRelations = z.infer<typeof TeamSchema> & TeamPartialRelations
-
-export const TeamWithPartialRelationsSchema: z.ZodType<TeamWithPartialRelations> = TeamSchema.merge(z.object({
-  room: z.lazy(() => RoomPartialWithRelationsSchema),
-  orders: z.lazy(() => OrderPartialWithRelationsSchema).array(),
-}).partial())
 
 /////////////////////////////////////////
 // PRODUCT SCHEMA
 /////////////////////////////////////////
 
 export const ProductSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
@@ -537,92 +240,18 @@ export type ProductPartial = z.infer<typeof ProductPartialSchema>
 //------------------------------------------------------
 
 export const ProductOptionalDefaultsSchema = ProductSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
+  unit: z.lazy(() => UnitOptionalDefaultsSchema).optional(),
 }))
 
 export type ProductOptionalDefaults = z.infer<typeof ProductOptionalDefaultsSchema>
-
-// PRODUCT RELATION SCHEMA
-//------------------------------------------------------
-
-export type ProductRelations = {
-  unit: UnitWithRelations;
-  orderItems: OrderItemWithRelations[];
-  cakeCounts: CakeCountWithRelations[];
-  items: CakeRequestItemsWithRelations[];
-};
-
-export type ProductWithRelations = z.infer<typeof ProductSchema> & ProductRelations
-
-export const ProductWithRelationsSchema: z.ZodType<ProductWithRelations> = ProductSchema.merge(z.object({
-  unit: z.lazy(() => UnitWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemWithRelationsSchema).array(),
-  cakeCounts: z.lazy(() => CakeCountWithRelationsSchema).array(),
-  items: z.lazy(() => CakeRequestItemsWithRelationsSchema).array(),
-}))
-
-// PRODUCT OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type ProductOptionalDefaultsRelations = {
-  unit: UnitOptionalDefaultsWithRelations;
-  orderItems: OrderItemOptionalDefaultsWithRelations[];
-  cakeCounts: CakeCountOptionalDefaultsWithRelations[];
-  items: CakeRequestItemsOptionalDefaultsWithRelations[];
-};
-
-export type ProductOptionalDefaultsWithRelations = z.infer<typeof ProductOptionalDefaultsSchema> & ProductOptionalDefaultsRelations
-
-export const ProductOptionalDefaultsWithRelationsSchema: z.ZodType<ProductOptionalDefaultsWithRelations> = ProductOptionalDefaultsSchema.merge(z.object({
-  unit: z.lazy(() => UnitOptionalDefaultsWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemOptionalDefaultsWithRelationsSchema).array(),
-  cakeCounts: z.lazy(() => CakeCountOptionalDefaultsWithRelationsSchema).array(),
-  items: z.lazy(() => CakeRequestItemsOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// PRODUCT PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type ProductPartialRelations = {
-  unit?: UnitPartialWithRelations;
-  orderItems?: OrderItemPartialWithRelations[];
-  cakeCounts?: CakeCountPartialWithRelations[];
-  items?: CakeRequestItemsPartialWithRelations[];
-};
-
-export type ProductPartialWithRelations = z.infer<typeof ProductPartialSchema> & ProductPartialRelations
-
-export const ProductPartialWithRelationsSchema: z.ZodType<ProductPartialWithRelations> = ProductPartialSchema.merge(z.object({
-  unit: z.lazy(() => UnitPartialWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
-  cakeCounts: z.lazy(() => CakeCountPartialWithRelationsSchema).array(),
-  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
-})).partial()
-
-export type ProductOptionalDefaultsWithPartialRelations = z.infer<typeof ProductOptionalDefaultsSchema> & ProductPartialRelations
-
-export const ProductOptionalDefaultsWithPartialRelationsSchema: z.ZodType<ProductOptionalDefaultsWithPartialRelations> = ProductOptionalDefaultsSchema.merge(z.object({
-  unit: z.lazy(() => UnitPartialWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
-  cakeCounts: z.lazy(() => CakeCountPartialWithRelationsSchema).array(),
-  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
-}).partial())
-
-export type ProductWithPartialRelations = z.infer<typeof ProductSchema> & ProductPartialRelations
-
-export const ProductWithPartialRelationsSchema: z.ZodType<ProductWithPartialRelations> = ProductSchema.merge(z.object({
-  unit: z.lazy(() => UnitPartialWithRelationsSchema),
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
-  cakeCounts: z.lazy(() => CakeCountPartialWithRelationsSchema).array(),
-  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
-}).partial())
 
 /////////////////////////////////////////
 // UNIT SCHEMA
 /////////////////////////////////////////
 
 export const UnitSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   name_th: z.string(),
   name_en: z.string(),
 })
@@ -641,68 +270,17 @@ export type UnitPartial = z.infer<typeof UnitPartialSchema>
 //------------------------------------------------------
 
 export const UnitOptionalDefaultsSchema = UnitSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
 }))
 
 export type UnitOptionalDefaults = z.infer<typeof UnitOptionalDefaultsSchema>
-
-// UNIT RELATION SCHEMA
-//------------------------------------------------------
-
-export type UnitRelations = {
-  products: ProductWithRelations[];
-};
-
-export type UnitWithRelations = z.infer<typeof UnitSchema> & UnitRelations
-
-export const UnitWithRelationsSchema: z.ZodType<UnitWithRelations> = UnitSchema.merge(z.object({
-  products: z.lazy(() => ProductWithRelationsSchema).array(),
-}))
-
-// UNIT OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type UnitOptionalDefaultsRelations = {
-  products: ProductOptionalDefaultsWithRelations[];
-};
-
-export type UnitOptionalDefaultsWithRelations = z.infer<typeof UnitOptionalDefaultsSchema> & UnitOptionalDefaultsRelations
-
-export const UnitOptionalDefaultsWithRelationsSchema: z.ZodType<UnitOptionalDefaultsWithRelations> = UnitOptionalDefaultsSchema.merge(z.object({
-  products: z.lazy(() => ProductOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// UNIT PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type UnitPartialRelations = {
-  products?: ProductPartialWithRelations[];
-};
-
-export type UnitPartialWithRelations = z.infer<typeof UnitPartialSchema> & UnitPartialRelations
-
-export const UnitPartialWithRelationsSchema: z.ZodType<UnitPartialWithRelations> = UnitPartialSchema.merge(z.object({
-  products: z.lazy(() => ProductPartialWithRelationsSchema).array(),
-})).partial()
-
-export type UnitOptionalDefaultsWithPartialRelations = z.infer<typeof UnitOptionalDefaultsSchema> & UnitPartialRelations
-
-export const UnitOptionalDefaultsWithPartialRelationsSchema: z.ZodType<UnitOptionalDefaultsWithPartialRelations> = UnitOptionalDefaultsSchema.merge(z.object({
-  products: z.lazy(() => ProductPartialWithRelationsSchema).array(),
-}).partial())
-
-export type UnitWithPartialRelations = z.infer<typeof UnitSchema> & UnitPartialRelations
-
-export const UnitWithPartialRelationsSchema: z.ZodType<UnitWithPartialRelations> = UnitSchema.merge(z.object({
-  products: z.lazy(() => ProductPartialWithRelationsSchema).array(),
-}).partial())
 
 /////////////////////////////////////////
 // ORDER SCHEMA
 /////////////////////////////////////////
 
 export const OrderSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   customerName: z.string(),
   room_id: z.string().nullish(),
   team_id: z.string().nullish(),
@@ -710,6 +288,9 @@ export const OrderSchema = z.object({
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -728,86 +309,19 @@ export type OrderPartial = z.infer<typeof OrderPartialSchema>
 //------------------------------------------------------
 
 export const OrderOptionalDefaultsSchema = OrderSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type OrderOptionalDefaults = z.infer<typeof OrderOptionalDefaultsSchema>
 
-// ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderRelations = {
-  orderItems: OrderItemWithRelations[];
-  team?: TeamWithRelations | null;
-  room?: RoomWithRelations | null;
-};
-
-export type OrderWithRelations = z.infer<typeof OrderSchema> & OrderRelations
-
-export const OrderWithRelationsSchema: z.ZodType<OrderWithRelations> = OrderSchema.merge(z.object({
-  orderItems: z.lazy(() => OrderItemWithRelationsSchema).array(),
-  team: z.lazy(() => TeamWithRelationsSchema).nullish(),
-  room: z.lazy(() => RoomWithRelationsSchema).nullish(),
-}))
-
-// ORDER OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderOptionalDefaultsRelations = {
-  orderItems: OrderItemOptionalDefaultsWithRelations[];
-  team?: TeamOptionalDefaultsWithRelations | null;
-  room?: RoomOptionalDefaultsWithRelations | null;
-};
-
-export type OrderOptionalDefaultsWithRelations = z.infer<typeof OrderOptionalDefaultsSchema> & OrderOptionalDefaultsRelations
-
-export const OrderOptionalDefaultsWithRelationsSchema: z.ZodType<OrderOptionalDefaultsWithRelations> = OrderOptionalDefaultsSchema.merge(z.object({
-  orderItems: z.lazy(() => OrderItemOptionalDefaultsWithRelationsSchema).array(),
-  team: z.lazy(() => TeamOptionalDefaultsWithRelationsSchema).nullish(),
-  room: z.lazy(() => RoomOptionalDefaultsWithRelationsSchema).nullish(),
-}))
-
-// ORDER PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderPartialRelations = {
-  orderItems?: OrderItemPartialWithRelations[];
-  team?: TeamPartialWithRelations | null;
-  room?: RoomPartialWithRelations | null;
-};
-
-export type OrderPartialWithRelations = z.infer<typeof OrderPartialSchema> & OrderPartialRelations
-
-export const OrderPartialWithRelationsSchema: z.ZodType<OrderPartialWithRelations> = OrderPartialSchema.merge(z.object({
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
-  team: z.lazy(() => TeamPartialWithRelationsSchema).nullish(),
-  room: z.lazy(() => RoomPartialWithRelationsSchema).nullish(),
-})).partial()
-
-export type OrderOptionalDefaultsWithPartialRelations = z.infer<typeof OrderOptionalDefaultsSchema> & OrderPartialRelations
-
-export const OrderOptionalDefaultsWithPartialRelationsSchema: z.ZodType<OrderOptionalDefaultsWithPartialRelations> = OrderOptionalDefaultsSchema.merge(z.object({
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
-  team: z.lazy(() => TeamPartialWithRelationsSchema).nullish(),
-  room: z.lazy(() => RoomPartialWithRelationsSchema).nullish(),
-}).partial())
-
-export type OrderWithPartialRelations = z.infer<typeof OrderSchema> & OrderPartialRelations
-
-export const OrderWithPartialRelationsSchema: z.ZodType<OrderWithPartialRelations> = OrderSchema.merge(z.object({
-  orderItems: z.lazy(() => OrderItemPartialWithRelationsSchema).array(),
-  team: z.lazy(() => TeamPartialWithRelationsSchema).nullish(),
-  room: z.lazy(() => RoomPartialWithRelationsSchema).nullish(),
-}).partial())
-
 /////////////////////////////////////////
 // ORDER ITEM SCHEMA
 /////////////////////////////////////////
 
 export const OrderItemSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   order_id: z.string(),
   product_id: z.string(),
   quantity: z.number().int(),
@@ -831,71 +345,12 @@ export type OrderItemPartial = z.infer<typeof OrderItemPartialSchema>
 //------------------------------------------------------
 
 export const OrderItemOptionalDefaultsSchema = OrderItemSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type OrderItemOptionalDefaults = z.infer<typeof OrderItemOptionalDefaultsSchema>
-
-// ORDER ITEM RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderItemRelations = {
-  order: OrderWithRelations;
-  product: ProductWithRelations;
-};
-
-export type OrderItemWithRelations = z.infer<typeof OrderItemSchema> & OrderItemRelations
-
-export const OrderItemWithRelationsSchema: z.ZodType<OrderItemWithRelations> = OrderItemSchema.merge(z.object({
-  order: z.lazy(() => OrderWithRelationsSchema),
-  product: z.lazy(() => ProductWithRelationsSchema),
-}))
-
-// ORDER ITEM OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderItemOptionalDefaultsRelations = {
-  order: OrderOptionalDefaultsWithRelations;
-  product: ProductOptionalDefaultsWithRelations;
-};
-
-export type OrderItemOptionalDefaultsWithRelations = z.infer<typeof OrderItemOptionalDefaultsSchema> & OrderItemOptionalDefaultsRelations
-
-export const OrderItemOptionalDefaultsWithRelationsSchema: z.ZodType<OrderItemOptionalDefaultsWithRelations> = OrderItemOptionalDefaultsSchema.merge(z.object({
-  order: z.lazy(() => OrderOptionalDefaultsWithRelationsSchema),
-  product: z.lazy(() => ProductOptionalDefaultsWithRelationsSchema),
-}))
-
-// ORDER ITEM PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderItemPartialRelations = {
-  order?: OrderPartialWithRelations;
-  product?: ProductPartialWithRelations;
-};
-
-export type OrderItemPartialWithRelations = z.infer<typeof OrderItemPartialSchema> & OrderItemPartialRelations
-
-export const OrderItemPartialWithRelationsSchema: z.ZodType<OrderItemPartialWithRelations> = OrderItemPartialSchema.merge(z.object({
-  order: z.lazy(() => OrderPartialWithRelationsSchema),
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-})).partial()
-
-export type OrderItemOptionalDefaultsWithPartialRelations = z.infer<typeof OrderItemOptionalDefaultsSchema> & OrderItemPartialRelations
-
-export const OrderItemOptionalDefaultsWithPartialRelationsSchema: z.ZodType<OrderItemOptionalDefaultsWithPartialRelations> = OrderItemOptionalDefaultsSchema.merge(z.object({
-  order: z.lazy(() => OrderPartialWithRelationsSchema),
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-}).partial())
-
-export type OrderItemWithPartialRelations = z.infer<typeof OrderItemSchema> & OrderItemPartialRelations
-
-export const OrderItemWithPartialRelationsSchema: z.ZodType<OrderItemWithPartialRelations> = OrderItemSchema.merge(z.object({
-  order: z.lazy(() => OrderPartialWithRelationsSchema),
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-}).partial())
 
 /////////////////////////////////////////
 // CAKE COUNT SCHEMA
@@ -903,7 +358,7 @@ export const OrderItemWithPartialRelationsSchema: z.ZodType<OrderItemWithPartial
 
 export const CakeCountSchema = z.object({
   pound: CakePoundSchema,
-  id: z.string().cuid(),
+  id: z.string(),
   product_id: z.string(),
   quantity: z.number().int(),
 })
@@ -922,61 +377,10 @@ export type CakeCountPartial = z.infer<typeof CakeCountPartialSchema>
 //------------------------------------------------------
 
 export const CakeCountOptionalDefaultsSchema = CakeCountSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
 }))
 
 export type CakeCountOptionalDefaults = z.infer<typeof CakeCountOptionalDefaultsSchema>
-
-// CAKE COUNT RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeCountRelations = {
-  product: ProductWithRelations;
-};
-
-export type CakeCountWithRelations = z.infer<typeof CakeCountSchema> & CakeCountRelations
-
-export const CakeCountWithRelationsSchema: z.ZodType<CakeCountWithRelations> = CakeCountSchema.merge(z.object({
-  product: z.lazy(() => ProductWithRelationsSchema),
-}))
-
-// CAKE COUNT OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeCountOptionalDefaultsRelations = {
-  product: ProductOptionalDefaultsWithRelations;
-};
-
-export type CakeCountOptionalDefaultsWithRelations = z.infer<typeof CakeCountOptionalDefaultsSchema> & CakeCountOptionalDefaultsRelations
-
-export const CakeCountOptionalDefaultsWithRelationsSchema: z.ZodType<CakeCountOptionalDefaultsWithRelations> = CakeCountOptionalDefaultsSchema.merge(z.object({
-  product: z.lazy(() => ProductOptionalDefaultsWithRelationsSchema),
-}))
-
-// CAKE COUNT PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeCountPartialRelations = {
-  product?: ProductPartialWithRelations;
-};
-
-export type CakeCountPartialWithRelations = z.infer<typeof CakeCountPartialSchema> & CakeCountPartialRelations
-
-export const CakeCountPartialWithRelationsSchema: z.ZodType<CakeCountPartialWithRelations> = CakeCountPartialSchema.merge(z.object({
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-})).partial()
-
-export type CakeCountOptionalDefaultsWithPartialRelations = z.infer<typeof CakeCountOptionalDefaultsSchema> & CakeCountPartialRelations
-
-export const CakeCountOptionalDefaultsWithPartialRelationsSchema: z.ZodType<CakeCountOptionalDefaultsWithPartialRelations> = CakeCountOptionalDefaultsSchema.merge(z.object({
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-}).partial())
-
-export type CakeCountWithPartialRelations = z.infer<typeof CakeCountSchema> & CakeCountPartialRelations
-
-export const CakeCountWithPartialRelationsSchema: z.ZodType<CakeCountWithPartialRelations> = CakeCountSchema.merge(z.object({
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-}).partial())
 
 /////////////////////////////////////////
 // CAKE REQUEST SCHEMA
@@ -984,7 +388,7 @@ export const CakeCountWithPartialRelationsSchema: z.ZodType<CakeCountWithPartial
 
 export const CakeRequestSchema = z.object({
   status: RequestStatusSchema,
-  id: z.string().cuid(),
+  id: z.string(),
   requestDate: z.coerce.date(),
   note: z.string().nullish(),
   user_id: z.string(),
@@ -1008,86 +412,19 @@ export type CakeRequestPartial = z.infer<typeof CakeRequestPartialSchema>
 
 export const CakeRequestOptionalDefaultsSchema = CakeRequestSchema.merge(z.object({
   status: RequestStatusSchema.optional(),
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type CakeRequestOptionalDefaults = z.infer<typeof CakeRequestOptionalDefaultsSchema>
 
-// CAKE REQUEST RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeRequestRelations = {
-  branch: BranchWithRelations;
-  user: UserWithRelations;
-  items: CakeRequestItemsWithRelations[];
-};
-
-export type CakeRequestWithRelations = z.infer<typeof CakeRequestSchema> & CakeRequestRelations
-
-export const CakeRequestWithRelationsSchema: z.ZodType<CakeRequestWithRelations> = CakeRequestSchema.merge(z.object({
-  branch: z.lazy(() => BranchWithRelationsSchema),
-  user: z.lazy(() => UserWithRelationsSchema),
-  items: z.lazy(() => CakeRequestItemsWithRelationsSchema).array(),
-}))
-
-// CAKE REQUEST OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeRequestOptionalDefaultsRelations = {
-  branch: BranchOptionalDefaultsWithRelations;
-  user: UserOptionalDefaultsWithRelations;
-  items: CakeRequestItemsOptionalDefaultsWithRelations[];
-};
-
-export type CakeRequestOptionalDefaultsWithRelations = z.infer<typeof CakeRequestOptionalDefaultsSchema> & CakeRequestOptionalDefaultsRelations
-
-export const CakeRequestOptionalDefaultsWithRelationsSchema: z.ZodType<CakeRequestOptionalDefaultsWithRelations> = CakeRequestOptionalDefaultsSchema.merge(z.object({
-  branch: z.lazy(() => BranchOptionalDefaultsWithRelationsSchema),
-  user: z.lazy(() => UserOptionalDefaultsWithRelationsSchema),
-  items: z.lazy(() => CakeRequestItemsOptionalDefaultsWithRelationsSchema).array(),
-}))
-
-// CAKE REQUEST PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeRequestPartialRelations = {
-  branch?: BranchPartialWithRelations;
-  user?: UserPartialWithRelations;
-  items?: CakeRequestItemsPartialWithRelations[];
-};
-
-export type CakeRequestPartialWithRelations = z.infer<typeof CakeRequestPartialSchema> & CakeRequestPartialRelations
-
-export const CakeRequestPartialWithRelationsSchema: z.ZodType<CakeRequestPartialWithRelations> = CakeRequestPartialSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-  user: z.lazy(() => UserPartialWithRelationsSchema),
-  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
-})).partial()
-
-export type CakeRequestOptionalDefaultsWithPartialRelations = z.infer<typeof CakeRequestOptionalDefaultsSchema> & CakeRequestPartialRelations
-
-export const CakeRequestOptionalDefaultsWithPartialRelationsSchema: z.ZodType<CakeRequestOptionalDefaultsWithPartialRelations> = CakeRequestOptionalDefaultsSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-  user: z.lazy(() => UserPartialWithRelationsSchema),
-  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
-}).partial())
-
-export type CakeRequestWithPartialRelations = z.infer<typeof CakeRequestSchema> & CakeRequestPartialRelations
-
-export const CakeRequestWithPartialRelationsSchema: z.ZodType<CakeRequestWithPartialRelations> = CakeRequestSchema.merge(z.object({
-  branch: z.lazy(() => BranchPartialWithRelationsSchema),
-  user: z.lazy(() => UserPartialWithRelationsSchema),
-  items: z.lazy(() => CakeRequestItemsPartialWithRelationsSchema).array(),
-}).partial())
-
 /////////////////////////////////////////
 // CAKE REQUEST ITEMS SCHEMA
 /////////////////////////////////////////
 
 export const CakeRequestItemsSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   request_id: z.string(),
   product_id: z.string(),
   quantity: z.number().int(),
@@ -1107,69 +444,10 @@ export type CakeRequestItemsPartial = z.infer<typeof CakeRequestItemsPartialSche
 //------------------------------------------------------
 
 export const CakeRequestItemsOptionalDefaultsSchema = CakeRequestItemsSchema.merge(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
 }))
 
 export type CakeRequestItemsOptionalDefaults = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema>
-
-// CAKE REQUEST ITEMS RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeRequestItemsRelations = {
-  product: ProductWithRelations;
-  request: CakeRequestWithRelations;
-};
-
-export type CakeRequestItemsWithRelations = z.infer<typeof CakeRequestItemsSchema> & CakeRequestItemsRelations
-
-export const CakeRequestItemsWithRelationsSchema: z.ZodType<CakeRequestItemsWithRelations> = CakeRequestItemsSchema.merge(z.object({
-  product: z.lazy(() => ProductWithRelationsSchema),
-  request: z.lazy(() => CakeRequestWithRelationsSchema),
-}))
-
-// CAKE REQUEST ITEMS OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeRequestItemsOptionalDefaultsRelations = {
-  product: ProductOptionalDefaultsWithRelations;
-  request: CakeRequestOptionalDefaultsWithRelations;
-};
-
-export type CakeRequestItemsOptionalDefaultsWithRelations = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema> & CakeRequestItemsOptionalDefaultsRelations
-
-export const CakeRequestItemsOptionalDefaultsWithRelationsSchema: z.ZodType<CakeRequestItemsOptionalDefaultsWithRelations> = CakeRequestItemsOptionalDefaultsSchema.merge(z.object({
-  product: z.lazy(() => ProductOptionalDefaultsWithRelationsSchema),
-  request: z.lazy(() => CakeRequestOptionalDefaultsWithRelationsSchema),
-}))
-
-// CAKE REQUEST ITEMS PARTIAL RELATION SCHEMA
-//------------------------------------------------------
-
-export type CakeRequestItemsPartialRelations = {
-  product?: ProductPartialWithRelations;
-  request?: CakeRequestPartialWithRelations;
-};
-
-export type CakeRequestItemsPartialWithRelations = z.infer<typeof CakeRequestItemsPartialSchema> & CakeRequestItemsPartialRelations
-
-export const CakeRequestItemsPartialWithRelationsSchema: z.ZodType<CakeRequestItemsPartialWithRelations> = CakeRequestItemsPartialSchema.merge(z.object({
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-  request: z.lazy(() => CakeRequestPartialWithRelationsSchema),
-})).partial()
-
-export type CakeRequestItemsOptionalDefaultsWithPartialRelations = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema> & CakeRequestItemsPartialRelations
-
-export const CakeRequestItemsOptionalDefaultsWithPartialRelationsSchema: z.ZodType<CakeRequestItemsOptionalDefaultsWithPartialRelations> = CakeRequestItemsOptionalDefaultsSchema.merge(z.object({
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-  request: z.lazy(() => CakeRequestPartialWithRelationsSchema),
-}).partial())
-
-export type CakeRequestItemsWithPartialRelations = z.infer<typeof CakeRequestItemsSchema> & CakeRequestItemsPartialRelations
-
-export const CakeRequestItemsWithPartialRelationsSchema: z.ZodType<CakeRequestItemsWithPartialRelations> = CakeRequestItemsSchema.merge(z.object({
-  product: z.lazy(() => ProductPartialWithRelationsSchema),
-  request: z.lazy(() => CakeRequestPartialWithRelationsSchema),
-}).partial())
 
 /////////////////////////////////////////
 // SELECT & INCLUDE
@@ -1179,9 +457,6 @@ export const CakeRequestItemsWithPartialRelationsSchema: z.ZodType<CakeRequestIt
 //------------------------------------------------------
 
 export const BranchIncludeSchema: z.ZodType<Prisma.BranchInclude> = z.object({
-  rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
-  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => BranchCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const BranchArgsSchema: z.ZodType<Prisma.BranchDefaultArgs> = z.object({
@@ -1202,8 +477,8 @@ export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
   id: z.boolean().optional(),
   name: z.boolean().optional(),
   group_number: z.boolean().optional(),
-  rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
-  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
+  rooms: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => BranchCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1211,11 +486,6 @@ export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
 //------------------------------------------------------
 
 export const RoomIncludeSchema: z.ZodType<Prisma.RoomInclude> = z.object({
-  branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
-  grade_level: z.union([z.boolean(),z.lazy(() => GradeLevelArgsSchema)]).optional(),
-  teams: z.union([z.boolean(),z.lazy(() => TeamFindManyArgsSchema)]).optional(),
-  orders: z.union([z.boolean(),z.lazy(() => OrderFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => RoomCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const RoomArgsSchema: z.ZodType<Prisma.RoomDefaultArgs> = z.object({
@@ -1239,17 +509,19 @@ export const RoomSelectSchema: z.ZodType<Prisma.RoomSelect> = z.object({
   grade_level_id: z.boolean().optional(),
   branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
   grade_level: z.union([z.boolean(),z.lazy(() => GradeLevelArgsSchema)]).optional(),
-  teams: z.union([z.boolean(),z.lazy(() => TeamFindManyArgsSchema)]).optional(),
-  orders: z.union([z.boolean(),z.lazy(() => OrderFindManyArgsSchema)]).optional(),
+  teams: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
+  orders: z.union([z.boolean(),z.lazy(() => OrderArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => RoomCountOutputTypeArgsSchema)]).optional(),
 }).strict()
+
+export const RoomWithBranchSchema = RoomSchema.merge(z.object({
+  branch: z.lazy(() => BranchSchema),
+}))
 
 // GRADE LEVEL
 //------------------------------------------------------
 
 export const GradeLevelIncludeSchema: z.ZodType<Prisma.GradeLevelInclude> = z.object({
-  rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => GradeLevelCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const GradeLevelArgsSchema: z.ZodType<Prisma.GradeLevelDefaultArgs> = z.object({
@@ -1269,7 +541,7 @@ export const GradeLevelSelectSchema: z.ZodType<Prisma.GradeLevelSelect> = z.obje
   id: z.boolean().optional(),
   level: z.boolean().optional(),
   year: z.boolean().optional(),
-  rooms: z.union([z.boolean(),z.lazy(() => RoomFindManyArgsSchema)]).optional(),
+  rooms: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => GradeLevelCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1277,8 +549,6 @@ export const GradeLevelSelectSchema: z.ZodType<Prisma.GradeLevelSelect> = z.obje
 //------------------------------------------------------
 
 export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
-  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const UserArgsSchema: z.ZodType<Prisma.UserDefaultArgs> = z.object({
@@ -1304,7 +574,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   role: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
-  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestFindManyArgsSchema)]).optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1312,9 +582,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
 //------------------------------------------------------
 
 export const TeamIncludeSchema: z.ZodType<Prisma.TeamInclude> = z.object({
-  room: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
-  orders: z.union([z.boolean(),z.lazy(() => OrderFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => TeamCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const TeamArgsSchema: z.ZodType<Prisma.TeamDefaultArgs> = z.object({
@@ -1335,7 +602,7 @@ export const TeamSelectSchema: z.ZodType<Prisma.TeamSelect> = z.object({
   name: z.boolean().optional(),
   room_id: z.boolean().optional(),
   room: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
-  orders: z.union([z.boolean(),z.lazy(() => OrderFindManyArgsSchema)]).optional(),
+  orders: z.union([z.boolean(),z.lazy(() => OrderArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => TeamCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1343,11 +610,6 @@ export const TeamSelectSchema: z.ZodType<Prisma.TeamSelect> = z.object({
 //------------------------------------------------------
 
 export const ProductIncludeSchema: z.ZodType<Prisma.ProductInclude> = z.object({
-  unit: z.union([z.boolean(),z.lazy(() => UnitArgsSchema)]).optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
-  cakeCounts: z.union([z.boolean(),z.lazy(() => CakeCountFindManyArgsSchema)]).optional(),
-  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const ProductArgsSchema: z.ZodType<Prisma.ProductDefaultArgs> = z.object({
@@ -1371,18 +633,20 @@ export const ProductSelectSchema: z.ZodType<Prisma.ProductSelect> = z.object({
   price: z.boolean().optional(),
   unit_id: z.boolean().optional(),
   unit: z.union([z.boolean(),z.lazy(() => UnitArgsSchema)]).optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
-  cakeCounts: z.union([z.boolean(),z.lazy(() => CakeCountFindManyArgsSchema)]).optional(),
-  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
+  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemArgsSchema)]).optional(),
+  cakeCounts: z.union([z.boolean(),z.lazy(() => CakeCountArgsSchema)]).optional(),
+  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
 }).strict()
+
+export const ProductWithUnitSchema = ProductSchema.merge(z.object({
+  unit: z.lazy(() => UnitSchema),
+}))
 
 // UNIT
 //------------------------------------------------------
 
 export const UnitIncludeSchema: z.ZodType<Prisma.UnitInclude> = z.object({
-  products: z.union([z.boolean(),z.lazy(() => ProductFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => UnitCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const UnitArgsSchema: z.ZodType<Prisma.UnitDefaultArgs> = z.object({
@@ -1402,7 +666,7 @@ export const UnitSelectSchema: z.ZodType<Prisma.UnitSelect> = z.object({
   id: z.boolean().optional(),
   name_th: z.boolean().optional(),
   name_en: z.boolean().optional(),
-  products: z.union([z.boolean(),z.lazy(() => ProductFindManyArgsSchema)]).optional(),
+  products: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UnitCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1410,10 +674,6 @@ export const UnitSelectSchema: z.ZodType<Prisma.UnitSelect> = z.object({
 //------------------------------------------------------
 
 export const OrderIncludeSchema: z.ZodType<Prisma.OrderInclude> = z.object({
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
-  team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
-  room: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => OrderCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const OrderArgsSchema: z.ZodType<Prisma.OrderDefaultArgs> = z.object({
@@ -1438,9 +698,12 @@ export const OrderSelectSchema: z.ZodType<Prisma.OrderSelect> = z.object({
   totalPrice: z.boolean().optional(),
   book_number: z.boolean().optional(),
   number: z.boolean().optional(),
+  phone: z.boolean().optional(),
+  pickup_date: z.boolean().optional(),
+  depository: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemFindManyArgsSchema)]).optional(),
+  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
   room: z.union([z.boolean(),z.lazy(() => RoomArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => OrderCountOutputTypeArgsSchema)]).optional(),
@@ -1450,8 +713,6 @@ export const OrderSelectSchema: z.ZodType<Prisma.OrderSelect> = z.object({
 //------------------------------------------------------
 
 export const OrderItemIncludeSchema: z.ZodType<Prisma.OrderItemInclude> = z.object({
-  order: z.union([z.boolean(),z.lazy(() => OrderArgsSchema)]).optional(),
-  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
 }).strict()
 
 export const OrderItemArgsSchema: z.ZodType<Prisma.OrderItemDefaultArgs> = z.object({
@@ -1476,7 +737,6 @@ export const OrderItemSelectSchema: z.ZodType<Prisma.OrderItemSelect> = z.object
 //------------------------------------------------------
 
 export const CakeCountIncludeSchema: z.ZodType<Prisma.CakeCountInclude> = z.object({
-  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
 }).strict()
 
 export const CakeCountArgsSchema: z.ZodType<Prisma.CakeCountDefaultArgs> = z.object({
@@ -1496,10 +756,6 @@ export const CakeCountSelectSchema: z.ZodType<Prisma.CakeCountSelect> = z.object
 //------------------------------------------------------
 
 export const CakeRequestIncludeSchema: z.ZodType<Prisma.CakeRequestInclude> = z.object({
-  branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
-  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
-  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => CakeRequestCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const CakeRequestArgsSchema: z.ZodType<Prisma.CakeRequestDefaultArgs> = z.object({
@@ -1526,7 +782,7 @@ export const CakeRequestSelectSchema: z.ZodType<Prisma.CakeRequestSelect> = z.ob
   updatedAt: z.boolean().optional(),
   branch: z.union([z.boolean(),z.lazy(() => BranchArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
-  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsFindManyArgsSchema)]).optional(),
+  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => CakeRequestCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1534,8 +790,6 @@ export const CakeRequestSelectSchema: z.ZodType<Prisma.CakeRequestSelect> = z.ob
 //------------------------------------------------------
 
 export const CakeRequestItemsIncludeSchema: z.ZodType<Prisma.CakeRequestItemsInclude> = z.object({
-  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
-  request: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
 }).strict()
 
 export const CakeRequestItemsArgsSchema: z.ZodType<Prisma.CakeRequestItemsDefaultArgs> = z.object({
@@ -1578,18 +832,18 @@ export const BranchOrderByWithRelationInputSchema: z.ZodType<Prisma.BranchOrderB
 
 export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInput> = z.union([
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
     name: z.string()
   }),
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
   }),
   z.object({
     name: z.string(),
   }),
 ])
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string().optional(),
   AND: z.union([ z.lazy(() => BranchWhereInputSchema),z.lazy(() => BranchWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => BranchWhereInputSchema).array().optional(),
@@ -1643,10 +897,10 @@ export const RoomOrderByWithRelationInputSchema: z.ZodType<Prisma.RoomOrderByWit
 }).strict();
 
 export const RoomWhereUniqueInputSchema: z.ZodType<Prisma.RoomWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => RoomWhereInputSchema),z.lazy(() => RoomWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => RoomWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RoomWhereInputSchema),z.lazy(() => RoomWhereInputSchema).array() ]).optional(),
@@ -1698,18 +952,18 @@ export const GradeLevelOrderByWithRelationInputSchema: z.ZodType<Prisma.GradeLev
 
 export const GradeLevelWhereUniqueInputSchema: z.ZodType<Prisma.GradeLevelWhereUniqueInput> = z.union([
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
     level_year: z.lazy(() => GradeLevelLevelYearCompoundUniqueInputSchema)
   }),
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
   }),
   z.object({
     level_year: z.lazy(() => GradeLevelLevelYearCompoundUniqueInputSchema),
   }),
 ])
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   level_year: z.lazy(() => GradeLevelLevelYearCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => GradeLevelWhereInputSchema),z.lazy(() => GradeLevelWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => GradeLevelWhereInputSchema).array().optional(),
@@ -1761,7 +1015,7 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   lastname: z.lazy(() => SortOrderSchema).optional(),
   username: z.lazy(() => SortOrderSchema).optional(),
   password: z.lazy(() => SortOrderSchema).optional(),
-  email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  email: z.lazy(() => SortOrderSchema).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1770,18 +1024,18 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
     username: z.string()
   }),
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
   }),
   z.object({
     username: z.string(),
   }),
 ])
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   username: z.string().optional(),
   AND: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserWhereInputSchema).array().optional(),
@@ -1802,7 +1056,7 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
   lastname: z.lazy(() => SortOrderSchema).optional(),
   username: z.lazy(() => SortOrderSchema).optional(),
   password: z.lazy(() => SortOrderSchema).optional(),
-  email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  email: z.lazy(() => SortOrderSchema).optional(),
   role: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1846,10 +1100,10 @@ export const TeamOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamOrderByWit
 }).strict();
 
 export const TeamWhereUniqueInputSchema: z.ZodType<Prisma.TeamWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => TeamWhereInputSchema),z.lazy(() => TeamWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => TeamWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => TeamWhereInputSchema),z.lazy(() => TeamWhereInputSchema).array() ]).optional(),
@@ -1903,10 +1157,10 @@ export const ProductOrderByWithRelationInputSchema: z.ZodType<Prisma.ProductOrde
 }).strict();
 
 export const ProductWhereUniqueInputSchema: z.ZodType<Prisma.ProductWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => ProductWhereInputSchema),z.lazy(() => ProductWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => ProductWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ProductWhereInputSchema),z.lazy(() => ProductWhereInputSchema).array() ]).optional(),
@@ -1959,10 +1213,10 @@ export const UnitOrderByWithRelationInputSchema: z.ZodType<Prisma.UnitOrderByWit
 }).strict();
 
 export const UnitWhereUniqueInputSchema: z.ZodType<Prisma.UnitWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => UnitWhereInputSchema),z.lazy(() => UnitWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UnitWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UnitWhereInputSchema),z.lazy(() => UnitWhereInputSchema).array() ]).optional(),
@@ -2001,6 +1255,9 @@ export const OrderWhereInputSchema: z.ZodType<Prisma.OrderWhereInput> = z.object
   totalPrice: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   book_number: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   number: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  phone: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  pickup_date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  depository: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional(),
@@ -2011,12 +1268,15 @@ export const OrderWhereInputSchema: z.ZodType<Prisma.OrderWhereInput> = z.object
 export const OrderOrderByWithRelationInputSchema: z.ZodType<Prisma.OrderOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   customerName: z.lazy(() => SortOrderSchema).optional(),
-  room_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  room_id: z.lazy(() => SortOrderSchema).optional(),
+  team_id: z.lazy(() => SortOrderSchema).optional(),
   orderDate: z.lazy(() => SortOrderSchema).optional(),
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
   number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional(),
+  pickup_date: z.lazy(() => SortOrderSchema).optional(),
+  depository: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   orderItems: z.lazy(() => OrderItemOrderByRelationAggregateInputSchema).optional(),
@@ -2026,18 +1286,18 @@ export const OrderOrderByWithRelationInputSchema: z.ZodType<Prisma.OrderOrderByW
 
 export const OrderWhereUniqueInputSchema: z.ZodType<Prisma.OrderWhereUniqueInput> = z.union([
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
     book_number_number: z.lazy(() => OrderBook_numberNumberCompoundUniqueInputSchema)
   }),
   z.object({
-    id: z.string().cuid(),
+    id: z.string(),
   }),
   z.object({
     book_number_number: z.lazy(() => OrderBook_numberNumberCompoundUniqueInputSchema),
   }),
 ])
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   book_number_number: z.lazy(() => OrderBook_numberNumberCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => OrderWhereInputSchema),z.lazy(() => OrderWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => OrderWhereInputSchema).array().optional(),
@@ -2049,6 +1309,9 @@ export const OrderWhereUniqueInputSchema: z.ZodType<Prisma.OrderWhereUniqueInput
   totalPrice: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   book_number: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   number: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  phone: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  pickup_date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  depository: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   orderItems: z.lazy(() => OrderItemListRelationFilterSchema).optional(),
@@ -2059,12 +1322,15 @@ export const OrderWhereUniqueInputSchema: z.ZodType<Prisma.OrderWhereUniqueInput
 export const OrderOrderByWithAggregationInputSchema: z.ZodType<Prisma.OrderOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   customerName: z.lazy(() => SortOrderSchema).optional(),
-  room_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  room_id: z.lazy(() => SortOrderSchema).optional(),
+  team_id: z.lazy(() => SortOrderSchema).optional(),
   orderDate: z.lazy(() => SortOrderSchema).optional(),
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
   number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional(),
+  pickup_date: z.lazy(() => SortOrderSchema).optional(),
+  depository: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => OrderCountOrderByAggregateInputSchema).optional(),
@@ -2086,6 +1352,9 @@ export const OrderScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.OrderSc
   totalPrice: z.union([ z.lazy(() => FloatWithAggregatesFilterSchema),z.number() ]).optional(),
   book_number: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   number: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  phone: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  pickup_date: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  depository: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
@@ -2120,10 +1389,10 @@ export const OrderItemOrderByWithRelationInputSchema: z.ZodType<Prisma.OrderItem
 }).strict();
 
 export const OrderItemWhereUniqueInputSchema: z.ZodType<Prisma.OrderItemWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => OrderItemWhereInputSchema),z.lazy(() => OrderItemWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => OrderItemWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => OrderItemWhereInputSchema),z.lazy(() => OrderItemWhereInputSchema).array() ]).optional(),
@@ -2188,10 +1457,10 @@ export const CakeCountOrderByWithRelationInputSchema: z.ZodType<Prisma.CakeCount
 }).strict();
 
 export const CakeCountWhereUniqueInputSchema: z.ZodType<Prisma.CakeCountWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => CakeCountWhereInputSchema),z.lazy(() => CakeCountWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => CakeCountWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => CakeCountWhereInputSchema),z.lazy(() => CakeCountWhereInputSchema).array() ]).optional(),
@@ -2244,7 +1513,7 @@ export const CakeRequestOrderByWithRelationInputSchema: z.ZodType<Prisma.CakeReq
   id: z.lazy(() => SortOrderSchema).optional(),
   requestDate: z.lazy(() => SortOrderSchema).optional(),
   status: z.lazy(() => SortOrderSchema).optional(),
-  note: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  note: z.lazy(() => SortOrderSchema).optional(),
   user_id: z.lazy(() => SortOrderSchema).optional(),
   branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -2255,10 +1524,10 @@ export const CakeRequestOrderByWithRelationInputSchema: z.ZodType<Prisma.CakeReq
 }).strict();
 
 export const CakeRequestWhereUniqueInputSchema: z.ZodType<Prisma.CakeRequestWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => CakeRequestWhereInputSchema),z.lazy(() => CakeRequestWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => CakeRequestWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => CakeRequestWhereInputSchema),z.lazy(() => CakeRequestWhereInputSchema).array() ]).optional(),
@@ -2278,7 +1547,7 @@ export const CakeRequestOrderByWithAggregationInputSchema: z.ZodType<Prisma.Cake
   id: z.lazy(() => SortOrderSchema).optional(),
   requestDate: z.lazy(() => SortOrderSchema).optional(),
   status: z.lazy(() => SortOrderSchema).optional(),
-  note: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  note: z.lazy(() => SortOrderSchema).optional(),
   user_id: z.lazy(() => SortOrderSchema).optional(),
   branch_id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
@@ -2324,10 +1593,10 @@ export const CakeRequestItemsOrderByWithRelationInputSchema: z.ZodType<Prisma.Ca
 }).strict();
 
 export const CakeRequestItemsWhereUniqueInputSchema: z.ZodType<Prisma.CakeRequestItemsWhereUniqueInput> = z.object({
-  id: z.string().cuid()
+  id: z.string()
 })
 .and(z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   AND: z.union([ z.lazy(() => CakeRequestItemsWhereInputSchema),z.lazy(() => CakeRequestItemsWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => CakeRequestItemsWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => CakeRequestItemsWhereInputSchema),z.lazy(() => CakeRequestItemsWhereInputSchema).array() ]).optional(),
@@ -2361,7 +1630,7 @@ export const CakeRequestItemsScalarWhereWithAggregatesInputSchema: z.ZodType<Pri
 }).strict();
 
 export const BranchCreateInputSchema: z.ZodType<Prisma.BranchCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string(),
   rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional(),
@@ -2369,7 +1638,7 @@ export const BranchCreateInputSchema: z.ZodType<Prisma.BranchCreateInput> = z.ob
 }).strict();
 
 export const BranchUncheckedCreateInputSchema: z.ZodType<Prisma.BranchUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string(),
   rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional(),
@@ -2377,7 +1646,6 @@ export const BranchUncheckedCreateInputSchema: z.ZodType<Prisma.BranchUncheckedC
 }).strict();
 
 export const BranchUpdateInputSchema: z.ZodType<Prisma.BranchUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional(),
@@ -2385,7 +1653,6 @@ export const BranchUpdateInputSchema: z.ZodType<Prisma.BranchUpdateInput> = z.ob
 }).strict();
 
 export const BranchUncheckedUpdateInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional(),
@@ -2393,25 +1660,23 @@ export const BranchUncheckedUpdateInputSchema: z.ZodType<Prisma.BranchUncheckedU
 }).strict();
 
 export const BranchCreateManyInputSchema: z.ZodType<Prisma.BranchCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string()
 }).strict();
 
 export const BranchUpdateManyMutationInputSchema: z.ZodType<Prisma.BranchUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const BranchUncheckedUpdateManyInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RoomCreateInputSchema: z.ZodType<Prisma.RoomCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
   grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
@@ -2420,7 +1685,7 @@ export const RoomCreateInputSchema: z.ZodType<Prisma.RoomCreateInput> = z.object
 }).strict();
 
 export const RoomUncheckedCreateInputSchema: z.ZodType<Prisma.RoomUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch_id: z.string(),
   grade_level_id: z.string(),
@@ -2429,7 +1694,6 @@ export const RoomUncheckedCreateInputSchema: z.ZodType<Prisma.RoomUncheckedCreat
 }).strict();
 
 export const RoomUpdateInputSchema: z.ZodType<Prisma.RoomUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
   grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
@@ -2438,7 +1702,6 @@ export const RoomUpdateInputSchema: z.ZodType<Prisma.RoomUpdateInput> = z.object
 }).strict();
 
 export const RoomUncheckedUpdateInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2447,72 +1710,66 @@ export const RoomUncheckedUpdateInputSchema: z.ZodType<Prisma.RoomUncheckedUpdat
 }).strict();
 
 export const RoomCreateManyInputSchema: z.ZodType<Prisma.RoomCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch_id: z.string(),
   grade_level_id: z.string()
 }).strict();
 
 export const RoomUpdateManyMutationInputSchema: z.ZodType<Prisma.RoomUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RoomUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const GradeLevelCreateInputSchema: z.ZodType<Prisma.GradeLevelCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   level: z.lazy(() => GradeLevelTypeSchema),
   year: z.number().int(),
   rooms: z.lazy(() => RoomCreateNestedManyWithoutGrade_levelInputSchema).optional()
 }).strict();
 
 export const GradeLevelUncheckedCreateInputSchema: z.ZodType<Prisma.GradeLevelUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   level: z.lazy(() => GradeLevelTypeSchema),
   year: z.number().int(),
   rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutGrade_levelInputSchema).optional()
 }).strict();
 
 export const GradeLevelUpdateInputSchema: z.ZodType<Prisma.GradeLevelUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
   year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   rooms: z.lazy(() => RoomUpdateManyWithoutGrade_levelNestedInputSchema).optional()
 }).strict();
 
 export const GradeLevelUncheckedUpdateInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
   year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema).optional()
 }).strict();
 
 export const GradeLevelCreateManyInputSchema: z.ZodType<Prisma.GradeLevelCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   level: z.lazy(() => GradeLevelTypeSchema),
   year: z.number().int()
 }).strict();
 
 export const GradeLevelUpdateManyMutationInputSchema: z.ZodType<Prisma.GradeLevelUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
   year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const GradeLevelUncheckedUpdateManyInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
   year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   fname: z.string(),
   lastname: z.string(),
   username: z.string(),
@@ -2525,7 +1782,7 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   fname: z.string(),
   lastname: z.string(),
   username: z.string(),
@@ -2538,7 +1795,6 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
 }).strict();
 
 export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2551,7 +1807,6 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2564,7 +1819,7 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
 }).strict();
 
 export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   fname: z.string(),
   lastname: z.string(),
   username: z.string(),
@@ -2576,7 +1831,6 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = 
 }).strict();
 
 export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2588,7 +1842,6 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
 }).strict();
 
 export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2600,52 +1853,48 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
 }).strict();
 
 export const TeamCreateInputSchema: z.ZodType<Prisma.TeamCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   room: z.lazy(() => RoomCreateNestedOneWithoutTeamsInputSchema),
   orders: z.lazy(() => OrderCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateInputSchema: z.ZodType<Prisma.TeamUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   room_id: z.string(),
   orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUpdateInputSchema: z.ZodType<Prisma.TeamUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room: z.lazy(() => RoomUpdateOneRequiredWithoutTeamsNestedInputSchema).optional(),
   orders: z.lazy(() => OrderUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orders: z.lazy(() => OrderUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamCreateManyInputSchema: z.ZodType<Prisma.TeamCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   room_id: z.string()
 }).strict();
 
 export const TeamUpdateManyMutationInputSchema: z.ZodType<Prisma.TeamUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const ProductCreateInputSchema: z.ZodType<Prisma.ProductCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
@@ -2655,7 +1904,7 @@ export const ProductCreateInputSchema: z.ZodType<Prisma.ProductCreateInput> = z.
 }).strict();
 
 export const ProductUncheckedCreateInputSchema: z.ZodType<Prisma.ProductUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
@@ -2665,7 +1914,6 @@ export const ProductUncheckedCreateInputSchema: z.ZodType<Prisma.ProductUnchecke
 }).strict();
 
 export const ProductUpdateInputSchema: z.ZodType<Prisma.ProductUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
@@ -2675,7 +1923,6 @@ export const ProductUpdateInputSchema: z.ZodType<Prisma.ProductUpdateInput> = z.
 }).strict();
 
 export const ProductUncheckedUpdateInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2685,78 +1932,75 @@ export const ProductUncheckedUpdateInputSchema: z.ZodType<Prisma.ProductUnchecke
 }).strict();
 
 export const ProductCreateManyInputSchema: z.ZodType<Prisma.ProductCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit_id: z.string()
 }).strict();
 
 export const ProductUpdateManyMutationInputSchema: z.ZodType<Prisma.ProductUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const ProductUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UnitCreateInputSchema: z.ZodType<Prisma.UnitCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name_th: z.string(),
   name_en: z.string(),
   products: z.lazy(() => ProductCreateNestedManyWithoutUnitInputSchema).optional()
 }).strict();
 
 export const UnitUncheckedCreateInputSchema: z.ZodType<Prisma.UnitUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name_th: z.string(),
   name_en: z.string(),
   products: z.lazy(() => ProductUncheckedCreateNestedManyWithoutUnitInputSchema).optional()
 }).strict();
 
 export const UnitUpdateInputSchema: z.ZodType<Prisma.UnitUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_th: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_en: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   products: z.lazy(() => ProductUpdateManyWithoutUnitNestedInputSchema).optional()
 }).strict();
 
 export const UnitUncheckedUpdateInputSchema: z.ZodType<Prisma.UnitUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_th: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_en: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   products: z.lazy(() => ProductUncheckedUpdateManyWithoutUnitNestedInputSchema).optional()
 }).strict();
 
 export const UnitCreateManyInputSchema: z.ZodType<Prisma.UnitCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name_th: z.string(),
   name_en: z.string()
 }).strict();
 
 export const UnitUpdateManyMutationInputSchema: z.ZodType<Prisma.UnitUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_th: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_en: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UnitUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UnitUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_th: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_en: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderCreateInputSchema: z.ZodType<Prisma.OrderCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
@@ -2765,7 +2009,7 @@ export const OrderCreateInputSchema: z.ZodType<Prisma.OrderCreateInput> = z.obje
 }).strict();
 
 export const OrderUncheckedCreateInputSchema: z.ZodType<Prisma.OrderUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   room_id: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
@@ -2773,18 +2017,23 @@ export const OrderUncheckedCreateInputSchema: z.ZodType<Prisma.OrderUncheckedCre
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema).optional()
 }).strict();
 
 export const OrderUpdateInputSchema: z.ZodType<Prisma.OrderUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional(),
@@ -2793,7 +2042,6 @@ export const OrderUpdateInputSchema: z.ZodType<Prisma.OrderUpdateInput> = z.obje
 }).strict();
 
 export const OrderUncheckedUpdateInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2801,13 +2049,16 @@ export const OrderUncheckedUpdateInputSchema: z.ZodType<Prisma.OrderUncheckedUpd
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutOrderNestedInputSchema).optional()
 }).strict();
 
 export const OrderCreateManyInputSchema: z.ZodType<Prisma.OrderCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   room_id: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
@@ -2815,23 +2066,27 @@ export const OrderCreateManyInputSchema: z.ZodType<Prisma.OrderCreateManyInput> 
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const OrderUpdateManyMutationInputSchema: z.ZodType<Prisma.OrderUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderUncheckedUpdateManyInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2839,12 +2094,15 @@ export const OrderUncheckedUpdateManyInputSchema: z.ZodType<Prisma.OrderUnchecke
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderItemCreateInputSchema: z.ZodType<Prisma.OrderItemCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   quantity: z.number().int(),
   unitPrice: z.number(),
   subtotal: z.number(),
@@ -2855,7 +2113,7 @@ export const OrderItemCreateInputSchema: z.ZodType<Prisma.OrderItemCreateInput> 
 }).strict();
 
 export const OrderItemUncheckedCreateInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   order_id: z.string(),
   product_id: z.string(),
   quantity: z.number().int(),
@@ -2866,7 +2124,6 @@ export const OrderItemUncheckedCreateInputSchema: z.ZodType<Prisma.OrderItemUnch
 }).strict();
 
 export const OrderItemUpdateInputSchema: z.ZodType<Prisma.OrderItemUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   subtotal: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2877,7 +2134,6 @@ export const OrderItemUpdateInputSchema: z.ZodType<Prisma.OrderItemUpdateInput> 
 }).strict();
 
 export const OrderItemUncheckedUpdateInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   order_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2888,7 +2144,7 @@ export const OrderItemUncheckedUpdateInputSchema: z.ZodType<Prisma.OrderItemUnch
 }).strict();
 
 export const OrderItemCreateManyInputSchema: z.ZodType<Prisma.OrderItemCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   order_id: z.string(),
   product_id: z.string(),
   quantity: z.number().int(),
@@ -2899,7 +2155,6 @@ export const OrderItemCreateManyInputSchema: z.ZodType<Prisma.OrderItemCreateMan
 }).strict();
 
 export const OrderItemUpdateManyMutationInputSchema: z.ZodType<Prisma.OrderItemUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   subtotal: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2908,7 +2163,6 @@ export const OrderItemUpdateManyMutationInputSchema: z.ZodType<Prisma.OrderItemU
 }).strict();
 
 export const OrderItemUncheckedUpdateManyInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   order_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2919,55 +2173,51 @@ export const OrderItemUncheckedUpdateManyInputSchema: z.ZodType<Prisma.OrderItem
 }).strict();
 
 export const CakeCountCreateInputSchema: z.ZodType<Prisma.CakeCountCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   pound: z.lazy(() => CakePoundSchema),
   quantity: z.number().int(),
   product: z.lazy(() => ProductCreateNestedOneWithoutCakeCountsInputSchema)
 }).strict();
 
 export const CakeCountUncheckedCreateInputSchema: z.ZodType<Prisma.CakeCountUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   product_id: z.string(),
   pound: z.lazy(() => CakePoundSchema),
   quantity: z.number().int()
 }).strict();
 
 export const CakeCountUpdateInputSchema: z.ZodType<Prisma.CakeCountUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   product: z.lazy(() => ProductUpdateOneRequiredWithoutCakeCountsNestedInputSchema).optional()
 }).strict();
 
 export const CakeCountUncheckedUpdateInputSchema: z.ZodType<Prisma.CakeCountUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeCountCreateManyInputSchema: z.ZodType<Prisma.CakeCountCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   product_id: z.string(),
   pound: z.lazy(() => CakePoundSchema),
   quantity: z.number().int()
 }).strict();
 
 export const CakeCountUpdateManyMutationInputSchema: z.ZodType<Prisma.CakeCountUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeCountUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeCountUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestCreateInputSchema: z.ZodType<Prisma.CakeRequestCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -2979,7 +2229,7 @@ export const CakeRequestCreateInputSchema: z.ZodType<Prisma.CakeRequestCreateInp
 }).strict();
 
 export const CakeRequestUncheckedCreateInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -2991,7 +2241,6 @@ export const CakeRequestUncheckedCreateInputSchema: z.ZodType<Prisma.CakeRequest
 }).strict();
 
 export const CakeRequestUpdateInputSchema: z.ZodType<Prisma.CakeRequestUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3003,7 +2252,6 @@ export const CakeRequestUpdateInputSchema: z.ZodType<Prisma.CakeRequestUpdateInp
 }).strict();
 
 export const CakeRequestUncheckedUpdateInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3015,7 +2263,7 @@ export const CakeRequestUncheckedUpdateInputSchema: z.ZodType<Prisma.CakeRequest
 }).strict();
 
 export const CakeRequestCreateManyInputSchema: z.ZodType<Prisma.CakeRequestCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -3026,7 +2274,6 @@ export const CakeRequestCreateManyInputSchema: z.ZodType<Prisma.CakeRequestCreat
 }).strict();
 
 export const CakeRequestUpdateManyMutationInputSchema: z.ZodType<Prisma.CakeRequestUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3035,7 +2282,6 @@ export const CakeRequestUpdateManyMutationInputSchema: z.ZodType<Prisma.CakeRequ
 }).strict();
 
 export const CakeRequestUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3046,47 +2292,43 @@ export const CakeRequestUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeReq
 }).strict();
 
 export const CakeRequestItemsCreateInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   quantity: z.number().int(),
   product: z.lazy(() => ProductCreateNestedOneWithoutItemsInputSchema),
   request: z.lazy(() => CakeRequestCreateNestedOneWithoutItemsInputSchema)
 }).strict();
 
 export const CakeRequestItemsUncheckedCreateInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   request_id: z.string(),
   product_id: z.string(),
   quantity: z.number().int()
 }).strict();
 
 export const CakeRequestItemsUpdateInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   product: z.lazy(() => ProductUpdateOneRequiredWithoutItemsNestedInputSchema).optional(),
   request: z.lazy(() => CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema).optional()
 }).strict();
 
 export const CakeRequestItemsUncheckedUpdateInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestItemsCreateManyInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   request_id: z.string(),
   product_id: z.string(),
   quantity: z.number().int()
 }).strict();
 
 export const CakeRequestItemsUpdateManyMutationInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestItemsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3302,6 +2544,7 @@ export const StringNullableFilterSchema: z.ZodType<Prisma.StringNullableFilter> 
   endsWith: z.string().optional(),
   mode: z.lazy(() => QueryModeSchema).optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableFilterSchema) ]).optional().nullable(),
+  isSet: z.boolean().optional()
 }).strict();
 
 export const EnumRoleFilterSchema: z.ZodType<Prisma.EnumRoleFilter> = z.object({
@@ -3320,11 +2563,6 @@ export const DateTimeFilterSchema: z.ZodType<Prisma.DateTimeFilter> = z.object({
   gt: z.coerce.date().optional(),
   gte: z.coerce.date().optional(),
   not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeFilterSchema) ]).optional(),
-}).strict();
-
-export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z.object({
-  sort: z.lazy(() => SortOrderSchema),
-  nulls: z.lazy(() => NullsOrderSchema).optional()
 }).strict();
 
 export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrderByAggregateInput> = z.object({
@@ -3378,7 +2616,8 @@ export const StringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.StringNu
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableWithAggregatesFilterSchema) ]).optional().nullable(),
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
-  _max: z.lazy(() => NestedStringNullableFilterSchema).optional()
+  _max: z.lazy(() => NestedStringNullableFilterSchema).optional(),
+  isSet: z.boolean().optional()
 }).strict();
 
 export const EnumRoleWithAggregatesFilterSchema: z.ZodType<Prisma.EnumRoleWithAggregatesFilter> = z.object({
@@ -3571,6 +2810,9 @@ export const OrderCountOrderByAggregateInputSchema: z.ZodType<Prisma.OrderCountO
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
   number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional(),
+  pickup_date: z.lazy(() => SortOrderSchema).optional(),
+  depository: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3578,7 +2820,8 @@ export const OrderCountOrderByAggregateInputSchema: z.ZodType<Prisma.OrderCountO
 export const OrderAvgOrderByAggregateInputSchema: z.ZodType<Prisma.OrderAvgOrderByAggregateInput> = z.object({
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
-  number: z.lazy(() => SortOrderSchema).optional()
+  number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const OrderMaxOrderByAggregateInputSchema: z.ZodType<Prisma.OrderMaxOrderByAggregateInput> = z.object({
@@ -3590,6 +2833,9 @@ export const OrderMaxOrderByAggregateInputSchema: z.ZodType<Prisma.OrderMaxOrder
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
   number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional(),
+  pickup_date: z.lazy(() => SortOrderSchema).optional(),
+  depository: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3603,6 +2849,9 @@ export const OrderMinOrderByAggregateInputSchema: z.ZodType<Prisma.OrderMinOrder
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
   number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional(),
+  pickup_date: z.lazy(() => SortOrderSchema).optional(),
+  depository: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3610,7 +2859,8 @@ export const OrderMinOrderByAggregateInputSchema: z.ZodType<Prisma.OrderMinOrder
 export const OrderSumOrderByAggregateInputSchema: z.ZodType<Prisma.OrderSumOrderByAggregateInput> = z.object({
   totalPrice: z.lazy(() => SortOrderSchema).optional(),
   book_number: z.lazy(() => SortOrderSchema).optional(),
-  number: z.lazy(() => SortOrderSchema).optional()
+  number: z.lazy(() => SortOrderSchema).optional(),
+  phone: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const OrderScalarRelationFilterSchema: z.ZodType<Prisma.OrderScalarRelationFilter> = z.object({
@@ -3943,7 +3193,7 @@ export const GradeLevelUpdateOneWithoutRoomsNestedInputSchema: z.ZodType<Prisma.
   create: z.union([ z.lazy(() => GradeLevelCreateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedCreateWithoutRoomsInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => GradeLevelCreateOrConnectWithoutRoomsInputSchema).optional(),
   upsert: z.lazy(() => GradeLevelUpsertWithoutRoomsInputSchema).optional(),
-  disconnect: z.union([ z.boolean(),z.lazy(() => GradeLevelWhereInputSchema) ]).optional(),
+  disconnect: z.boolean().optional(),
   delete: z.union([ z.boolean(),z.lazy(() => GradeLevelWhereInputSchema) ]).optional(),
   connect: z.lazy(() => GradeLevelWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => GradeLevelUpdateToOneWithWhereWithoutRoomsInputSchema),z.lazy(() => GradeLevelUpdateWithoutRoomsInputSchema),z.lazy(() => GradeLevelUncheckedUpdateWithoutRoomsInputSchema) ]).optional(),
@@ -4074,7 +3324,8 @@ export const CakeRequestUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodTy
 }).strict();
 
 export const NullableStringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableStringFieldUpdateOperationsInput> = z.object({
-  set: z.string().optional().nullable()
+  set: z.string().optional().nullable(),
+  unset: z.boolean().optional()
 }).strict();
 
 export const EnumRoleFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumRoleFieldUpdateOperationsInput> = z.object({
@@ -4403,7 +3654,7 @@ export const TeamUpdateOneWithoutOrdersNestedInputSchema: z.ZodType<Prisma.TeamU
   create: z.union([ z.lazy(() => TeamCreateWithoutOrdersInputSchema),z.lazy(() => TeamUncheckedCreateWithoutOrdersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutOrdersInputSchema).optional(),
   upsert: z.lazy(() => TeamUpsertWithoutOrdersInputSchema).optional(),
-  disconnect: z.union([ z.boolean(),z.lazy(() => TeamWhereInputSchema) ]).optional(),
+  disconnect: z.boolean().optional(),
   delete: z.union([ z.boolean(),z.lazy(() => TeamWhereInputSchema) ]).optional(),
   connect: z.lazy(() => TeamWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => TeamUpdateToOneWithWhereWithoutOrdersInputSchema),z.lazy(() => TeamUpdateWithoutOrdersInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutOrdersInputSchema) ]).optional(),
@@ -4413,7 +3664,7 @@ export const RoomUpdateOneWithoutOrdersNestedInputSchema: z.ZodType<Prisma.RoomU
   create: z.union([ z.lazy(() => RoomCreateWithoutOrdersInputSchema),z.lazy(() => RoomUncheckedCreateWithoutOrdersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => RoomCreateOrConnectWithoutOrdersInputSchema).optional(),
   upsert: z.lazy(() => RoomUpsertWithoutOrdersInputSchema).optional(),
-  disconnect: z.union([ z.boolean(),z.lazy(() => RoomWhereInputSchema) ]).optional(),
+  disconnect: z.boolean().optional(),
   delete: z.union([ z.boolean(),z.lazy(() => RoomWhereInputSchema) ]).optional(),
   connect: z.lazy(() => RoomWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => RoomUpdateToOneWithWhereWithoutOrdersInputSchema),z.lazy(() => RoomUpdateWithoutOrdersInputSchema),z.lazy(() => RoomUncheckedUpdateWithoutOrdersInputSchema) ]).optional(),
@@ -4679,6 +3930,7 @@ export const NestedStringNullableFilterSchema: z.ZodType<Prisma.NestedStringNull
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableFilterSchema) ]).optional().nullable(),
+  isSet: z.boolean().optional()
 }).strict();
 
 export const NestedEnumRoleFilterSchema: z.ZodType<Prisma.NestedEnumRoleFilter> = z.object({
@@ -4713,7 +3965,8 @@ export const NestedStringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Ne
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableWithAggregatesFilterSchema) ]).optional().nullable(),
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
-  _max: z.lazy(() => NestedStringNullableFilterSchema).optional()
+  _max: z.lazy(() => NestedStringNullableFilterSchema).optional(),
+  isSet: z.boolean().optional()
 }).strict();
 
 export const NestedIntNullableFilterSchema: z.ZodType<Prisma.NestedIntNullableFilter> = z.object({
@@ -4725,6 +3978,7 @@ export const NestedIntNullableFilterSchema: z.ZodType<Prisma.NestedIntNullableFi
   gt: z.number().optional(),
   gte: z.number().optional(),
   not: z.union([ z.number(),z.lazy(() => NestedIntNullableFilterSchema) ]).optional().nullable(),
+  isSet: z.boolean().optional()
 }).strict();
 
 export const NestedEnumRoleWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumRoleWithAggregatesFilter> = z.object({
@@ -4802,7 +4056,7 @@ export const NestedEnumRequestStatusWithAggregatesFilterSchema: z.ZodType<Prisma
 }).strict();
 
 export const RoomCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomCreateWithoutBranchInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutRoomInputSchema).optional(),
@@ -4810,7 +4064,7 @@ export const RoomCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomCreateWith
 }).strict();
 
 export const RoomUncheckedCreateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedCreateWithoutBranchInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   grade_level_id: z.string(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutRoomInputSchema).optional(),
@@ -4824,11 +4078,10 @@ export const RoomCreateOrConnectWithoutBranchInputSchema: z.ZodType<Prisma.RoomC
 
 export const RoomCreateManyBranchInputEnvelopeSchema: z.ZodType<Prisma.RoomCreateManyBranchInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => RoomCreateManyBranchInputSchema),z.lazy(() => RoomCreateManyBranchInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const CakeRequestCreateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestCreateWithoutBranchInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -4839,7 +4092,7 @@ export const CakeRequestCreateWithoutBranchInputSchema: z.ZodType<Prisma.CakeReq
 }).strict();
 
 export const CakeRequestUncheckedCreateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateWithoutBranchInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -4856,7 +4109,6 @@ export const CakeRequestCreateOrConnectWithoutBranchInputSchema: z.ZodType<Prism
 
 export const CakeRequestCreateManyBranchInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestCreateManyBranchInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => CakeRequestCreateManyBranchInputSchema),z.lazy(() => CakeRequestCreateManyBranchInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const RoomUpsertWithWhereUniqueWithoutBranchInputSchema: z.ZodType<Prisma.RoomUpsertWithWhereUniqueWithoutBranchInput> = z.object({
@@ -4916,14 +4168,14 @@ export const CakeRequestScalarWhereInputSchema: z.ZodType<Prisma.CakeRequestScal
 }).strict();
 
 export const BranchCreateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchCreateWithoutRoomsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string(),
   CakeRequest: z.lazy(() => CakeRequestCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedCreateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutRoomsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string(),
   CakeRequest: z.lazy(() => CakeRequestUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
@@ -4935,13 +4187,13 @@ export const BranchCreateOrConnectWithoutRoomsInputSchema: z.ZodType<Prisma.Bran
 }).strict();
 
 export const GradeLevelCreateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelCreateWithoutRoomsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   level: z.lazy(() => GradeLevelTypeSchema),
   year: z.number().int()
 }).strict();
 
 export const GradeLevelUncheckedCreateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUncheckedCreateWithoutRoomsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   level: z.lazy(() => GradeLevelTypeSchema),
   year: z.number().int()
 }).strict();
@@ -4952,13 +4204,13 @@ export const GradeLevelCreateOrConnectWithoutRoomsInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const TeamCreateWithoutRoomInputSchema: z.ZodType<Prisma.TeamCreateWithoutRoomInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   orders: z.lazy(() => OrderCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutRoomInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutRoomInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
@@ -4970,16 +4222,18 @@ export const TeamCreateOrConnectWithoutRoomInputSchema: z.ZodType<Prisma.TeamCre
 
 export const TeamCreateManyRoomInputEnvelopeSchema: z.ZodType<Prisma.TeamCreateManyRoomInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => TeamCreateManyRoomInputSchema),z.lazy(() => TeamCreateManyRoomInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const OrderCreateWithoutRoomInputSchema: z.ZodType<Prisma.OrderCreateWithoutRoomInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
@@ -4987,13 +4241,16 @@ export const OrderCreateWithoutRoomInputSchema: z.ZodType<Prisma.OrderCreateWith
 }).strict();
 
 export const OrderUncheckedCreateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUncheckedCreateWithoutRoomInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   team_id: z.string().optional().nullable(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema).optional()
@@ -5006,7 +4263,6 @@ export const OrderCreateOrConnectWithoutRoomInputSchema: z.ZodType<Prisma.OrderC
 
 export const OrderCreateManyRoomInputEnvelopeSchema: z.ZodType<Prisma.OrderCreateManyRoomInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => OrderCreateManyRoomInputSchema),z.lazy(() => OrderCreateManyRoomInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const BranchUpsertWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUpsertWithoutRoomsInput> = z.object({
@@ -5021,14 +4277,12 @@ export const BranchUpdateToOneWithWhereWithoutRoomsInputSchema: z.ZodType<Prisma
 }).strict();
 
 export const BranchUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUpdateWithoutRoomsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   CakeRequest: z.lazy(() => CakeRequestUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutRoomsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   CakeRequest: z.lazy(() => CakeRequestUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
@@ -5046,13 +4300,11 @@ export const GradeLevelUpdateToOneWithWhereWithoutRoomsInputSchema: z.ZodType<Pr
 }).strict();
 
 export const GradeLevelUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUpdateWithoutRoomsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
   year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const GradeLevelUncheckedUpdateWithoutRoomsInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateWithoutRoomsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
   year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -5110,12 +4362,15 @@ export const OrderScalarWhereInputSchema: z.ZodType<Prisma.OrderScalarWhereInput
   totalPrice: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   book_number: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   number: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  phone: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  pickup_date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  depository: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
 export const RoomCreateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomCreateWithoutGrade_levelInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
   teams: z.lazy(() => TeamCreateNestedManyWithoutRoomInputSchema).optional(),
@@ -5123,7 +4378,7 @@ export const RoomCreateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomCreat
 }).strict();
 
 export const RoomUncheckedCreateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedCreateWithoutGrade_levelInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch_id: z.string(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutRoomInputSchema).optional(),
@@ -5137,7 +4392,6 @@ export const RoomCreateOrConnectWithoutGrade_levelInputSchema: z.ZodType<Prisma.
 
 export const RoomCreateManyGrade_levelInputEnvelopeSchema: z.ZodType<Prisma.RoomCreateManyGrade_levelInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => RoomCreateManyGrade_levelInputSchema),z.lazy(() => RoomCreateManyGrade_levelInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const RoomUpsertWithWhereUniqueWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpsertWithWhereUniqueWithoutGrade_levelInput> = z.object({
@@ -5157,7 +4411,7 @@ export const RoomUpdateManyWithWhereWithoutGrade_levelInputSchema: z.ZodType<Pri
 }).strict();
 
 export const CakeRequestCreateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestCreateWithoutUserInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -5168,7 +4422,7 @@ export const CakeRequestCreateWithoutUserInputSchema: z.ZodType<Prisma.CakeReque
 }).strict();
 
 export const CakeRequestUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateWithoutUserInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -5185,7 +4439,6 @@ export const CakeRequestCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.
 
 export const CakeRequestCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestCreateManyUserInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => CakeRequestCreateManyUserInputSchema),z.lazy(() => CakeRequestCreateManyUserInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const CakeRequestUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpsertWithWhereUniqueWithoutUserInput> = z.object({
@@ -5205,7 +4458,7 @@ export const CakeRequestUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Pri
 }).strict();
 
 export const RoomCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCreateWithoutTeamsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
   grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
@@ -5213,7 +4466,7 @@ export const RoomCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCreateWitho
 }).strict();
 
 export const RoomUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUncheckedCreateWithoutTeamsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch_id: z.string(),
   grade_level_id: z.string(),
@@ -5226,12 +4479,15 @@ export const RoomCreateOrConnectWithoutTeamsInputSchema: z.ZodType<Prisma.RoomCr
 }).strict();
 
 export const OrderCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderCreateWithoutTeamInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
@@ -5239,13 +4495,16 @@ export const OrderCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderCreateWith
 }).strict();
 
 export const OrderUncheckedCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUncheckedCreateWithoutTeamInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   room_id: z.string().optional().nullable(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema).optional()
@@ -5258,7 +4517,6 @@ export const OrderCreateOrConnectWithoutTeamInputSchema: z.ZodType<Prisma.OrderC
 
 export const OrderCreateManyTeamInputEnvelopeSchema: z.ZodType<Prisma.OrderCreateManyTeamInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => OrderCreateManyTeamInputSchema),z.lazy(() => OrderCreateManyTeamInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const RoomUpsertWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUpsertWithoutTeamsInput> = z.object({
@@ -5273,7 +4531,6 @@ export const RoomUpdateToOneWithWhereWithoutTeamsInputSchema: z.ZodType<Prisma.R
 }).strict();
 
 export const RoomUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUpdateWithoutTeamsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
   grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
@@ -5281,7 +4538,6 @@ export const RoomUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUpdateWitho
 }).strict();
 
 export const RoomUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateWithoutTeamsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -5305,13 +4561,13 @@ export const OrderUpdateManyWithWhereWithoutTeamInputSchema: z.ZodType<Prisma.Or
 }).strict();
 
 export const UnitCreateWithoutProductsInputSchema: z.ZodType<Prisma.UnitCreateWithoutProductsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name_th: z.string(),
   name_en: z.string()
 }).strict();
 
 export const UnitUncheckedCreateWithoutProductsInputSchema: z.ZodType<Prisma.UnitUncheckedCreateWithoutProductsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name_th: z.string(),
   name_en: z.string()
 }).strict();
@@ -5322,7 +4578,7 @@ export const UnitCreateOrConnectWithoutProductsInputSchema: z.ZodType<Prisma.Uni
 }).strict();
 
 export const OrderItemCreateWithoutProductInputSchema: z.ZodType<Prisma.OrderItemCreateWithoutProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   quantity: z.number().int(),
   unitPrice: z.number(),
   subtotal: z.number(),
@@ -5332,7 +4588,7 @@ export const OrderItemCreateWithoutProductInputSchema: z.ZodType<Prisma.OrderIte
 }).strict();
 
 export const OrderItemUncheckedCreateWithoutProductInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateWithoutProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   order_id: z.string(),
   quantity: z.number().int(),
   unitPrice: z.number(),
@@ -5348,17 +4604,16 @@ export const OrderItemCreateOrConnectWithoutProductInputSchema: z.ZodType<Prisma
 
 export const OrderItemCreateManyProductInputEnvelopeSchema: z.ZodType<Prisma.OrderItemCreateManyProductInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => OrderItemCreateManyProductInputSchema),z.lazy(() => OrderItemCreateManyProductInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const CakeCountCreateWithoutProductInputSchema: z.ZodType<Prisma.CakeCountCreateWithoutProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   pound: z.lazy(() => CakePoundSchema),
   quantity: z.number().int()
 }).strict();
 
 export const CakeCountUncheckedCreateWithoutProductInputSchema: z.ZodType<Prisma.CakeCountUncheckedCreateWithoutProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   pound: z.lazy(() => CakePoundSchema),
   quantity: z.number().int()
 }).strict();
@@ -5370,17 +4625,16 @@ export const CakeCountCreateOrConnectWithoutProductInputSchema: z.ZodType<Prisma
 
 export const CakeCountCreateManyProductInputEnvelopeSchema: z.ZodType<Prisma.CakeCountCreateManyProductInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => CakeCountCreateManyProductInputSchema),z.lazy(() => CakeCountCreateManyProductInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const CakeRequestItemsCreateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateWithoutProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   quantity: z.number().int(),
   request: z.lazy(() => CakeRequestCreateNestedOneWithoutItemsInputSchema)
 }).strict();
 
 export const CakeRequestItemsUncheckedCreateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateWithoutProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   request_id: z.string(),
   quantity: z.number().int()
 }).strict();
@@ -5392,7 +4646,6 @@ export const CakeRequestItemsCreateOrConnectWithoutProductInputSchema: z.ZodType
 
 export const CakeRequestItemsCreateManyProductInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyProductInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => CakeRequestItemsCreateManyProductInputSchema),z.lazy(() => CakeRequestItemsCreateManyProductInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const UnitUpsertWithoutProductsInputSchema: z.ZodType<Prisma.UnitUpsertWithoutProductsInput> = z.object({
@@ -5407,13 +4660,11 @@ export const UnitUpdateToOneWithWhereWithoutProductsInputSchema: z.ZodType<Prism
 }).strict();
 
 export const UnitUpdateWithoutProductsInputSchema: z.ZodType<Prisma.UnitUpdateWithoutProductsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_th: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_en: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UnitUncheckedUpdateWithoutProductsInputSchema: z.ZodType<Prisma.UnitUncheckedUpdateWithoutProductsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_th: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name_en: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -5501,7 +4752,7 @@ export const CakeRequestItemsScalarWhereInputSchema: z.ZodType<Prisma.CakeReques
 }).strict();
 
 export const ProductCreateWithoutUnitInputSchema: z.ZodType<Prisma.ProductCreateWithoutUnitInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutProductInputSchema).optional(),
@@ -5510,7 +4761,7 @@ export const ProductCreateWithoutUnitInputSchema: z.ZodType<Prisma.ProductCreate
 }).strict();
 
 export const ProductUncheckedCreateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutUnitInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutProductInputSchema).optional(),
@@ -5525,7 +4776,6 @@ export const ProductCreateOrConnectWithoutUnitInputSchema: z.ZodType<Prisma.Prod
 
 export const ProductCreateManyUnitInputEnvelopeSchema: z.ZodType<Prisma.ProductCreateManyUnitInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => ProductCreateManyUnitInputSchema),z.lazy(() => ProductCreateManyUnitInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const ProductUpsertWithWhereUniqueWithoutUnitInputSchema: z.ZodType<Prisma.ProductUpsertWithWhereUniqueWithoutUnitInput> = z.object({
@@ -5555,7 +4805,7 @@ export const ProductScalarWhereInputSchema: z.ZodType<Prisma.ProductScalarWhereI
 }).strict();
 
 export const OrderItemCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateWithoutOrderInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   quantity: z.number().int(),
   unitPrice: z.number(),
   subtotal: z.number(),
@@ -5565,7 +4815,7 @@ export const OrderItemCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemC
 }).strict();
 
 export const OrderItemUncheckedCreateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateWithoutOrderInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   product_id: z.string(),
   quantity: z.number().int(),
   unitPrice: z.number(),
@@ -5581,17 +4831,16 @@ export const OrderItemCreateOrConnectWithoutOrderInputSchema: z.ZodType<Prisma.O
 
 export const OrderItemCreateManyOrderInputEnvelopeSchema: z.ZodType<Prisma.OrderItemCreateManyOrderInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => OrderItemCreateManyOrderInputSchema),z.lazy(() => OrderItemCreateManyOrderInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const TeamCreateWithoutOrdersInputSchema: z.ZodType<Prisma.TeamCreateWithoutOrdersInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   room: z.lazy(() => RoomCreateNestedOneWithoutTeamsInputSchema)
 }).strict();
 
 export const TeamUncheckedCreateWithoutOrdersInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutOrdersInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   room_id: z.string()
 }).strict();
@@ -5602,7 +4851,7 @@ export const TeamCreateOrConnectWithoutOrdersInputSchema: z.ZodType<Prisma.TeamC
 }).strict();
 
 export const RoomCreateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomCreateWithoutOrdersInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch: z.lazy(() => BranchCreateNestedOneWithoutRoomsInputSchema),
   grade_level: z.lazy(() => GradeLevelCreateNestedOneWithoutRoomsInputSchema).optional(),
@@ -5610,7 +4859,7 @@ export const RoomCreateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomCreateWith
 }).strict();
 
 export const RoomUncheckedCreateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomUncheckedCreateWithoutOrdersInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch_id: z.string(),
   grade_level_id: z.string(),
@@ -5650,13 +4899,11 @@ export const TeamUpdateToOneWithWhereWithoutOrdersInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const TeamUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.TeamUpdateWithoutOrdersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room: z.lazy(() => RoomUpdateOneRequiredWithoutTeamsNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutOrdersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -5673,7 +4920,6 @@ export const RoomUpdateToOneWithWhereWithoutOrdersInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const RoomUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomUpdateWithoutOrdersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
   grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
@@ -5681,7 +4927,6 @@ export const RoomUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomUpdateWith
 }).strict();
 
 export const RoomUncheckedUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateWithoutOrdersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -5689,12 +4934,15 @@ export const RoomUncheckedUpdateWithoutOrdersInputSchema: z.ZodType<Prisma.RoomU
 }).strict();
 
 export const OrderCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderCreateWithoutOrderItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutOrdersInputSchema).optional(),
@@ -5702,7 +4950,7 @@ export const OrderCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderCrea
 }).strict();
 
 export const OrderUncheckedCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderUncheckedCreateWithoutOrderItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   room_id: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
@@ -5710,6 +4958,9 @@ export const OrderUncheckedCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
 }).strict();
@@ -5720,7 +4971,7 @@ export const OrderCreateOrConnectWithoutOrderItemsInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const ProductCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductCreateWithoutOrderItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
@@ -5729,7 +4980,7 @@ export const ProductCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.Product
 }).strict();
 
 export const ProductUncheckedCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutOrderItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
@@ -5754,12 +5005,14 @@ export const OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema: z.ZodType<Pr
 }).strict();
 
 export const OrderUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderUpdateWithoutOrderItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutOrdersNestedInputSchema).optional(),
@@ -5767,7 +5020,6 @@ export const OrderUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderUpda
 }).strict();
 
 export const OrderUncheckedUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateWithoutOrderItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5775,6 +5027,9 @@ export const OrderUncheckedUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -5791,7 +5046,6 @@ export const ProductUpdateToOneWithWhereWithoutOrderItemsInputSchema: z.ZodType<
 }).strict();
 
 export const ProductUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductUpdateWithoutOrderItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
@@ -5800,7 +5054,6 @@ export const ProductUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.Product
 }).strict();
 
 export const ProductUncheckedUpdateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutOrderItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -5809,7 +5062,7 @@ export const ProductUncheckedUpdateWithoutOrderItemsInputSchema: z.ZodType<Prism
 }).strict();
 
 export const ProductCreateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductCreateWithoutCakeCountsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
@@ -5818,7 +5071,7 @@ export const ProductCreateWithoutCakeCountsInputSchema: z.ZodType<Prisma.Product
 }).strict();
 
 export const ProductUncheckedCreateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutCakeCountsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
@@ -5843,7 +5096,6 @@ export const ProductUpdateToOneWithWhereWithoutCakeCountsInputSchema: z.ZodType<
 }).strict();
 
 export const ProductUpdateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductUpdateWithoutCakeCountsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
@@ -5852,7 +5104,6 @@ export const ProductUpdateWithoutCakeCountsInputSchema: z.ZodType<Prisma.Product
 }).strict();
 
 export const ProductUncheckedUpdateWithoutCakeCountsInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutCakeCountsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -5861,14 +5112,14 @@ export const ProductUncheckedUpdateWithoutCakeCountsInputSchema: z.ZodType<Prism
 }).strict();
 
 export const BranchCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchCreateWithoutCakeRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string(),
   rooms: z.lazy(() => RoomCreateNestedManyWithoutBranchInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutCakeRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   group_number: z.string(),
   rooms: z.lazy(() => RoomUncheckedCreateNestedManyWithoutBranchInputSchema).optional()
@@ -5880,7 +5131,7 @@ export const BranchCreateOrConnectWithoutCakeRequestInputSchema: z.ZodType<Prism
 }).strict();
 
 export const UserCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserCreateWithoutCakeRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   fname: z.string(),
   lastname: z.string(),
   username: z.string(),
@@ -5892,7 +5143,7 @@ export const UserCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserCreat
 }).strict();
 
 export const UserUncheckedCreateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutCakeRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   fname: z.string(),
   lastname: z.string(),
   username: z.string(),
@@ -5909,13 +5160,13 @@ export const UserCreateOrConnectWithoutCakeRequestInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const CakeRequestItemsCreateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateWithoutRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   quantity: z.number().int(),
   product: z.lazy(() => ProductCreateNestedOneWithoutItemsInputSchema)
 }).strict();
 
 export const CakeRequestItemsUncheckedCreateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateWithoutRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   product_id: z.string(),
   quantity: z.number().int()
 }).strict();
@@ -5927,7 +5178,6 @@ export const CakeRequestItemsCreateOrConnectWithoutRequestInputSchema: z.ZodType
 
 export const CakeRequestItemsCreateManyRequestInputEnvelopeSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyRequestInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => CakeRequestItemsCreateManyRequestInputSchema),z.lazy(() => CakeRequestItemsCreateManyRequestInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const BranchUpsertWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUpsertWithoutCakeRequestInput> = z.object({
@@ -5942,14 +5192,12 @@ export const BranchUpdateToOneWithWhereWithoutCakeRequestInputSchema: z.ZodType<
 }).strict();
 
 export const BranchUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUpdateWithoutCakeRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rooms: z.lazy(() => RoomUpdateManyWithoutBranchNestedInputSchema).optional()
 }).strict();
 
 export const BranchUncheckedUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutCakeRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rooms: z.lazy(() => RoomUncheckedUpdateManyWithoutBranchNestedInputSchema).optional()
@@ -5967,7 +5215,6 @@ export const UserUpdateToOneWithWhereWithoutCakeRequestInputSchema: z.ZodType<Pr
 }).strict();
 
 export const UserUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUpdateWithoutCakeRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -5979,7 +5226,6 @@ export const UserUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUpdat
 }).strict();
 
 export const UserUncheckedUpdateWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutCakeRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   fname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   lastname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   username: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6007,7 +5253,7 @@ export const CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema: z.Zod
 }).strict();
 
 export const ProductCreateWithoutItemsInputSchema: z.ZodType<Prisma.ProductCreateWithoutItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit: z.lazy(() => UnitCreateNestedOneWithoutProductsInputSchema),
@@ -6016,7 +5262,7 @@ export const ProductCreateWithoutItemsInputSchema: z.ZodType<Prisma.ProductCreat
 }).strict();
 
 export const ProductUncheckedCreateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUncheckedCreateWithoutItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
   unit_id: z.string(),
@@ -6030,7 +5276,7 @@ export const ProductCreateOrConnectWithoutItemsInputSchema: z.ZodType<Prisma.Pro
 }).strict();
 
 export const CakeRequestCreateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestCreateWithoutItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -6041,7 +5287,7 @@ export const CakeRequestCreateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequ
 }).strict();
 
 export const CakeRequestUncheckedCreateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUncheckedCreateWithoutItemsInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -6068,7 +5314,6 @@ export const ProductUpdateToOneWithWhereWithoutItemsInputSchema: z.ZodType<Prism
 }).strict();
 
 export const ProductUpdateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUpdateWithoutItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit: z.lazy(() => UnitUpdateOneRequiredWithoutProductsNestedInputSchema).optional(),
@@ -6077,7 +5322,6 @@ export const ProductUpdateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUpdat
 }).strict();
 
 export const ProductUncheckedUpdateWithoutItemsInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   unit_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6097,7 +5341,6 @@ export const CakeRequestUpdateToOneWithWhereWithoutItemsInputSchema: z.ZodType<P
 }).strict();
 
 export const CakeRequestUpdateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6108,7 +5351,6 @@ export const CakeRequestUpdateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequ
 }).strict();
 
 export const CakeRequestUncheckedUpdateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateWithoutItemsInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6119,13 +5361,13 @@ export const CakeRequestUncheckedUpdateWithoutItemsInputSchema: z.ZodType<Prisma
 }).strict();
 
 export const RoomCreateManyBranchInputSchema: z.ZodType<Prisma.RoomCreateManyBranchInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   grade_level_id: z.string()
 }).strict();
 
 export const CakeRequestCreateManyBranchInputSchema: z.ZodType<Prisma.CakeRequestCreateManyBranchInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -6135,7 +5377,6 @@ export const CakeRequestCreateManyBranchInputSchema: z.ZodType<Prisma.CakeReques
 }).strict();
 
 export const RoomUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUpdateWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level: z.lazy(() => GradeLevelUpdateOneWithoutRoomsNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutRoomNestedInputSchema).optional(),
@@ -6143,7 +5384,6 @@ export const RoomUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUpdateWith
 }).strict();
 
 export const RoomUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional(),
@@ -6151,13 +5391,11 @@ export const RoomUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.RoomU
 }).strict();
 
 export const RoomUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   grade_level_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestUpdateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6168,7 +5406,6 @@ export const CakeRequestUpdateWithoutBranchInputSchema: z.ZodType<Prisma.CakeReq
 }).strict();
 
 export const CakeRequestUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6179,7 +5416,6 @@ export const CakeRequestUncheckedUpdateWithoutBranchInputSchema: z.ZodType<Prism
 }).strict();
 
 export const CakeRequestUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyWithoutBranchInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6189,46 +5425,48 @@ export const CakeRequestUncheckedUpdateManyWithoutBranchInputSchema: z.ZodType<P
 }).strict();
 
 export const TeamCreateManyRoomInputSchema: z.ZodType<Prisma.TeamCreateManyRoomInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string()
 }).strict();
 
 export const OrderCreateManyRoomInputSchema: z.ZodType<Prisma.OrderCreateManyRoomInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   team_id: z.string().optional().nullable(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const TeamUpdateWithoutRoomInputSchema: z.ZodType<Prisma.TeamUpdateWithoutRoomInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orders: z.lazy(() => OrderUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutRoomInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutRoomInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orders: z.lazy(() => OrderUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateManyWithoutRoomInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateManyWithoutRoomInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderUpdateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUpdateWithoutRoomInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional(),
@@ -6236,38 +5474,41 @@ export const OrderUpdateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUpdateWith
 }).strict();
 
 export const OrderUncheckedUpdateWithoutRoomInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateWithoutRoomInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutOrderNestedInputSchema).optional()
 }).strict();
 
 export const OrderUncheckedUpdateManyWithoutRoomInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateManyWithoutRoomInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RoomCreateManyGrade_levelInputSchema: z.ZodType<Prisma.RoomCreateManyGrade_levelInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   branch_id: z.string()
 }).strict();
 
 export const RoomUpdateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpdateWithoutGrade_levelInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch: z.lazy(() => BranchUpdateOneRequiredWithoutRoomsNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutRoomNestedInputSchema).optional(),
@@ -6275,7 +5516,6 @@ export const RoomUpdateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUpdat
 }).strict();
 
 export const RoomUncheckedUpdateWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateWithoutGrade_levelInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutRoomNestedInputSchema).optional(),
@@ -6283,13 +5523,12 @@ export const RoomUncheckedUpdateWithoutGrade_levelInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const RoomUncheckedUpdateManyWithoutGrade_levelInputSchema: z.ZodType<Prisma.RoomUncheckedUpdateManyWithoutGrade_levelInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   branch_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestCreateManyUserInputSchema: z.ZodType<Prisma.CakeRequestCreateManyUserInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
   note: z.string().optional().nullable(),
@@ -6299,7 +5538,6 @@ export const CakeRequestCreateManyUserInputSchema: z.ZodType<Prisma.CakeRequestC
 }).strict();
 
 export const CakeRequestUpdateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutUserInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6310,7 +5548,6 @@ export const CakeRequestUpdateWithoutUserInputSchema: z.ZodType<Prisma.CakeReque
 }).strict();
 
 export const CakeRequestUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateWithoutUserInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6321,7 +5558,6 @@ export const CakeRequestUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const CakeRequestUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUncheckedUpdateManyWithoutUserInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6331,24 +5567,29 @@ export const CakeRequestUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Pri
 }).strict();
 
 export const OrderCreateManyTeamInputSchema: z.ZodType<Prisma.OrderCreateManyTeamInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   customerName: z.string(),
   room_id: z.string().optional().nullable(),
   orderDate: z.coerce.date(),
   totalPrice: z.number(),
   book_number: z.number().int(),
   number: z.number().int(),
+  phone: z.number().int(),
+  pickup_date: z.coerce.date(),
+  depository: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const OrderUpdateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUpdateWithoutTeamInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutOrderNestedInputSchema).optional(),
@@ -6356,32 +5597,36 @@ export const OrderUpdateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUpdateWith
 }).strict();
 
 export const OrderUncheckedUpdateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateWithoutTeamInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutOrderNestedInputSchema).optional()
 }).strict();
 
 export const OrderUncheckedUpdateManyWithoutTeamInputSchema: z.ZodType<Prisma.OrderUncheckedUpdateManyWithoutTeamInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   customerName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   room_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   orderDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   totalPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   book_number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   number: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  phone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  pickup_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  depository: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderItemCreateManyProductInputSchema: z.ZodType<Prisma.OrderItemCreateManyProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   order_id: z.string(),
   quantity: z.number().int(),
   unitPrice: z.number(),
@@ -6391,19 +5636,18 @@ export const OrderItemCreateManyProductInputSchema: z.ZodType<Prisma.OrderItemCr
 }).strict();
 
 export const CakeCountCreateManyProductInputSchema: z.ZodType<Prisma.CakeCountCreateManyProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   pound: z.lazy(() => CakePoundSchema),
   quantity: z.number().int()
 }).strict();
 
 export const CakeRequestItemsCreateManyProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyProductInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   request_id: z.string(),
   quantity: z.number().int()
 }).strict();
 
 export const OrderItemUpdateWithoutProductInputSchema: z.ZodType<Prisma.OrderItemUpdateWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   subtotal: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6413,7 +5657,6 @@ export const OrderItemUpdateWithoutProductInputSchema: z.ZodType<Prisma.OrderIte
 }).strict();
 
 export const OrderItemUncheckedUpdateWithoutProductInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   order_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6423,7 +5666,6 @@ export const OrderItemUncheckedUpdateWithoutProductInputSchema: z.ZodType<Prisma
 }).strict();
 
 export const OrderItemUncheckedUpdateManyWithoutProductInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateManyWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   order_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6433,49 +5675,42 @@ export const OrderItemUncheckedUpdateManyWithoutProductInputSchema: z.ZodType<Pr
 }).strict();
 
 export const CakeCountUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeCountUpdateWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeCountUncheckedUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeCountUncheckedUpdateWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeCountUncheckedUpdateManyWithoutProductInputSchema: z.ZodType<Prisma.CakeCountUncheckedUpdateManyWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   pound: z.union([ z.lazy(() => CakePoundSchema),z.lazy(() => EnumCakePoundFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestItemsUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   request: z.lazy(() => CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema).optional()
 }).strict();
 
 export const CakeRequestItemsUncheckedUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestItemsUncheckedUpdateManyWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyWithoutProductInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   request_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const ProductCreateManyUnitInputSchema: z.ZodType<Prisma.ProductCreateManyUnitInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number()
 }).strict();
 
 export const ProductUpdateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUpdateWithoutUnitInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional(),
@@ -6484,7 +5719,6 @@ export const ProductUpdateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUpdate
 }).strict();
 
 export const ProductUncheckedUpdateWithoutUnitInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateWithoutUnitInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
@@ -6493,13 +5727,12 @@ export const ProductUncheckedUpdateWithoutUnitInputSchema: z.ZodType<Prisma.Prod
 }).strict();
 
 export const ProductUncheckedUpdateManyWithoutUnitInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateManyWithoutUnitInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const OrderItemCreateManyOrderInputSchema: z.ZodType<Prisma.OrderItemCreateManyOrderInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   product_id: z.string(),
   quantity: z.number().int(),
   unitPrice: z.number(),
@@ -6509,7 +5742,6 @@ export const OrderItemCreateManyOrderInputSchema: z.ZodType<Prisma.OrderItemCrea
 }).strict();
 
 export const OrderItemUpdateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUpdateWithoutOrderInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   subtotal: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6519,7 +5751,6 @@ export const OrderItemUpdateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemU
 }).strict();
 
 export const OrderItemUncheckedUpdateWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateWithoutOrderInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6529,7 +5760,6 @@ export const OrderItemUncheckedUpdateWithoutOrderInputSchema: z.ZodType<Prisma.O
 }).strict();
 
 export const OrderItemUncheckedUpdateManyWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemUncheckedUpdateManyWithoutOrderInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -6539,25 +5769,22 @@ export const OrderItemUncheckedUpdateManyWithoutOrderInputSchema: z.ZodType<Pris
 }).strict();
 
 export const CakeRequestItemsCreateManyRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyRequestInput> = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().optional(),
   product_id: z.string(),
   quantity: z.number().int()
 }).strict();
 
 export const CakeRequestItemsUpdateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithoutRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   product: z.lazy(() => ProductUpdateOneRequiredWithoutItemsNestedInputSchema).optional()
 }).strict();
 
 export const CakeRequestItemsUncheckedUpdateWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateWithoutRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedUpdateManyWithoutRequestInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   product_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -7326,12 +6553,6 @@ export const BranchUpsertArgsSchema: z.ZodType<Prisma.BranchUpsertArgs> = z.obje
 
 export const BranchCreateManyArgsSchema: z.ZodType<Prisma.BranchCreateManyArgs> = z.object({
   data: z.union([ BranchCreateManyInputSchema,BranchCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const BranchCreateManyAndReturnArgsSchema: z.ZodType<Prisma.BranchCreateManyAndReturnArgs> = z.object({
-  data: z.union([ BranchCreateManyInputSchema,BranchCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const BranchDeleteArgsSchema: z.ZodType<Prisma.BranchDeleteArgs> = z.object({
@@ -7348,12 +6569,6 @@ export const BranchUpdateArgsSchema: z.ZodType<Prisma.BranchUpdateArgs> = z.obje
 }).strict() ;
 
 export const BranchUpdateManyArgsSchema: z.ZodType<Prisma.BranchUpdateManyArgs> = z.object({
-  data: z.union([ BranchUpdateManyMutationInputSchema,BranchUncheckedUpdateManyInputSchema ]),
-  where: BranchWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const BranchUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.BranchUpdateManyAndReturnArgs> = z.object({
   data: z.union([ BranchUpdateManyMutationInputSchema,BranchUncheckedUpdateManyInputSchema ]),
   where: BranchWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7380,12 +6595,6 @@ export const RoomUpsertArgsSchema: z.ZodType<Prisma.RoomUpsertArgs> = z.object({
 
 export const RoomCreateManyArgsSchema: z.ZodType<Prisma.RoomCreateManyArgs> = z.object({
   data: z.union([ RoomCreateManyInputSchema,RoomCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const RoomCreateManyAndReturnArgsSchema: z.ZodType<Prisma.RoomCreateManyAndReturnArgs> = z.object({
-  data: z.union([ RoomCreateManyInputSchema,RoomCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const RoomDeleteArgsSchema: z.ZodType<Prisma.RoomDeleteArgs> = z.object({
@@ -7402,12 +6611,6 @@ export const RoomUpdateArgsSchema: z.ZodType<Prisma.RoomUpdateArgs> = z.object({
 }).strict() ;
 
 export const RoomUpdateManyArgsSchema: z.ZodType<Prisma.RoomUpdateManyArgs> = z.object({
-  data: z.union([ RoomUpdateManyMutationInputSchema,RoomUncheckedUpdateManyInputSchema ]),
-  where: RoomWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const RoomUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.RoomUpdateManyAndReturnArgs> = z.object({
   data: z.union([ RoomUpdateManyMutationInputSchema,RoomUncheckedUpdateManyInputSchema ]),
   where: RoomWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7434,12 +6637,6 @@ export const GradeLevelUpsertArgsSchema: z.ZodType<Prisma.GradeLevelUpsertArgs> 
 
 export const GradeLevelCreateManyArgsSchema: z.ZodType<Prisma.GradeLevelCreateManyArgs> = z.object({
   data: z.union([ GradeLevelCreateManyInputSchema,GradeLevelCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const GradeLevelCreateManyAndReturnArgsSchema: z.ZodType<Prisma.GradeLevelCreateManyAndReturnArgs> = z.object({
-  data: z.union([ GradeLevelCreateManyInputSchema,GradeLevelCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const GradeLevelDeleteArgsSchema: z.ZodType<Prisma.GradeLevelDeleteArgs> = z.object({
@@ -7456,12 +6653,6 @@ export const GradeLevelUpdateArgsSchema: z.ZodType<Prisma.GradeLevelUpdateArgs> 
 }).strict() ;
 
 export const GradeLevelUpdateManyArgsSchema: z.ZodType<Prisma.GradeLevelUpdateManyArgs> = z.object({
-  data: z.union([ GradeLevelUpdateManyMutationInputSchema,GradeLevelUncheckedUpdateManyInputSchema ]),
-  where: GradeLevelWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const GradeLevelUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.GradeLevelUpdateManyAndReturnArgs> = z.object({
   data: z.union([ GradeLevelUpdateManyMutationInputSchema,GradeLevelUncheckedUpdateManyInputSchema ]),
   where: GradeLevelWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7488,12 +6679,6 @@ export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
 
 export const UserCreateManyArgsSchema: z.ZodType<Prisma.UserCreateManyArgs> = z.object({
   data: z.union([ UserCreateManyInputSchema,UserCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const UserCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UserCreateManyAndReturnArgs> = z.object({
-  data: z.union([ UserCreateManyInputSchema,UserCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const UserDeleteArgsSchema: z.ZodType<Prisma.UserDeleteArgs> = z.object({
@@ -7510,12 +6695,6 @@ export const UserUpdateArgsSchema: z.ZodType<Prisma.UserUpdateArgs> = z.object({
 }).strict() ;
 
 export const UserUpdateManyArgsSchema: z.ZodType<Prisma.UserUpdateManyArgs> = z.object({
-  data: z.union([ UserUpdateManyMutationInputSchema,UserUncheckedUpdateManyInputSchema ]),
-  where: UserWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const UserUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.UserUpdateManyAndReturnArgs> = z.object({
   data: z.union([ UserUpdateManyMutationInputSchema,UserUncheckedUpdateManyInputSchema ]),
   where: UserWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7542,12 +6721,6 @@ export const TeamUpsertArgsSchema: z.ZodType<Prisma.TeamUpsertArgs> = z.object({
 
 export const TeamCreateManyArgsSchema: z.ZodType<Prisma.TeamCreateManyArgs> = z.object({
   data: z.union([ TeamCreateManyInputSchema,TeamCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const TeamCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamCreateManyAndReturnArgs> = z.object({
-  data: z.union([ TeamCreateManyInputSchema,TeamCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const TeamDeleteArgsSchema: z.ZodType<Prisma.TeamDeleteArgs> = z.object({
@@ -7564,12 +6737,6 @@ export const TeamUpdateArgsSchema: z.ZodType<Prisma.TeamUpdateArgs> = z.object({
 }).strict() ;
 
 export const TeamUpdateManyArgsSchema: z.ZodType<Prisma.TeamUpdateManyArgs> = z.object({
-  data: z.union([ TeamUpdateManyMutationInputSchema,TeamUncheckedUpdateManyInputSchema ]),
-  where: TeamWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const TeamUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamUpdateManyAndReturnArgs> = z.object({
   data: z.union([ TeamUpdateManyMutationInputSchema,TeamUncheckedUpdateManyInputSchema ]),
   where: TeamWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7596,12 +6763,6 @@ export const ProductUpsertArgsSchema: z.ZodType<Prisma.ProductUpsertArgs> = z.ob
 
 export const ProductCreateManyArgsSchema: z.ZodType<Prisma.ProductCreateManyArgs> = z.object({
   data: z.union([ ProductCreateManyInputSchema,ProductCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const ProductCreateManyAndReturnArgsSchema: z.ZodType<Prisma.ProductCreateManyAndReturnArgs> = z.object({
-  data: z.union([ ProductCreateManyInputSchema,ProductCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const ProductDeleteArgsSchema: z.ZodType<Prisma.ProductDeleteArgs> = z.object({
@@ -7618,12 +6779,6 @@ export const ProductUpdateArgsSchema: z.ZodType<Prisma.ProductUpdateArgs> = z.ob
 }).strict() ;
 
 export const ProductUpdateManyArgsSchema: z.ZodType<Prisma.ProductUpdateManyArgs> = z.object({
-  data: z.union([ ProductUpdateManyMutationInputSchema,ProductUncheckedUpdateManyInputSchema ]),
-  where: ProductWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const ProductUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.ProductUpdateManyAndReturnArgs> = z.object({
   data: z.union([ ProductUpdateManyMutationInputSchema,ProductUncheckedUpdateManyInputSchema ]),
   where: ProductWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7650,12 +6805,6 @@ export const UnitUpsertArgsSchema: z.ZodType<Prisma.UnitUpsertArgs> = z.object({
 
 export const UnitCreateManyArgsSchema: z.ZodType<Prisma.UnitCreateManyArgs> = z.object({
   data: z.union([ UnitCreateManyInputSchema,UnitCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const UnitCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UnitCreateManyAndReturnArgs> = z.object({
-  data: z.union([ UnitCreateManyInputSchema,UnitCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const UnitDeleteArgsSchema: z.ZodType<Prisma.UnitDeleteArgs> = z.object({
@@ -7672,12 +6821,6 @@ export const UnitUpdateArgsSchema: z.ZodType<Prisma.UnitUpdateArgs> = z.object({
 }).strict() ;
 
 export const UnitUpdateManyArgsSchema: z.ZodType<Prisma.UnitUpdateManyArgs> = z.object({
-  data: z.union([ UnitUpdateManyMutationInputSchema,UnitUncheckedUpdateManyInputSchema ]),
-  where: UnitWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const UnitUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.UnitUpdateManyAndReturnArgs> = z.object({
   data: z.union([ UnitUpdateManyMutationInputSchema,UnitUncheckedUpdateManyInputSchema ]),
   where: UnitWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7704,12 +6847,6 @@ export const OrderUpsertArgsSchema: z.ZodType<Prisma.OrderUpsertArgs> = z.object
 
 export const OrderCreateManyArgsSchema: z.ZodType<Prisma.OrderCreateManyArgs> = z.object({
   data: z.union([ OrderCreateManyInputSchema,OrderCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const OrderCreateManyAndReturnArgsSchema: z.ZodType<Prisma.OrderCreateManyAndReturnArgs> = z.object({
-  data: z.union([ OrderCreateManyInputSchema,OrderCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const OrderDeleteArgsSchema: z.ZodType<Prisma.OrderDeleteArgs> = z.object({
@@ -7726,12 +6863,6 @@ export const OrderUpdateArgsSchema: z.ZodType<Prisma.OrderUpdateArgs> = z.object
 }).strict() ;
 
 export const OrderUpdateManyArgsSchema: z.ZodType<Prisma.OrderUpdateManyArgs> = z.object({
-  data: z.union([ OrderUpdateManyMutationInputSchema,OrderUncheckedUpdateManyInputSchema ]),
-  where: OrderWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const OrderUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.OrderUpdateManyAndReturnArgs> = z.object({
   data: z.union([ OrderUpdateManyMutationInputSchema,OrderUncheckedUpdateManyInputSchema ]),
   where: OrderWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7758,12 +6889,6 @@ export const OrderItemUpsertArgsSchema: z.ZodType<Prisma.OrderItemUpsertArgs> = 
 
 export const OrderItemCreateManyArgsSchema: z.ZodType<Prisma.OrderItemCreateManyArgs> = z.object({
   data: z.union([ OrderItemCreateManyInputSchema,OrderItemCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const OrderItemCreateManyAndReturnArgsSchema: z.ZodType<Prisma.OrderItemCreateManyAndReturnArgs> = z.object({
-  data: z.union([ OrderItemCreateManyInputSchema,OrderItemCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const OrderItemDeleteArgsSchema: z.ZodType<Prisma.OrderItemDeleteArgs> = z.object({
@@ -7780,12 +6905,6 @@ export const OrderItemUpdateArgsSchema: z.ZodType<Prisma.OrderItemUpdateArgs> = 
 }).strict() ;
 
 export const OrderItemUpdateManyArgsSchema: z.ZodType<Prisma.OrderItemUpdateManyArgs> = z.object({
-  data: z.union([ OrderItemUpdateManyMutationInputSchema,OrderItemUncheckedUpdateManyInputSchema ]),
-  where: OrderItemWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const OrderItemUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.OrderItemUpdateManyAndReturnArgs> = z.object({
   data: z.union([ OrderItemUpdateManyMutationInputSchema,OrderItemUncheckedUpdateManyInputSchema ]),
   where: OrderItemWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7812,12 +6931,6 @@ export const CakeCountUpsertArgsSchema: z.ZodType<Prisma.CakeCountUpsertArgs> = 
 
 export const CakeCountCreateManyArgsSchema: z.ZodType<Prisma.CakeCountCreateManyArgs> = z.object({
   data: z.union([ CakeCountCreateManyInputSchema,CakeCountCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const CakeCountCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeCountCreateManyAndReturnArgs> = z.object({
-  data: z.union([ CakeCountCreateManyInputSchema,CakeCountCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const CakeCountDeleteArgsSchema: z.ZodType<Prisma.CakeCountDeleteArgs> = z.object({
@@ -7834,12 +6947,6 @@ export const CakeCountUpdateArgsSchema: z.ZodType<Prisma.CakeCountUpdateArgs> = 
 }).strict() ;
 
 export const CakeCountUpdateManyArgsSchema: z.ZodType<Prisma.CakeCountUpdateManyArgs> = z.object({
-  data: z.union([ CakeCountUpdateManyMutationInputSchema,CakeCountUncheckedUpdateManyInputSchema ]),
-  where: CakeCountWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const CakeCountUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeCountUpdateManyAndReturnArgs> = z.object({
   data: z.union([ CakeCountUpdateManyMutationInputSchema,CakeCountUncheckedUpdateManyInputSchema ]),
   where: CakeCountWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7866,12 +6973,6 @@ export const CakeRequestUpsertArgsSchema: z.ZodType<Prisma.CakeRequestUpsertArgs
 
 export const CakeRequestCreateManyArgsSchema: z.ZodType<Prisma.CakeRequestCreateManyArgs> = z.object({
   data: z.union([ CakeRequestCreateManyInputSchema,CakeRequestCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const CakeRequestCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestCreateManyAndReturnArgs> = z.object({
-  data: z.union([ CakeRequestCreateManyInputSchema,CakeRequestCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const CakeRequestDeleteArgsSchema: z.ZodType<Prisma.CakeRequestDeleteArgs> = z.object({
@@ -7888,12 +6989,6 @@ export const CakeRequestUpdateArgsSchema: z.ZodType<Prisma.CakeRequestUpdateArgs
 }).strict() ;
 
 export const CakeRequestUpdateManyArgsSchema: z.ZodType<Prisma.CakeRequestUpdateManyArgs> = z.object({
-  data: z.union([ CakeRequestUpdateManyMutationInputSchema,CakeRequestUncheckedUpdateManyInputSchema ]),
-  where: CakeRequestWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const CakeRequestUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestUpdateManyAndReturnArgs> = z.object({
   data: z.union([ CakeRequestUpdateManyMutationInputSchema,CakeRequestUncheckedUpdateManyInputSchema ]),
   where: CakeRequestWhereInputSchema.optional(),
   limit: z.number().optional(),
@@ -7920,12 +7015,6 @@ export const CakeRequestItemsUpsertArgsSchema: z.ZodType<Prisma.CakeRequestItems
 
 export const CakeRequestItemsCreateManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyArgs> = z.object({
   data: z.union([ CakeRequestItemsCreateManyInputSchema,CakeRequestItemsCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
-export const CakeRequestItemsCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyAndReturnArgs> = z.object({
-  data: z.union([ CakeRequestItemsCreateManyInputSchema,CakeRequestItemsCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const CakeRequestItemsDeleteArgsSchema: z.ZodType<Prisma.CakeRequestItemsDeleteArgs> = z.object({
@@ -7942,12 +7031,6 @@ export const CakeRequestItemsUpdateArgsSchema: z.ZodType<Prisma.CakeRequestItems
 }).strict() ;
 
 export const CakeRequestItemsUpdateManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyArgs> = z.object({
-  data: z.union([ CakeRequestItemsUpdateManyMutationInputSchema,CakeRequestItemsUncheckedUpdateManyInputSchema ]),
-  where: CakeRequestItemsWhereInputSchema.optional(),
-  limit: z.number().optional(),
-}).strict() ;
-
-export const CakeRequestItemsUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyAndReturnArgs> = z.object({
   data: z.union([ CakeRequestItemsUpdateManyMutationInputSchema,CakeRequestItemsUncheckedUpdateManyInputSchema ]),
   where: CakeRequestItemsWhereInputSchema.optional(),
   limit: z.number().optional(),

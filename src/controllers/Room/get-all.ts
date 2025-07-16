@@ -5,10 +5,10 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { RoomService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { RoomOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { RoomWithBranchSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
-  data: RoomOptionalDefaultsSchema.array(),
+  data: RoomWithBranchSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

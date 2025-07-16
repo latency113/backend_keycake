@@ -1,35 +1,205 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 generator zod {
   provider                         = "zod-prisma-types"
-  output                           = "./../../src/types/schema/prisma" // default is ./generated/zod
-  useMultipleFiles                 = false // default is false
-  writeBarrelFiles                 = false // default is true
-  createInputTypes                 = true // default is true
-  createModelTypes                 = true // default is true
-  addInputTypeValidation           = true // default is true
-  addIncludeType                   = true // default is true
-  addSelectType                    = true // default is true
-  validateWhereUniqueInput         = true // default is true
-  createOptionalDefaultValuesTypes = true // default is false
-  createRelationValuesTypes        = true // default is false
-  createPartialTypes               = true // default is false
-  useDefaultValidators             = true // default is true
-  coerceDate                       = true // default is true
-  writeNullishInModelTypes         = true // default is false
-  prismaClientPath                 = "@prisma/client" // default is client output path
+  output                           = "./../../src/types/schema/prisma"
+  addIncludeType                   = "true"
+  addInputTypeValidation           = "true"
+  addSelectType                    = "true"
+  coerceDate                       = "true"
+  createInputTypes                 = "true"
+  createModelTypes                 = "true"
+  createOptionalDefaultValuesTypes = "true"
+  createPartialTypes               = "true"
+  prismaClientPath                 = "@prisma/client"
+  useDefaultValidators             = "true"
+  useMultipleFiles                 = "false"
+  validateWhereUniqueInput         = "true"
+  writeBarrelFiles                 = "false"
+  writeNullishInModelTypes         = "true"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+enum Role {
+  ADMIN
+  OFFICER
+  USER
+}
 
+enum CakePound {
+  ONE // 1 ปอนด์
+  TWO // 2 ปอนด์
+  THREE // 3 ปอนด์
+  FOUR // 4 ปอนด์
+  FIVE // 5 ปอนด์
+}
+
+enum GradeLevelType {
+  VOCATIONAL // ปวช.
+  HIGHER // ปวส.
+}
+
+enum RequestStatus {
+  pending
+  approved
+  rejected
+}
+
+model Branch {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name         String @unique
+  group_number String // รหัสกลุ่ม เช่น 672020101
+
+  rooms       Room[]
+  CakeRequest CakeRequest[]
+}
+
+model Room {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  branch_id      String @db.ObjectId
+  grade_level_id String @db.ObjectId
+
+  branch      Branch      @relation(fields: [branch_id], references: [id])
+  grade_level GradeLevel? @relation(fields: [grade_level_id], references: [id])
+
+  teams  Team[]
+  orders Order[]
+
+  @@index([branch_id], name: "idx_room_branch_id")
+}
+
+model GradeLevel {
+  id    String         @id @default(auto()) @map("_id") @db.ObjectId
+  level GradeLevelType // VOCATIONAL / HIGHER
+  year  Int // 1, 2, 3
+
+  rooms Room[]
+
+  @@unique([level, year])
+}
+
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  fname    String
+  lastname String
+  username String  @unique
+  password String
+  email    String?
+  role     Role    @default(USER)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  CakeRequest CakeRequest[]
+}
+
+model Team {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  room_id String @db.ObjectId
+
+  room   Room    @relation(fields: [room_id], references: [id])
+  orders Order[]
+}
+
+model Product {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  price   Float
+  unit_id String @db.ObjectId
+
+  unit Unit @relation(fields: [unit_id], references: [id])
+
+  orderItems OrderItem[]
+  cakeCounts CakeCount[]
+  items      CakeRequestItems[]
+}
+
+model Unit {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  name_th String
+  name_en String
+
+  products Product[]
+}
+
+model Order {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  customerName String
+  room_id      String? @db.ObjectId
+  team_id      String? @db.ObjectId
+  orderDate    DateTime
+  totalPrice   Float
+  book_number  Int
+  number       Int
+  phone        Int
+  pickup_date  DateTime
+  depository   String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+
+  team Team? @relation(fields: [team_id], references: [id])
+  room Room? @relation(fields: [room_id], references: [id])
+
+  @@unique([book_number, number])
+  @@index([room_id], name: "idx_order_room_id")
+  @@index([team_id], name: "idx_order_team_id")
+}
+
+model OrderItem {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  order_id   String @db.ObjectId
+  product_id String @db.ObjectId
+  quantity   Int
+  unitPrice  Float
+  subtotal   Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order   Order   @relation(fields: [order_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model CakeCount {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  product_id String @db.ObjectId
+  pound      CakePound
+  quantity   Int
+
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model CakeRequest {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  requestDate DateTime
+  status      RequestStatus @default(pending)
+  note        String?
+  user_id     String @db.ObjectId
+  branch_id   String @db.ObjectId
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  branch Branch             @relation(fields: [branch_id], references: [id])
+  user   User               @relation(fields: [user_id], references: [id])
+  items  CakeRequestItems[]
+
+  @@map("cake_requests")
+}
+
+model CakeRequestItems {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  request_id String @db.ObjectId
+  product_id String @db.ObjectId
+  quantity   Int
+
+  product Product     @relation(fields: [product_id], references: [id])
+  request CakeRequest @relation(fields: [request_id], references: [id])
+
+  @@map("cake_request_items")
+}

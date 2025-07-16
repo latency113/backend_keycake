@@ -4,11 +4,11 @@ import DatabaseContext from "@/repositories/prisma.js";
 import { OrderItemService } from "@/services/index.js";
 import { BaseRequestQuerySchema } from "@/types/global/index.js";
 import { FailResponseSchema } from "@/types/global/response.js";
-import { OrderItemOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js";
+import { OrderItemOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
 import z from "zod";
 
 const ResponseSchema = z.object({
-  data: OrderItemOptionalDefaultsWithPartialRelationsSchema.array(),
+  data: OrderItemOptionalDefaultsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

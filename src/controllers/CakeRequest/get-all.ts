@@ -4,11 +4,11 @@ import DatabaseContext from "@/repositories/prisma.js";
 import { CakeRequestService } from "@/services/index.js";
 import { BaseRequestQuerySchema } from "@/types/global/index.js";
 import { FailResponseSchema } from "@/types/global/response.js";
-import { CakeRequestOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js";
+import { CakeRequestOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
 import z from "zod";
 
 const ResponseSchema = z.object({
-  data: CakeRequestOptionalDefaultsWithPartialRelationsSchema.array(),
+  data: CakeRequestOptionalDefaultsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

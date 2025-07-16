@@ -18,10 +18,13 @@ export function ProductService({ db }: ProductDependencies) {
         throw error
       }
     },
-    async getAll(param?: TypeProductWhereInput): Promise<Product[]> {
+    async getAll(param?: TypeProductWhereInput): Promise<ProductWithUnit[]> {
       console.log(`[ProductService] getAll called with param:`, param)
       try {
         const result = await db.product.findMany({
+          include: {
+            unit: true,
+          },
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
           where: param?.where,
@@ -34,10 +37,15 @@ export function ProductService({ db }: ProductDependencies) {
         throw error
       }
     },
-    async getById(id: string): Promise<Product | null> {
+    async getById(id: string): Promise<ProductWithUnit | null> {
       console.log(`[ProductService] getById called with id: ${id}`)
       try {
-        const result = await db.product.findFirst({ where: { id } })
+        const result = await db.product.findFirst({
+          include: {
+            unit: true,
+          },
+          where: { id },
+        })
         console.log(`[ProductService] getById completed, found:`, !!result)
         return result
       }
@@ -46,10 +54,15 @@ export function ProductService({ db }: ProductDependencies) {
         throw error
       }
     },
-    async getOne(param: TypeProductWhereInput["where"]): Promise<Product | null> {
+    async getOne(param: TypeProductWhereInput["where"]): Promise<ProductWithUnit | null> {
       console.log(`[ProductService] getOne called with param:`, param)
       try {
-        const result = await db.product.findFirst({ where: param })
+        const result = await db.product.findFirst({
+          include: {
+            unit: true,
+          },
+          where: param,
+        })
         console.log(`[ProductService] getOne completed, found:`, !!result)
         return result
       }

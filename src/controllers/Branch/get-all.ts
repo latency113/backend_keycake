@@ -4,11 +4,11 @@ import DatabaseContext from "@/repositories/prisma.js";
 import { BranchService } from "@/services/index.js";
 import { BaseRequestQuerySchema } from "@/types/global/index.js";
 import { FailResponseSchema } from "@/types/global/response.js";
-import { BranchOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js";
+import { BranchOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
 import z from "zod";
 
 const ResponseSchema = z.object({
-  data: BranchOptionalDefaultsWithPartialRelationsSchema.array(),
+  data: BranchOptionalDefaultsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

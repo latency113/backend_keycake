@@ -66,8 +66,8 @@ export default (app: TypeApplication) =>
                             schema: RequestSchema,
                             example: {
                                 product_id: "",
-                                pound: "",
-                                quantity:"",
+                                pound: 0,
+                                quantity:0,
                             }
                         }
                     }

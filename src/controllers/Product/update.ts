@@ -66,7 +66,7 @@ export default (app: TypeApplication) =>
                             schema: RequestSchema,
                             example: {
                                 name: "",
-                                price: "",
+                                price: 0,
                                 unit_id: "",
                             }
                         }

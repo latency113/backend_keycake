@@ -3,12 +3,12 @@ import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
 import { CakeRequestService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { CakeRequestOptionalDefaultsWithPartialRelationsSchema } from "@/types/schema/prisma/index.js"
+import { CakeRequestOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 import z from "zod"
 
 const ResponseSchema = z.object({
-    data: CakeRequestOptionalDefaultsWithPartialRelationsSchema,
+    data: CakeRequestOptionalDefaultsSchema,
     message: z.string(),
 })
 

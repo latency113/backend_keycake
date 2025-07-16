@@ -18,10 +18,13 @@ export function RoomService({ db }: RoomDependencies) {
         throw error
       }
     },
-    async getAll(param?: TypeRoomWhereInput): Promise<Room[]> {
+    async getAll(param?: TypeRoomWhereInput): Promise<RoomWithBranch[]> {
       console.log(`[RoomService] getAll called with param:`, param)
       try {
         const result = await db.room.findMany({
+          include: {
+            branch: true,
+          },
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
           where: param?.where,
