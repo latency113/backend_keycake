@@ -15,7 +15,7 @@ generator zod {
   createPartialTypes               = "true"
   prismaClientPath                 = "@prisma/client"
   useDefaultValidators             = "true"
-  useMultipleFiles                 = "false"
+  useMultipleFiles                 = "true"
   validateWhereUniqueInput         = "true"
   writeBarrelFiles                 = "false"
   writeNullishInModelTypes         = "true"
