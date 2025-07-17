@@ -1,4 +1,5 @@
-import { Prisma, type Order, type PrismaClient } from "@prisma/client"
+import type { type Order, Prisma, type PrismaClient } from "@prisma/client"
+
 import type { TypeOrderService, TypeOrderWhereInput } from "./Order.type.js"
 
 export type OrderDependencies = {
@@ -37,7 +38,7 @@ export function OrderService({ db }: OrderDependencies) {
     async getById(id: string): Promise<Order | null> {
       console.log(`[OrderService] getById called with id: ${id}`)
       try {
-        const result = await db.order.findFirst({ where: { id } ,include:{ orderItems:true }})
+        const result = await db.order.findFirst({ include: { orderItems: true }, where: { id } })
         console.log(`[OrderService] getById completed, found:`, !!result)
         return result
       }
@@ -49,7 +50,7 @@ export function OrderService({ db }: OrderDependencies) {
     async getOne(param: TypeOrderWhereInput["where"]): Promise<Order | null> {
       console.log(`[OrderService] getOne called with param:`, param)
       try {
-        const result = await db.order.findFirst({ where: param , include:{ orderItems:true } })
+        const result = await db.order.findFirst({ include: { orderItems: true }, where: param })
         console.log(`[OrderService] getOne completed, found:`, !!result)
         return result
       }
@@ -85,19 +86,7 @@ export function OrderService({ db }: OrderDependencies) {
     async onUpdate(id: string, data: Prisma.OrderUpdateInput): Promise<Order> {
       console.log(`[OrderService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const Order = await db.order.findUnique({ where: { id } });
-          if (!Order) {
-            throw new Error(`Record to update not found.`);
-          }
-          return Order;
-        }
-
-        const result = await db.order.update({ data: cleanedData, where: { id } })
+        const result = await db.order.update({ data, where: { id } })
         console.log(`[OrderService] onUpdate completed for id: ${id}`)
         return result
       }

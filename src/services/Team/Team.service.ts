@@ -1,4 +1,5 @@
-import { Prisma, type Team, type PrismaClient } from "@prisma/client"
+import type { Prisma, type PrismaClient, type Team } from "@prisma/client"
+
 import type { TypeTeamService, TypeTeamWhereInput } from "./Team.type.js"
 
 export type TeamDependencies = {
@@ -22,8 +23,8 @@ export function TeamService({ db }: TeamDependencies) {
       console.log(`[TeamService] getAll called with param:`, param)
       try {
         const result = await db.team.findMany({
-          include:{
-            room:true,
+          include: {
+            room: true,
           },
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
@@ -40,7 +41,7 @@ export function TeamService({ db }: TeamDependencies) {
     async getById(id: string): Promise<Team | null> {
       console.log(`[TeamService] getById called with id: ${id}`)
       try {
-        const result = await db.team.findFirst({ where: { id } ,include: { room: true }})
+        const result = await db.team.findFirst({ include: { room: true }, where: { id } })
         console.log(`[TeamService] getById completed, found:`, !!result)
         return result
       }
@@ -52,7 +53,7 @@ export function TeamService({ db }: TeamDependencies) {
     async getOne(param: TypeTeamWhereInput["where"]): Promise<Team | null> {
       console.log(`[TeamService] getOne called with param:`, param)
       try {
-        const result = await db.team.findFirst({ where: param ,include: { room: true }})
+        const result = await db.team.findFirst({ include: { room: true }, where: param })
         console.log(`[TeamService] getOne completed, found:`, !!result)
         return result
       }
@@ -88,19 +89,7 @@ export function TeamService({ db }: TeamDependencies) {
     async onUpdate(id: string, data: Prisma.TeamUpdateInput): Promise<Team> {
       console.log(`[TeamService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const Team = await db.team.findUnique({ where: { id } });
-          if (!Team) {
-            throw new Error(`Record to update not found.`);
-          }
-          return Team;
-        }
-
-        const result = await db.team.update({ data: cleanedData, where: { id } })
+        const result = await db.team.update({ data, where: { id } })
         console.log(`[TeamService] onUpdate completed for id: ${id}`)
         return result
       }

@@ -1,4 +1,5 @@
-import { Prisma, type CakeRequestItems, type PrismaClient } from "@prisma/client"
+import type { type CakeRequestItems, Prisma, type PrismaClient } from "@prisma/client"
+
 import type { TypeCakeRequestItemsService, TypeCakeRequestItemsWhereInput } from "./CakeRequestItem.type.js"
 
 export type CakeRequestItemsDependencies = {
@@ -85,19 +86,7 @@ export function CakeRequestItemsService({ db }: CakeRequestItemsDependencies) {
     async onUpdate(id: string, data: Prisma.CakeRequestItemsUpdateInput): Promise<CakeRequestItems> {
       console.log(`[CakeRequestItemsService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const CakeRequestItems = await db.cakeRequestItems.findUnique({ where: { id } });
-          if (!CakeRequestItems) {
-            throw new Error(`Record to update not found.`);
-          }
-          return CakeRequestItems;
-        }
-
-        const result = await db.cakeRequestItems.update({ data: cleanedData, where: { id } })
+        const result = await db.cakeRequestItems.update({ data, where: { id } })
         console.log(`[CakeRequestItemsService] onUpdate completed for id: ${id}`)
         return result
       }

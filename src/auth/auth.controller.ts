@@ -5,8 +5,8 @@ import DatabaseContext from "@/repositories/prisma"
 import { AuthService } from "./auth.service"
 
 const LoginSchema = t.Object({
-  username: t.String(),
   password: t.String(),
+  username: t.String(),
 })
 
 export const authController = new Elysia()

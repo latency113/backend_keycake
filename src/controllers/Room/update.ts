@@ -1,97 +1,100 @@
-import type { TypeApplication } from "@/configure/create-application.js";
-import { NewError, ParseError } from "@/helper/error.js";
-import DatabaseContext from "@/repositories/prisma.js";
-import { BranchService } from "@/services/index.js";
-import { FailResponseSchema } from "@/types/global/response.js";
-import { BranchOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
+import type { TypeApplication } from "@/configure/create-application.js"
+import z from "zod"
+import { NewError, ParseError } from "@/helper/error.js"
+import DatabaseContext from "@/repositories/prisma.js"
+import { RoomService } from "@/services/index.js"
+import { FailResponseSchema } from "@/types/global/response.js"
 
-import z from "zod";
+import { RoomPartialSchema } from "@/types/schema/prisma/index.js"
 
-const RequestSchema = BranchOptionalDefaultsSchema;
+const RequestSchema = RoomPartialSchema
 
 const ResponseSchema = z.object({
-  data: BranchOptionalDefaultsSchema,
-  message: z.string().default("Branch updated successfully"),
-});
+  data: RoomPartialSchema,
+  message: z.string().default("Room updated successfully"),
+})
 
 export default (app: TypeApplication) =>
   app.put(
     "/:id",
-    async ({ params, body, set }) => {
+    async ({ body, params, set }) => {
       try {
-        const validBody = RequestSchema.parse(body);
-        const { id } = params;
+        const validBody = RequestSchema.parse(body)
+        const { id } = params
         const deps = {
-          BranchService: BranchService({ db: DatabaseContext }),
-        };
-        const result = await deps.BranchService.onUpdate(id, validBody);
+          RoomService: RoomService({ db: DatabaseContext }),
+        }
+        const result = await deps.RoomService.onUpdate(id, validBody)
         if (!result)
-          throw NewError("Failed to update Branch", "UPDATE_FAILED", 500);
+          throw NewError("Failed to update Room", "UPDATE_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Branch updated successfully",
-        });
-        if (!parse.success)
+          message: "Room updated successfully",
+        })
+        if (!parse.success) {
           throw NewError(
             `Failed to parse response object: ${JSON.stringify(parse.error)}`,
             "RESPONSE_PARSING_FAILED",
-            500
-          );
-        set.status = 200;
-        return parse.data;
-      } catch (error) {
-        console.error("Error updating Branch:", error);
-        const err = ParseError(error);
+            500,
+          )
+        }
+        set.status = 200
+        return parse.data
+      }
+      catch (error) {
+        console.error("Error updating Room:", error)
+        const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
           message: err.message,
           status: err.status,
-        });
-        set.status = err.status;
+        })
+        set.status = err.status
         if (fail.success) {
-          return fail.data;
-        } else {
+          return fail.data
+        }
+        else {
           return {
             code: "RESPONSE_PARSING_FAILED",
             message: "Failed to parse error response",
             status: 500,
-          };
+          }
         }
       }
     },
     {
       detail: {
-        tags: ["Room"],
         requestBody: {
           content: {
             "application/json": {
-              schema: RequestSchema,
               example: {
                 branch_id: "",
                 grade_level_id: "",
                 name: "",
               },
+              schema: RequestSchema,
             },
           },
         },
         responses: {
           200: {
-            description: "Branch update success",
             content: {
               "application/json": {
                 schema: ResponseSchema,
               },
             },
+            description: "Room update success",
           },
           500: {
-            description: "Branch update fail",
             content: {
               "application/json": {
                 schema: FailResponseSchema,
               },
             },
+            description: "Room update fail",
           },
         },
+        tags: ["Room"],
       },
-    }
-  );
+    },
+  )

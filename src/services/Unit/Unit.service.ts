@@ -1,4 +1,5 @@
-import { Prisma, type Unit, type PrismaClient } from "@prisma/client"
+import type { Prisma, type PrismaClient, type Unit } from "@prisma/client"
+
 import type { TypeUnitService, TypeUnitWhereInput } from "./Unit.type.js"
 
 export type UnitDependencies = {
@@ -85,19 +86,7 @@ export function UnitService({ db }: UnitDependencies) {
     async onUpdate(id: string, data: Prisma.UnitUpdateInput): Promise<Unit> {
       console.log(`[UnitService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const Unit = await db.unit.findUnique({ where: { id } });
-          if (!Unit) {
-            throw new Error(`Record to update not found.`);
-          }
-          return Unit;
-        }
-
-        const result = await db.unit.update({ data: cleanedData, where: { id } })
+        const result = await db.unit.update({ data, where: { id } })
         console.log(`[UnitService] onUpdate completed for id: ${id}`)
         return result
       }

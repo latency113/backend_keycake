@@ -1,15 +1,15 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { CakeRequestItemsService } from "./CakeRequestItem.service"
 
-describe("CakeRequestItemsService", () => {
+describe("cakeRequestItemsService", () => {
   let db: { cakeRequestItems: any }
   let service: ReturnType<typeof CakeRequestItemsService>
   const baseItem = {
     id: "item1",
-    request_id: "req1",
     product_id: "prod1",
     quantity: 5,
+    request_id: "req1",
   }
 
   beforeEach(() => {
@@ -60,9 +60,9 @@ describe("CakeRequestItemsService", () => {
 
   it("should create a CakeRequestItem", async () => {
     const data = {
-      request: { connect: { id: "req1" } },
       product: { connect: { id: "prod1" } },
       quantity: 5,
+      request: { connect: { id: "req1" } },
     }
     const item = await service.onCreate(data)
     expect(item).toBeTruthy()

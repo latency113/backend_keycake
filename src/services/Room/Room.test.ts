@@ -15,6 +15,8 @@ describe("roomService", () => {
           grade_level_id: "GL1",
           id: "2",
           name: "Room 2",
+          branch: { id: "GN2", name: "Branch 2", group_number: "GN2" },
+          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
         }),
         delete: vi.fn().mockResolvedValue({ id: "1" }),
         findFirst: vi.fn().mockResolvedValue({
@@ -22,6 +24,8 @@ describe("roomService", () => {
           grade_level_id: "GL1",
           id: "1",
           name: "Room 1",
+          branch: { id: "GN1", name: "Branch 1", group_number: "GN1" },
+          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
         }),
         findMany: vi.fn().mockResolvedValue([
           {
@@ -29,6 +33,8 @@ describe("roomService", () => {
             grade_level_id: "GL1",
             id: "1",
             name: "Room 1",
+            branch: { id: "GN1", name: "Branch 1", group_number: "GN1" },
+            grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
           },
         ]),
         update: vi.fn().mockResolvedValue({
@@ -36,6 +42,8 @@ describe("roomService", () => {
           grade_level_id: "GL1",
           id: "1",
           name: "Room 1 Updated",
+          branch: { id: "GN1-U", name: "Branch 1 Updated", group_number: "GN1-U" },
+          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
         }),
       },
     }
@@ -57,7 +65,13 @@ describe("roomService", () => {
   it("should get Room by id", async () => {
     const Room = await service.getById("1")
     expect(Room).toBeTruthy()
-    expect(db.room.findFirst).toHaveBeenCalledWith({ where: { id: "1" } })
+    expect(db.room.findFirst).toHaveBeenCalledWith({
+      where: { id: "1" },
+      include: {
+        branch: true,
+        grade_level: true,
+      },
+    })
   })
 
   it("should get one Room by param", async () => {
@@ -65,6 +79,10 @@ describe("roomService", () => {
     expect(Room).toBeTruthy()
     expect(db.room.findFirst).toHaveBeenCalledWith({
       where: { name: "Room 1" },
+      include: {
+        branch: true,
+        grade_level: true,
+      },
     })
   })
 
@@ -76,7 +94,13 @@ describe("roomService", () => {
     }
     const Room = await service.onCreate(data)
     expect(Room).toBeTruthy()
-    expect(db.room.create).toHaveBeenCalledWith({ data })
+    expect(db.room.create).toHaveBeenCalledWith({
+      data,
+      include: {
+        branch: true,
+        grade_level: true,
+      },
+    })
   })
 
   it("should delete a Room", async () => {
@@ -89,6 +113,13 @@ describe("roomService", () => {
     const data = { grade_level_id: "GL1", name: "Room 1 Updated" }
     const Room = await service.onUpdate("1", data)
     expect(Room).toBeTruthy()
-    expect(db.room.update).toHaveBeenCalledWith({ data, where: { id: "1" } })
+    expect(db.room.update).toHaveBeenCalledWith({
+      data,
+      where: { id: "1" },
+      include: {
+        branch: true,
+        grade_level: true,
+      },
+    })
   })
 })

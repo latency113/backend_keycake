@@ -1,4 +1,4 @@
-import type { Team, Prisma } from "@prisma/client"
+import type { Prisma, Team } from "@prisma/client"
 import type z from "zod"
 import type { TypePagination } from "@/types/global/pagination.js"
 import type { TeamWhereInputSchema } from "@/types/schema/prisma/index.js"

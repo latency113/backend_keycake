@@ -1,11 +1,11 @@
-import { Elysia } from "elysia";
-import { NewError, ParseError } from "@/helper/error.js";
-import DatabaseContext from "@/repositories/prisma.js";
-import { OrderItemService } from "@/services/index.js";
-import { BaseRequestQuerySchema } from "@/types/global/index.js";
-import { FailResponseSchema } from "@/types/global/response.js";
-import { OrderItemOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
-import z from "zod";
+import type { Elysia } from "elysia"
+import z from "zod"
+import { NewError, ParseError } from "@/helper/error.js"
+import DatabaseContext from "@/repositories/prisma.js"
+import { OrderItemService } from "@/services/index.js"
+import { BaseRequestQuerySchema } from "@/types/global/index.js"
+import { FailResponseSchema } from "@/types/global/response.js"
+import { OrderItemOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
   data: OrderItemOptionalDefaultsSchema.array(),
@@ -15,32 +15,32 @@ const ResponseSchema = z.object({
     page: z.number().optional(),
     total: z.number().optional(),
   }),
-});
+})
 
 export default (app: Elysia) =>
   app.get(
     "/",
     async ({ query, set }) => {
       try {
-        const parsed = BaseRequestQuerySchema.safeParse(query);
+        const parsed = BaseRequestQuerySchema.safeParse(query)
         if (!parsed.success) {
-          set.status = 400;
+          set.status = 400
           return {
             code: "INVALID_QUERY",
             message: "Invalid query parameters",
             status: 400,
-          };
+          }
         }
-        const { limit, page } = parsed.data;
+        const { limit, page } = parsed.data
         const deps = {
           OrderItemService: OrderItemService({ db: DatabaseContext }),
-        };
+        }
         const [result, total] = await Promise.all([
           deps.OrderItemService.getAll({ pagination: { limit, page } }),
           deps.OrderItemService.count(),
-        ]);
+        ])
         if (!result)
-          throw NewError("Failed to fetch OrderItem", "FETCH_FAILED", 500);
+          throw NewError("Failed to fetch OrderItem", "FETCH_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
           message: "OrderItem fetched successfully",
@@ -49,56 +49,59 @@ export default (app: Elysia) =>
             page,
             total,
           },
-        });
-        if (!parse.success)
+        })
+        if (!parse.success) {
           throw NewError(
             `Failed to parse response object: ${JSON.stringify(parse.error)}`,
             "RESPONSE_PARSING_FAILED",
-            500
-          );
-        set.status = 200;
-        return parse.data;
-      } catch (error) {
-        console.error("Error fetching OrderItemType:", error);
-        const err = ParseError(error);
+            500,
+          )
+        }
+        set.status = 200
+        return parse.data
+      }
+      catch (error) {
+        console.error("Error fetching OrderItemType:", error)
+        const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
           message: err.message,
           status: err.status,
-        });
-        set.status = err.status;
+        })
+        set.status = err.status
         if (fail.success) {
-          return fail.data;
-        } else {
+          return fail.data
+        }
+        else {
           return {
             code: "RESPONSE_PARSING_FAILED",
             message: "Failed to parse error response",
             status: 500,
-          };
+          }
         }
       }
     },
     {
       detail: {
-        tags: ["OrderItem"],
         responses: {
           200: {
-            description: "OrderItem fetch success",
             content: {
               "application/json": {
                 schema: ResponseSchema,
               },
             },
+            description: "OrderItem fetch success",
           },
           500: {
-            description: "OrderItem fetch fail",
             content: {
               "application/json": {
                 schema: FailResponseSchema,
               },
             },
+            description: "OrderItem fetch fail",
           },
         },
+        tags: ["OrderItem"],
       },
-    }
-  );
+    },
+  )

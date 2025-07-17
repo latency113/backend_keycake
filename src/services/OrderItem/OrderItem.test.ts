@@ -1,18 +1,18 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { OrderItemService } from "./OrderItem.service"
 
-describe("OrderItemService", () => {
+describe("orderItemService", () => {
   let db: { orderItem: any }
   let service: ReturnType<typeof OrderItemService>
   const baseItem = {
+    createdAt: new Date("2025-07-14T00:00:00.000Z"),
     id: "item1",
     order_id: "order1",
     product_id: "prod1",
     quantity: 2,
-    unitPrice: 50.25,
     subtotal: 100.5,
-    createdAt: new Date("2025-07-14T00:00:00.000Z"),
+    unitPrice: 50.25,
     updatedAt: new Date("2025-07-14T00:00:00.000Z"),
   }
 
@@ -22,8 +22,8 @@ describe("OrderItemService", () => {
         count: vi.fn().mockResolvedValue(4),
         create: vi.fn().mockResolvedValue({ ...baseItem, id: "item2" }),
         delete: vi.fn().mockResolvedValue({ ...baseItem }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseItem }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseItem }]),
+        findFirst: vi.fn().mockResolvedValue({ ...baseItem, order: {}, product: {} }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseItem, order: {}, product: {} }]),
         update: vi.fn().mockResolvedValue({ ...baseItem, quantity: 5, subtotal: 251.25 }),
       },
     }
@@ -45,6 +45,10 @@ describe("OrderItemService", () => {
       skip: 0,
       take: undefined,
       where: { order_id: "order1" },
+      include: {
+        order: true,
+        product: true,
+      },
     })
   })
 
@@ -52,14 +56,26 @@ describe("OrderItemService", () => {
     const item = await service.getById("item1")
     expect(item).toBeTruthy()
     expect(item).toMatchObject({ id: "item1", order_id: "order1" })
-    expect(db.orderItem.findFirst).toHaveBeenCalledWith({ where: { id: "item1" } })
+    expect(db.orderItem.findFirst).toHaveBeenCalledWith({
+      where: { id: "item1" },
+      include: {
+        order: true,
+        product: true,
+      },
+    })
   })
 
   it("should get one OrderItem by param", async () => {
     const item = await service.getOne({ product_id: "prod1" })
     expect(item).toBeTruthy()
     expect(item).toMatchObject({ id: "item1", product_id: "prod1" })
-    expect(db.orderItem.findFirst).toHaveBeenCalledWith({ where: { product_id: "prod1" } })
+    expect(db.orderItem.findFirst).toHaveBeenCalledWith({
+      where: { product_id: "prod1" },
+      include: {
+        order: true,
+        product: true,
+      },
+    })
   })
 
   it("should create an OrderItem", async () => {
@@ -67,8 +83,8 @@ describe("OrderItemService", () => {
       order: { connect: { id: "order1" } },
       product: { connect: { id: "prod1" } },
       quantity: 2,
-      unitPrice: 50.25,
       subtotal: 100.5,
+      unitPrice: 50.25,
     }
     const item = await service.onCreate(data)
     expect(item).toBeTruthy()

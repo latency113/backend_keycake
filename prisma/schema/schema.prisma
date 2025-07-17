@@ -15,7 +15,7 @@ generator zod {
   createPartialTypes               = "true"
   prismaClientPath                 = "@prisma/client"
   useDefaultValidators             = "true"
-  useMultipleFiles                 = "true"
+  useMultipleFiles                 = "false"
   validateWhereUniqueInput         = "true"
   writeBarrelFiles                 = "false"
   writeNullishInModelTypes         = "true"
@@ -25,18 +25,11 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
 enum Role {
   ADMIN
   OFFICER
   USER
-}
-
-enum CakePound {
-  ONE // 1 ปอนด์
-  TWO // 2 ปอนด์
-  THREE // 3 ปอนด์
-  FOUR // 4 ปอนด์
-  FIVE // 5 ปอนด์
 }
 
 enum GradeLevelType {
@@ -131,8 +124,8 @@ model Unit {
 model Order {
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
   customerName String
-  room_id      String? @db.ObjectId
-  team_id      String? @db.ObjectId
+  room_id      String?     @db.ObjectId
+  team_id      String?     @db.ObjectId
   orderDate    DateTime
   totalPrice   Float
   book_number  Int
@@ -153,23 +146,25 @@ model Order {
 }
 
 model OrderItem {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  order_id   String @db.ObjectId
-  product_id String @db.ObjectId
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  order_id   String    @db.ObjectId
+  product_id String    @db.ObjectId
+  pound      Int
   quantity   Int
   unitPrice  Float
   subtotal   Float
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  order   Order   @relation(fields: [order_id], references: [id])
-  product Product @relation(fields: [product_id], references: [id])
+  order            Order              @relation(fields: [order_id], references: [id])
+  product          Product            @relation(fields: [product_id], references: [id])
+  CakeRequestItems CakeRequestItems[]
 }
 
 model CakeCount {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  product_id String @db.ObjectId
-  pound      CakePound
+  product_id String    @db.ObjectId
+  pound      Int
   quantity   Int
 
   product Product @relation(fields: [product_id], references: [id])
@@ -180,8 +175,8 @@ model CakeRequest {
   requestDate DateTime
   status      RequestStatus @default(pending)
   note        String?
-  user_id     String @db.ObjectId
-  branch_id   String @db.ObjectId
+  user_id     String        @db.ObjectId
+  branch_id   String        @db.ObjectId
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -193,13 +188,15 @@ model CakeRequest {
 }
 
 model CakeRequestItems {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  request_id String @db.ObjectId
-  product_id String @db.ObjectId
-  quantity   Int
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  request_id    String @db.ObjectId
+  product_id    String @db.ObjectId
+  order_item_id String @db.ObjectId
+  quantity      Int
 
-  product Product     @relation(fields: [product_id], references: [id])
-  request CakeRequest @relation(fields: [request_id], references: [id])
+  product   Product     @relation(fields: [product_id], references: [id])
+  request   CakeRequest @relation(fields: [request_id], references: [id])
+  orderItem OrderItem   @relation(fields: [order_item_id], references: [id])
 
   @@map("cake_request_items")
 }

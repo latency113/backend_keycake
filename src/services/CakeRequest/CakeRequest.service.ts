@@ -1,4 +1,5 @@
-import { Prisma, type CakeRequest, type PrismaClient } from "@prisma/client"
+import type { type CakeRequest, Prisma, type PrismaClient } from "@prisma/client"
+
 import type { TypeCakeRequestService, TypeCakeRequestWhereInput } from "./CakeRequest.type.js"
 
 export type CakeRequestDependencies = {
@@ -40,7 +41,7 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
     async getById(id: string): Promise<CakeRequest | null> {
       console.log(`[CakeRequestService] getById called with id: ${id}`)
       try {
-        const result = await db.cakeRequest.findFirst({ where: { id }, include: { items: true } })
+        const result = await db.cakeRequest.findFirst({ include: { items: true }, where: { id } })
         console.log(`[CakeRequestService] getById completed, found:`, !!result)
         return result
       }
@@ -52,7 +53,7 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
     async getOne(param: TypeCakeRequestWhereInput["where"]): Promise<CakeRequest | null> {
       console.log(`[CakeRequestService] getOne called with param:`, param)
       try {
-        const result = await db.cakeRequest.findFirst({ where: param, include: { items: true } })
+        const result = await db.cakeRequest.findFirst({ include: { items: true }, where: param })
         console.log(`[CakeRequestService] getOne completed, found:`, !!result)
         return result
       }
@@ -64,7 +65,14 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
     async onCreate(data: Prisma.CakeRequestCreateInput): Promise<CakeRequest> {
       console.log(`[CakeRequestService] onCreate called with data:`, data)
       try {
-        const result = await db.cakeRequest.create({ data })
+        const result = await db.cakeRequest.create({
+          data,
+          include: {
+            branch: true,
+            user: true,
+            items: true,
+          },
+        })
         console.log(`[CakeRequestService] onCreate completed, created id: ${result.id}`)
         return result
       }
@@ -88,19 +96,15 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
     async onUpdate(id: string, data: Prisma.CakeRequestUpdateInput): Promise<CakeRequest> {
       console.log(`[CakeRequestService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const CakeRequest = await db.cakeRequest.findUnique({ where: { id } });
-          if (!CakeRequest) {
-            throw new Error(`Record to update not found.`);
-          }
-          return CakeRequest;
-        }
-
-        const result = await db.cakeRequest.update({ data: cleanedData, where: { id } })
+        const result = await db.cakeRequest.update({
+          data,
+          where: { id },
+          include: {
+            branch: true,
+            user: true,
+            items: true,
+          },
+        })
         console.log(`[CakeRequestService] onUpdate completed for id: ${id}`)
         return result
       }

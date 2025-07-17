@@ -1,4 +1,5 @@
-import { Prisma, type CakeCount, type PrismaClient } from "@prisma/client"
+import type { type CakeCount, Prisma, type PrismaClient } from "@prisma/client"
+
 import type { TypeCakeCountService, TypeCakeCountWhereInput } from "./CakeCount.type.js"
 
 export type CakeCountDependencies = {
@@ -85,19 +86,7 @@ export function CakeCountService({ db }: CakeCountDependencies) {
     async onUpdate(id: string, data: Prisma.CakeCountUpdateInput): Promise<CakeCount> {
       console.log(`[CakeCountService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const CakeCount = await db.cakeCount.findUnique({ where: { id } });
-          if (!CakeCount) {
-            throw new Error(`Record to update not found.`);
-          }
-          return CakeCount;
-        }
-
-        const result = await db.cakeCount.update({ data: cleanedData, where: { id } })
+        const result = await db.cakeCount.update({ data, where: { id } })
         console.log(`[CakeCountService] onUpdate completed for id: ${id}`)
         return result
       }

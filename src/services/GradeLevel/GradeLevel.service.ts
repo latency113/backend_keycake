@@ -1,4 +1,5 @@
-import { Prisma, type GradeLevel, type PrismaClient } from "@prisma/client"
+import type { type GradeLevel, Prisma, type PrismaClient } from "@prisma/client"
+
 import type { TypeGradeLevelService, TypeGradeLevelWhereInput } from "./GradeLevel.type.js"
 
 export type GradeLevelDependencies = {
@@ -85,19 +86,7 @@ export function GradeLevelService({ db }: GradeLevelDependencies) {
     async onUpdate(id: string, data: Prisma.GradeLevelUpdateInput): Promise<GradeLevel> {
       console.log(`[GradeLevelService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const gradeLevel = await db.gradeLevel.findUnique({ where: { id } });
-          if (!gradeLevel) {
-            throw new Error(`Record to update not found.`);
-          }
-          return gradeLevel;
-        }
-
-        const result = await db.gradeLevel.update({ data: cleanedData, where: { id } })
+        const result = await db.gradeLevel.update({ data, where: { id } })
         console.log(`[GradeLevelService] onUpdate completed for id: ${id}`)
         return result
       }

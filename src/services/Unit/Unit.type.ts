@@ -1,4 +1,4 @@
-import type { Unit, Prisma } from "@prisma/client"
+import type { Prisma, Unit } from "@prisma/client"
 import type z from "zod"
 import type { TypePagination } from "@/types/global/pagination.js"
 import type { UnitWhereInputSchema } from "@/types/schema/prisma/index.js"

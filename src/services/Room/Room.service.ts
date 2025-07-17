@@ -24,6 +24,7 @@ export function RoomService({ db }: RoomDependencies) {
         const result = await db.room.findMany({
           include: {
             branch: true,
+            grade_level: true,
           },
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
@@ -37,10 +38,16 @@ export function RoomService({ db }: RoomDependencies) {
         throw error
       }
     },
-    async getById(id: string): Promise<Room | null> {
+    async getById(id: string): Promise<RoomWithBranch | null> {
       console.log(`[RoomService] getById called with id: ${id}`)
       try {
-        const result = await db.room.findFirst({ where: { id } })
+        const result = await db.room.findFirst({
+          where: { id },
+          include: {
+            branch: true,
+            grade_level: true,
+          },
+        })
         console.log(`[RoomService] getById completed, found:`, !!result)
         return result
       }
@@ -49,10 +56,16 @@ export function RoomService({ db }: RoomDependencies) {
         throw error
       }
     },
-    async getOne(param: TypeRoomWhereInput["where"]): Promise<Room | null> {
+    async getOne(param: TypeRoomWhereInput["where"]): Promise<RoomWithBranch | null> {
       console.log(`[RoomService] getOne called with param:`, param)
       try {
-        const result = await db.room.findFirst({ where: param })
+        const result = await db.room.findFirst({
+          where: param,
+          include: {
+            branch: true,
+            grade_level: true,
+          },
+        })
         console.log(`[RoomService] getOne completed, found:`, !!result)
         return result
       }
@@ -61,10 +74,16 @@ export function RoomService({ db }: RoomDependencies) {
         throw error
       }
     },
-    async onCreate(data: Prisma.RoomCreateInput): Promise<Room> {
+    async onCreate(data: Prisma.RoomCreateInput): Promise<RoomWithBranch> {
       console.log(`[RoomService] onCreate called with data:`, data)
       try {
-        const result = await db.room.create({ data })
+        const result = await db.room.create({
+          data,
+          include: {
+            branch: true,
+            grade_level: true,
+          },
+        })
         console.log(`[RoomService] onCreate completed, created id: ${result.id}`)
         return result
       }
@@ -85,10 +104,17 @@ export function RoomService({ db }: RoomDependencies) {
         throw error
       }
     },
-    async onUpdate(id: string, data: Prisma.RoomUpdateInput): Promise<Room> {
+    async onUpdate(id: string, data: Prisma.RoomUpdateInput): Promise<RoomWithBranch> {
       console.log(`[RoomService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const result = await db.room.update({ data, where: { id } })
+        const result = await db.room.update({
+          data,
+          where: { id },
+          include: {
+            branch: true,
+            grade_level: true,
+          },
+        })
         console.log(`[RoomService] onUpdate completed for id: ${id}`)
         return result
       }

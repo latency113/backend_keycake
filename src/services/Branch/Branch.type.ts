@@ -1,21 +1,16 @@
-import type { Branch, GradeLevel, Prisma, Room } from "@prisma/client"
+import type { Branch, Prisma } from "@prisma/client"
 import type z from "zod"
 import type { TypePagination } from "@/types/global/pagination.js"
-import type { BranchWhereInputSchema } from "@/types/schema/prisma/index.js"
+import type { BranchWhereInputSchema, BranchWithRoomsSchema, GradeLevelWithRoomCountSchema } from "@/types/schema/prisma/index.js"
 
 export type TypeBranchWhereInput = {
   where?: z.infer<typeof BranchWhereInputSchema>
   pagination?: TypePagination
 }
 
-export type GradeLevelWithRoomCount = Pick<GradeLevel, "level" | "year"> & {
-  roomCount: number
-}
+export type GradeLevelWithRoomCount = z.infer<typeof GradeLevelWithRoomCountSchema>
 
-export type BranchWithRooms = Branch & {
-  rooms: Room[];
-  gradeLevels: GradeLevelWithRoomCount[];
-}
+export type BranchWithRooms = z.infer<typeof BranchWithRoomsSchema>
 
 export type TypeBranchService = {
   onCreate: (data: Prisma.BranchCreateInput) => Promise<Branch>

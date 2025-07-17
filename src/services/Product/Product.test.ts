@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { ProductService } from "./Product.service"
 
-describe("ProductService", () => {
+describe("productService", () => {
   let db: { product: any }
   let service: ReturnType<typeof ProductService>
   const baseProduct = {
@@ -16,11 +16,12 @@ describe("ProductService", () => {
     db = {
       product: {
         count: vi.fn().mockResolvedValue(5),
-        create: vi.fn().mockResolvedValue({ ...baseProduct, id: "prod2" }),
+        create: vi.fn().mockResolvedValue({ ...baseProduct, id: "prod2", unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
         delete: vi.fn().mockResolvedValue({ ...baseProduct }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseProduct }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseProduct }]),
-        update: vi.fn().mockResolvedValue({ ...baseProduct, name: "Vanilla Cake" }),
+        findFirst: vi.fn().mockResolvedValue({ ...baseProduct, unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseProduct, unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }]),
+        update: vi.fn().mockResolvedValue({ ...baseProduct, name: "Vanilla Cake", unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
+        findUnique: vi.fn().mockResolvedValue({ ...baseProduct, unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
       },
     }
     service = ProductService({ db: db as unknown as PrismaClient })
@@ -41,6 +42,9 @@ describe("ProductService", () => {
       skip: 0,
       take: undefined,
       where: { name: "Chocolate Cake" },
+      include: {
+        unit: true,
+      },
     })
   })
 
@@ -48,14 +52,24 @@ describe("ProductService", () => {
     const product = await service.getById("prod1")
     expect(product).toBeTruthy()
     expect(product).toMatchObject({ id: "prod1", name: "Chocolate Cake" })
-    expect(db.product.findFirst).toHaveBeenCalledWith({ where: { id: "prod1" } })
+    expect(db.product.findFirst).toHaveBeenCalledWith({
+      where: { id: "prod1" },
+      include: {
+        unit: true,
+      },
+    })
   })
 
   it("should get one Product by param", async () => {
     const product = await service.getOne({ name: "Chocolate Cake" })
     expect(product).toBeTruthy()
     expect(product).toMatchObject({ id: "prod1", name: "Chocolate Cake" })
-    expect(db.product.findFirst).toHaveBeenCalledWith({ where: { name: "Chocolate Cake" } })
+    expect(db.product.findFirst).toHaveBeenCalledWith({
+      where: { name: "Chocolate Cake" },
+      include: {
+        unit: true,
+      },
+    })
   })
 
   it("should create a Product", async () => {
@@ -67,7 +81,12 @@ describe("ProductService", () => {
     const product = await service.onCreate(data)
     expect(product).toBeTruthy()
     expect(product).toMatchObject({ id: "prod2", name: "Chocolate Cake" })
-    expect(db.product.create).toHaveBeenCalledWith({ data })
+    expect(db.product.create).toHaveBeenCalledWith({
+      data,
+      include: {
+        unit: true,
+      },
+    })
   })
 
   it("should delete a Product", async () => {
@@ -85,6 +104,9 @@ describe("ProductService", () => {
     expect(db.product.update).toHaveBeenCalledWith({
       data,
       where: { id: "prod1" },
+      include: {
+        unit: true,
+      },
     })
   })
 })

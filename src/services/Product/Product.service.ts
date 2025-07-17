@@ -1,4 +1,5 @@
-import { Prisma, type Product, type PrismaClient } from "@prisma/client"
+import type { Prisma, type PrismaClient, type Product } from "@prisma/client"
+
 import type { TypeProductService, TypeProductWhereInput } from "./Product.type.js"
 
 export type ProductDependencies = {
@@ -71,10 +72,15 @@ export function ProductService({ db }: ProductDependencies) {
         throw error
       }
     },
-    async onCreate(data: Prisma.ProductCreateInput): Promise<Product> {
+    async onCreate(data: Prisma.ProductCreateInput): Promise<ProductWithUnit> {
       console.log(`[ProductService] onCreate called with data:`, data)
       try {
-        const result = await db.product.create({ data })
+        const result = await db.product.create({
+          data,
+          include: {
+            unit: true,
+          },
+        })
         console.log(`[ProductService] onCreate completed, created id: ${result.id}`)
         return result
       }
@@ -95,22 +101,16 @@ export function ProductService({ db }: ProductDependencies) {
         throw error
       }
     },
-    async onUpdate(id: string, data: Prisma.ProductUpdateInput): Promise<Product> {
+    async onUpdate(id: string, data: Prisma.ProductUpdateInput): Promise<ProductWithUnit> {
       console.log(`[ProductService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const cleanedData = Object.fromEntries(
-          Object.entries(data).filter(([, value]) => value !== null && value !== '' && value !== undefined)
-        );
-
-        if (Object.keys(cleanedData).length === 0) {
-          const Product = await db.product.findUnique({ where: { id } });
-          if (!Product) {
-            throw new Error(`Record to update not found.`);
-          }
-          return Product;
-        }
-
-        const result = await db.product.update({ data: cleanedData, where: { id } })
+        const result = await db.product.update({
+          data,
+          where: { id },
+          include: {
+            unit: true,
+          },
+        })
         console.log(`[ProductService] onUpdate completed for id: ${id}`)
         return result
       }

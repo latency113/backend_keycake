@@ -1,30 +1,31 @@
-import { PrismaClient, RequestStatus } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
+import { RequestStatus } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { CakeRequestService } from "./CakeRequest.service"
 
-describe("CakeRequestService", () => {
+describe("cakeRequestService", () => {
   let db: { cakeRequest: any }
   let service: ReturnType<typeof CakeRequestService>
   const baseCakeRequest = {
-    id: "1",
-    requestDate: new Date("2025-07-14T00:00:00.000Z"),
-    status: RequestStatus.pending,
-    note: "test note",
-    user_id: "user1",
     branch_id: "branch1",
     createdAt: new Date("2025-07-14T00:00:00.000Z"),
+    id: "1",
+    note: "test note",
+    requestDate: new Date("2025-07-14T00:00:00.000Z"),
+    status: RequestStatus.pending,
     updatedAt: new Date("2025-07-14T00:00:00.000Z"),
+    user_id: "user1",
   }
 
   beforeEach(() => {
     db = {
       cakeRequest: {
         count: vi.fn().mockResolvedValue(1),
-        create: vi.fn().mockResolvedValue({ ...baseCakeRequest, id: "2" }),
+        create: vi.fn().mockResolvedValue({ ...baseCakeRequest, id: "2", branch: {}, user: {}, items: [] }),
         delete: vi.fn().mockResolvedValue({ ...baseCakeRequest }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseCakeRequest }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseCakeRequest }]),
-        update: vi.fn().mockResolvedValue({ ...baseCakeRequest, note: "updated note" }),
+        findFirst: vi.fn().mockResolvedValue({ ...baseCakeRequest, branch: { id: "branch1", name: "Branch 1", group_number: "GN1" }, user: { id: "user1", fname: "John", lastname: "Doe", username: "johndoe", email: "john@example.com", role: "ADMIN", createdAt: new Date(), updatedAt: new Date() }, items: [] }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseCakeRequest, branch: { id: "branch1", name: "Branch 1", group_number: "GN1" }, user: { id: "user1", fname: "John", lastname: "Doe", username: "johndoe", email: "john@example.com", role: "ADMIN", createdAt: new Date(), updatedAt: new Date() }, items: [] }]),
+        update: vi.fn().mockResolvedValue({ ...baseCakeRequest, note: "updated note", branch: {}, user: {}, items: [] }),
       },
     }
     service = CakeRequestService({ db: db as unknown as PrismaClient })
@@ -45,6 +46,9 @@ describe("CakeRequestService", () => {
       skip: 0,
       take: undefined,
       where: { status: RequestStatus.pending },
+      include: {
+        items: true,
+      },
     })
   })
 
@@ -54,6 +58,9 @@ describe("CakeRequestService", () => {
     expect(CakeRequest).toMatchObject({ id: "1", status: RequestStatus.pending })
     expect(db.cakeRequest.findFirst).toHaveBeenCalledWith({
       where: { id: "1" },
+      include: {
+        items: true,
+      },
     })
   })
 
@@ -61,21 +68,35 @@ describe("CakeRequestService", () => {
     const CakeRequest = await service.getOne({ status: RequestStatus.pending })
     expect(CakeRequest).toBeTruthy()
     expect(CakeRequest).toMatchObject({ id: "1", status: RequestStatus.pending })
-    expect(db.cakeRequest.findFirst).toHaveBeenCalledWith({ where: { status: RequestStatus.pending } })
+    expect(db.cakeRequest.findFirst).toHaveBeenCalledWith({
+      where: { status: RequestStatus.pending },
+      include: {
+        branch: true,
+        user: true,
+        items: true,
+      },
+    })
   })
 
   it("should create a CakeRequest", async () => {
     const data = {
+      branch: { connect: { id: "branch1" } },
+      note: "test note",
       requestDate: new Date("2025-07-14T00:00:00.000Z"),
       status: RequestStatus.pending,
-      note: "test note",
-      branch: { connect: { id: "branch1" } },
       user: { connect: { id: "user1" } },
     }
     const CakeRequest = await service.onCreate(data)
     expect(CakeRequest).toBeTruthy()
-    expect(CakeRequest).toMatchObject({ id: "2", status: RequestStatus.pending, note: "test note" })
-    expect(db.cakeRequest.create).toHaveBeenCalledWith({ data })
+    expect(CakeRequest).toMatchObject({ id: "2", note: "test note", status: RequestStatus.pending })
+    expect(db.cakeRequest.create).toHaveBeenCalledWith({
+      data,
+      include: {
+        branch: true,
+        user: true,
+        items: true,
+      },
+    })
   })
 
   it("should delete a CakeRequest", async () => {
@@ -93,6 +114,11 @@ describe("CakeRequestService", () => {
     expect(db.cakeRequest.update).toHaveBeenCalledWith({
       data,
       where: { id: "1" },
+      include: {
+        branch: true,
+        user: true,
+        items: true,
+      },
     })
   })
 })

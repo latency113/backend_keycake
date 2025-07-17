@@ -13,39 +13,50 @@ describe("branchService", () => {
         create: vi
           .fn()
           .mockResolvedValue({
+            group_number: "GN2",
             id: "2",
             name: "Branch 2",
-            group_number: "GN2",
           }),
         delete: vi.fn().mockResolvedValue({ id: "1" }),
         findFirst: vi
           .fn()
           .mockResolvedValue({
+            gradeLevels: [],
+            group_number: "GN1",
             id: "1",
             name: "Branch 1",
-            group_number: "GN1",
             rooms: [],
-            gradeLevels: [],
           }),
         findMany: vi
           .fn()
           .mockResolvedValue([
             {
+              gradeLevels: [],
+              group_number: "GN1",
               id: "1",
               name: "Branch 1",
-              group_number: "GN1",
               rooms: [],
+            },
+          ]),
+        findMany: vi
+          .fn()
+          .mockResolvedValue([
+            {
               gradeLevels: [],
+              group_number: "GN1",
+              id: "1",
+              name: "Branch 1",
+              rooms: [],
             },
           ]),
         update: vi
           .fn()
           .mockResolvedValue({
+            gradeLevels: [],
+            group_number: "GN1-U",
             id: "1",
             name: "Branch 1 Updated",
-            group_number: "GN1-U",
             rooms: [],
-            gradeLevels: [],
           }),
       },
     }
@@ -67,9 +78,16 @@ describe("branchService", () => {
   it("should get branch by id", async () => {
     const branch = await service.getById("1")
     expect(branch).toBeTruthy()
-    expect(db.branch.findFirst).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: "1" } })
-    )
+    expect(db.branch.findFirst).toHaveBeenCalledWith({
+      where: { id: "1" },
+      include: {
+        rooms: {
+          include: {
+            grade_level: true,
+          },
+        },
+      },
+    })
   })
 
   it("should get one branch by param", async () => {
@@ -77,6 +95,13 @@ describe("branchService", () => {
     expect(branch).toBeTruthy()
     expect(db.branch.findFirst).toHaveBeenCalledWith({
       where: { name: "Branch 1" },
+      include: {
+        rooms: {
+          include: {
+            grade_level: true,
+          },
+        },
+      },
     })
   })
 

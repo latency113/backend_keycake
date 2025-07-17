@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { UnitService } from "./Unit.service"
 
-describe("UnitService", () => {
+describe("unitService", () => {
   let db: { unit: any }
   let service: ReturnType<typeof UnitService>
   const baseUnit = {
     id: "unit1",
-    name_th: "ชิ้น",
     name_en: "piece",
+    name_th: "ชิ้น",
   }
 
   beforeEach(() => {
@@ -59,8 +59,8 @@ describe("UnitService", () => {
 
   it("should create a Unit", async () => {
     const data = {
-      name_th: "ชิ้น",
       name_en: "piece",
+      name_th: "ชิ้น",
     }
     const unit = await service.onCreate(data)
     expect(unit).toBeTruthy()

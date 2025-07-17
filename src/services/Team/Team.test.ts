@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TeamService } from "./Team.service"
 
-describe("TeamService", () => {
+describe("teamService", () => {
   let db: { team: any }
   let service: ReturnType<typeof TeamService>
   const baseTeam = {
@@ -15,11 +15,11 @@ describe("TeamService", () => {
     db = {
       team: {
         count: vi.fn().mockResolvedValue(2),
-        create: vi.fn().mockResolvedValue({ ...baseTeam, id: "team2" }),
+        create: vi.fn().mockResolvedValue({ ...baseTeam, id: "team2", room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
         delete: vi.fn().mockResolvedValue({ ...baseTeam }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseTeam }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseTeam }]),
-        update: vi.fn().mockResolvedValue({ ...baseTeam, name: "Blue Team" }),
+        findFirst: vi.fn().mockResolvedValue({ ...baseTeam, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseTeam, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }]),
+        update: vi.fn().mockResolvedValue({ ...baseTeam, name: "Blue Team", room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
       },
     }
     service = TeamService({ db: db as unknown as PrismaClient })
@@ -40,6 +40,9 @@ describe("TeamService", () => {
       skip: 0,
       take: undefined,
       where: { name: "Red Team" },
+      include: {
+        room: true,
+      },
     })
   })
 
@@ -47,14 +50,24 @@ describe("TeamService", () => {
     const team = await service.getById("team1")
     expect(team).toBeTruthy()
     expect(team).toMatchObject({ id: "team1", name: "Red Team" })
-    expect(db.team.findFirst).toHaveBeenCalledWith({ where: { id: "team1" } })
+    expect(db.team.findFirst).toHaveBeenCalledWith({
+      where: { id: "team1" },
+      include: {
+        room: true,
+      },
+    })
   })
 
   it("should get one Team by param", async () => {
     const team = await service.getOne({ name: "Red Team" })
     expect(team).toBeTruthy()
     expect(team).toMatchObject({ id: "team1", name: "Red Team" })
-    expect(db.team.findFirst).toHaveBeenCalledWith({ where: { name: "Red Team" } })
+    expect(db.team.findFirst).toHaveBeenCalledWith({
+      where: { name: "Red Team" },
+      include: {
+        room: true,
+      },
+    })
   })
 
   it("should create a Team", async () => {
@@ -65,7 +78,12 @@ describe("TeamService", () => {
     const team = await service.onCreate(data)
     expect(team).toBeTruthy()
     expect(team).toMatchObject({ id: "team2", name: "Red Team" })
-    expect(db.team.create).toHaveBeenCalledWith({ data })
+    expect(db.team.create).toHaveBeenCalledWith({
+      data,
+      include: {
+        room: true,
+      },
+    })
   })
 
   it("should delete a Team", async () => {
@@ -83,6 +101,9 @@ describe("TeamService", () => {
     expect(db.team.update).toHaveBeenCalledWith({
       data,
       where: { id: "team1" },
+      include: {
+        room: true,
+      },
     })
   })
 })

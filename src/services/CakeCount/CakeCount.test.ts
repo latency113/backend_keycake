@@ -1,14 +1,15 @@
-import { PrismaClient, CakePound } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client"
+import { CakePound } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { CakeCountService } from "./CakeCount.service"
 
-describe("CakeCountService", () => {
+describe("cakeCountService", () => {
   let db: { cakeCount: any }
   let service: ReturnType<typeof CakeCountService>
   const baseCakeCount = {
     id: "cakecount1",
-    product_id: "prod1",
     pound: CakePound.ONE,
+    product_id: "prod1",
     quantity: 10,
   }
 
@@ -60,8 +61,8 @@ describe("CakeCountService", () => {
 
   it("should create a CakeCount", async () => {
     const data = {
-      product: { connect: { id: "prod1" } },
       pound: CakePound.ONE,
+      product: { connect: { id: "prod1" } },
       quantity: 10,
     }
     const cakeCount = await service.onCreate(data)

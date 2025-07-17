@@ -5,19 +5,12 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { UserService } from "@/services/index.js"
 import { FailResponseSchema, SuccessResponseSchema } from "@/types/global/response.js"
 
-import { UserSchema } from "@/types/schema/prisma/index.js"
+import { UserPartialSchema } from "@/types/schema/prisma/index.js"
 
-const RequestSchema = z.object({
-  email: z.string().optional(),
-  fname: z.string().optional(),
-  lastname: z.string().optional(),
-  password: z.string().optional(),
-  role: z.string().optional(),
-  username: z.string().optional(),
-})
+const RequestSchema = UserPartialSchema
 
 const ResponseSchema = SuccessResponseSchema.extend({
-  data: UserSchema,
+  data: UserPartialSchema,
 })
 
 export default (app: TypeApplication) =>
@@ -38,34 +31,7 @@ export default (app: TypeApplication) =>
             status: 400,
           }
         }
-        const updateData = Object.fromEntries(
-          Object.entries(parsed.data).filter(
-            ([_, v]) => v !== undefined && v !== null && v !== "",
-          ),
-        )
-        // Map branch_id (snake_case) to branchId (camelCase) for Prisma compatibility
-        if (updateData.branch_id) {
-          updateData.branchId = updateData.branch_id
-          delete updateData.branch_id
-        }
-        // Remove forbidden fields if present
-        delete updateData.id
-        delete updateData.createdAt
-        // ตรวจสอบว่ามี field ให้ update หรือไม่
-        if (Object.keys(updateData).length === 0) {
-          set.status = 400
-          return {
-            code: "NO_UPDATE_FIELDS",
-            message: "No fields provided for update",
-            status: 400,
-          }
-        }
-        // ตรวจสอบ user เดิมว่ามีอยู่จริงไหม
-        const oldUser = await deps.UserService.getById(id)
-        if (!oldUser)
-          throw NewError("User not found", "NOT_FOUND", 400)
-        // อัปเดตเฉพาะ field ที่ส่งมา
-        const result = await deps.UserService.onUpdate(id, updateData)
+        const result = await deps.UserService.onUpdate(id, parsed.data)
         if (!result)
           throw NewError("Failed to update User", "UPDATE_FAILED", 400)
         const parse = ResponseSchema.safeParse({
