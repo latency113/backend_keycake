@@ -340,6 +340,16 @@ export const OrderOptionalDefaultsSchema = OrderSchema.merge(z.object({
 export type OrderOptionalDefaults = z.infer<typeof OrderOptionalDefaultsSchema>
 
 /////////////////////////////////////////
+// BRANCH WITH ROOMS SCHEMA
+/////////////////////////////////////////
+
+export const OrderWithOrderItemsSchema = OrderSchema.extend({
+  orderItems: z.lazy(() => OrderItemSchema).array(),
+})
+
+export type OrderWithOrderItems = z.infer<typeof OrderWithOrderItemsSchema>
+
+/////////////////////////////////////////
 // ORDER ITEM SCHEMA
 /////////////////////////////////////////
 
