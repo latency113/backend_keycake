@@ -132,7 +132,8 @@ model Order {
   number       Int
   phone        String
   pickup_date  DateTime
-  depository   String
+  depository   String?
+  advisor      String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
