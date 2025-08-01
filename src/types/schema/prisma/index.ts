@@ -7304,4 +7304,4 @@ export const CakeRequestItemsUpdateManyArgsSchema: z.ZodType<Prisma.CakeRequestI
 export const CakeRequestItemsDeleteManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsDeleteManyArgs> = z.object({
   where: CakeRequestItemsWhereInputSchema.optional(),
   limit: z.number().optional(),
-}).strict() ;
+}).strict() ; 
