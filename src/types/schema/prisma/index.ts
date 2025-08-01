@@ -314,6 +314,7 @@ export const OrderSchema = z.object({
   phone: z.string(),
   pickup_date: z.coerce.date(),
   depository: z.string(),
+  advisor: z.string().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

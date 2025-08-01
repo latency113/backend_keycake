@@ -69,9 +69,10 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 book_number: 0,
+                number: 0,
                 customerName: "",
                 depository: "",
-                number: 0,
+                advisor: "",
                 orderDate: "",
                 phone: "",
                 pickup_date: "",
