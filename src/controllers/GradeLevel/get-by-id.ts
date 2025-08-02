@@ -5,10 +5,15 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { GradeLevelService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { GradeLevelOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { GradeLevelOptionalDefaultsSchema , RoomOptionalDefaultsSchema,} from "@/types/schema/prisma/index.js"
+
+
+const GradeLevelWithRoomsSchema = GradeLevelOptionalDefaultsSchema.extend({
+  rooms: z.lazy(() => RoomOptionalDefaultsSchema).array(),
+})
 
 const ResponseSchema = z.object({
-  data: GradeLevelOptionalDefaultsSchema,
+  data: GradeLevelWithRoomsSchema,
   message: z.string(),
 })
 

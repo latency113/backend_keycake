@@ -1,5 +1,4 @@
 import type { PrismaClient } from "@prisma/client"
-import { CakePound } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { CakeCountService } from "./CakeCount.service"
 
@@ -8,7 +7,7 @@ describe("cakeCountService", () => {
   let service: ReturnType<typeof CakeCountService>
   const baseCakeCount = {
     id: "cakecount1",
-    pound: CakePound.ONE,
+    pound: 1,
     product_id: "prod1",
     quantity: 10,
   }
@@ -53,21 +52,21 @@ describe("cakeCountService", () => {
   })
 
   it("should get one CakeCount by param", async () => {
-    const cakeCount = await service.getOne({ pound: CakePound.ONE })
+    const cakeCount = await service.getOne({ pound: 1 })
     expect(cakeCount).toBeTruthy()
-    expect(cakeCount).toMatchObject({ id: "cakecount1", pound: CakePound.ONE })
-    expect(db.cakeCount.findFirst).toHaveBeenCalledWith({ where: { pound: CakePound.ONE } })
+    expect(cakeCount).toMatchObject({ id: "cakecount1", pound: 1 })
+    expect(db.cakeCount.findFirst).toHaveBeenCalledWith({ where: { pound: 1 } })
   })
 
   it("should create a CakeCount", async () => {
     const data = {
-      pound: CakePound.ONE,
+      pound: 1,
       product: { connect: { id: "prod1" } },
       quantity: 10,
     }
     const cakeCount = await service.onCreate(data)
     expect(cakeCount).toBeTruthy()
-    expect(cakeCount).toMatchObject({ id: "cakecount2", pound: CakePound.ONE })
+    expect(cakeCount).toMatchObject({ id: "cakecount2", pound: 1 })
     expect(db.cakeCount.create).toHaveBeenCalledWith({ data })
   })
 

@@ -55,6 +55,7 @@ describe("gradeLevelService", () => {
     expect(GradeLevel).toBeTruthy()
     expect(db.gradeLevel.findFirst).toHaveBeenCalledWith({
       where: { id: "1" },
+      include: { rooms: true },
     })
   })
 
@@ -63,6 +64,7 @@ describe("gradeLevelService", () => {
     expect(GradeLevel).toBeTruthy()
     expect(db.gradeLevel.findFirst).toHaveBeenCalledWith({
       where: { level: "VOCATIONAL" },
+      include: { rooms: true },
     })
   })
 

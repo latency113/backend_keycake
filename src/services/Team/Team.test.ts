@@ -15,11 +15,11 @@ describe("teamService", () => {
     db = {
       team: {
         count: vi.fn().mockResolvedValue(2),
-        create: vi.fn().mockResolvedValue({ ...baseTeam, id: "team2", room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
+        create: vi.fn().mockResolvedValue({ ...baseTeam, id: "team2" }),
         delete: vi.fn().mockResolvedValue({ ...baseTeam }),
         findFirst: vi.fn().mockResolvedValue({ ...baseTeam, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
         findMany: vi.fn().mockResolvedValue([{ ...baseTeam, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }]),
-        update: vi.fn().mockResolvedValue({ ...baseTeam, name: "Blue Team", room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
+        update: vi.fn().mockResolvedValue({ ...baseTeam, name: "Blue Team" }),
       },
     }
     service = TeamService({ db: db as unknown as PrismaClient })
@@ -78,12 +78,7 @@ describe("teamService", () => {
     const team = await service.onCreate(data)
     expect(team).toBeTruthy()
     expect(team).toMatchObject({ id: "team2", name: "Red Team" })
-    expect(db.team.create).toHaveBeenCalledWith({
-      data,
-      include: {
-        room: true,
-      },
-    })
+    expect(db.team.create).toHaveBeenCalledWith({ data })
   })
 
   it("should delete a Team", async () => {
@@ -101,9 +96,6 @@ describe("teamService", () => {
     expect(db.team.update).toHaveBeenCalledWith({
       data,
       where: { id: "team1" },
-      include: {
-        room: true,
-      },
     })
   })
 })

@@ -26,6 +26,7 @@ export function GradeLevelService({ db }: GradeLevelDependencies) {
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
           where: param?.where,
+          include: { rooms: true },
         })
         console.log(`[GradeLevelService] getAll completed, found ${result.length} items`)
         return result
@@ -38,7 +39,7 @@ export function GradeLevelService({ db }: GradeLevelDependencies) {
     async getById(id: string): Promise<GradeLevel | null> {
       console.log(`[GradeLevelService] getById called with id: ${id}`)
       try {
-        const result = await db.gradeLevel.findFirst({ where: { id } })
+        const result = await db.gradeLevel.findFirst({ where: { id }, include: { rooms: true } })
         console.log(`[GradeLevelService] getById completed, found:`, !!result)
         return result
       }
@@ -50,7 +51,7 @@ export function GradeLevelService({ db }: GradeLevelDependencies) {
     async getOne(param: TypeGradeLevelWhereInput["where"]): Promise<GradeLevel | null> {
       console.log(`[GradeLevelService] getOne called with param:`, param)
       try {
-        const result = await db.gradeLevel.findFirst({ where: param })
+        const result = await db.gradeLevel.findFirst({ where: param, include: { rooms: true } })
         console.log(`[GradeLevelService] getOne completed, found:`, !!result)
         return result
       }

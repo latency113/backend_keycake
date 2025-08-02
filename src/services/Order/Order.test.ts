@@ -22,11 +22,11 @@ describe("orderService", () => {
     db = {
       order: {
         count: vi.fn().mockResolvedValue(3),
-        create: vi.fn().mockResolvedValue({ ...baseOrder, id: "order2", room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" }, team: { id: "team1", name: "Team 1", room_id: "room1" } }),
+        create: vi.fn().mockResolvedValue({ ...baseOrder, id: "order2" }),
         delete: vi.fn().mockResolvedValue({ ...baseOrder }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseOrder, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" }, team: { id: "team1", name: "Team 1", room_id: "room1" }, orderItems: [] }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseOrder, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" }, team: { id: "team1", name: "Team 1", room_id: "room1" }, orderItems: [] }]),
-        update: vi.fn().mockResolvedValue({ ...baseOrder, customerName: "Jane", room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" }, team: { id: "team1", name: "Team 1", room_id: "room1" } }),
+        findFirst: vi.fn().mockResolvedValue({ ...baseOrder, orderItems: [] }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseOrder, orderItems: [] }]),
+        update: vi.fn().mockResolvedValue({ ...baseOrder, customerName: "Jane" }),
       },
     }
     service = OrderService({ db: db as unknown as PrismaClient })
@@ -48,8 +48,7 @@ describe("orderService", () => {
       take: undefined,
       where: { room_id: "room1" },
       include: {
-        room: true,
-        team: true,
+        orderItems: true,
       },
     })
   })
@@ -61,8 +60,7 @@ describe("orderService", () => {
     expect(db.order.findFirst).toHaveBeenCalledWith({
       where: { id: "order1" },
       include: {
-        room: true,
-        team: true,
+        orderItems: true,
       },
     })
   })
@@ -74,8 +72,7 @@ describe("orderService", () => {
     expect(db.order.findFirst).toHaveBeenCalledWith({
       where: { customerName: "John" },
       include: {
-        room: true,
-        team: true,
+        orderItems: true,
       },
     })
   })
@@ -93,13 +90,7 @@ describe("orderService", () => {
     const order = await service.onCreate(data)
     expect(order).toBeTruthy()
     expect(order).toMatchObject({ customerName: "John", id: "order2" })
-    expect(db.order.create).toHaveBeenCalledWith({
-      data,
-      include: {
-        room: true,
-        team: true,
-      },
-    })
+    expect(db.order.create).toHaveBeenCalledWith({ data })
   })
 
   it("should delete an Order", async () => {
@@ -117,10 +108,6 @@ describe("orderService", () => {
     expect(db.order.update).toHaveBeenCalledWith({
       data,
       where: { id: "order1" },
-      include: {
-        room: true,
-        team: true,
-      },
     })
   })
 })

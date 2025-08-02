@@ -23,8 +23,8 @@ describe("cakeRequestService", () => {
         count: vi.fn().mockResolvedValue(1),
         create: vi.fn().mockResolvedValue({ ...baseCakeRequest, id: "2", branch: {}, user: {}, items: [] }),
         delete: vi.fn().mockResolvedValue({ ...baseCakeRequest }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseCakeRequest, branch: { id: "branch1", name: "Branch 1", group_number: "GN1" }, user: { id: "user1", fname: "John", lastname: "Doe", username: "johndoe", email: "john@example.com", role: "ADMIN", createdAt: new Date(), updatedAt: new Date() }, items: [] }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseCakeRequest, branch: { id: "branch1", name: "Branch 1", group_number: "GN1" }, user: { id: "user1", fname: "John", lastname: "Doe", username: "johndoe", email: "john@example.com", role: "ADMIN", createdAt: new Date(), updatedAt: new Date() }, items: [] }]),
+        findFirst: vi.fn().mockResolvedValue({ ...baseCakeRequest, items: [] }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseCakeRequest, items: [] }]),
         update: vi.fn().mockResolvedValue({ ...baseCakeRequest, note: "updated note", branch: {}, user: {}, items: [] }),
       },
     }
@@ -71,8 +71,6 @@ describe("cakeRequestService", () => {
     expect(db.cakeRequest.findFirst).toHaveBeenCalledWith({
       where: { status: RequestStatus.pending },
       include: {
-        branch: true,
-        user: true,
         items: true,
       },
     })

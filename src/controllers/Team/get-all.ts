@@ -5,10 +5,17 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { TeamService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { TeamOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import {
+  RoomOptionalDefaultsSchema,
+  TeamOptionalDefaultsSchema,
+} from "@/types/schema/prisma/index.js"
+
+const TeamWithRoomSchema = TeamOptionalDefaultsSchema.extend({
+  room: z.lazy(() => RoomOptionalDefaultsSchema),
+})
 
 const ResponseSchema = z.object({
-  data: TeamOptionalDefaultsSchema.array(),
+  data: TeamWithRoomSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),
