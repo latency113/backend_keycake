@@ -24,7 +24,7 @@ export const ProductScalarFieldEnumSchema = z.enum(['id','name','price','unit_id
 
 export const UnitScalarFieldEnumSchema = z.enum(['id','name_th','name_en']);
 
-export const OrderScalarFieldEnumSchema = z.enum(['id','customerName','room_id','team_id','orderDate','totalPrice','book_number','number','phone','pickup_date','depository','createdAt','updatedAt']);
+export const OrderScalarFieldEnumSchema = z.enum(['id','customerName','room_id','team_id','orderDate','totalPrice','book_number','number','phone','pickup_date','depository','deposit','createdAt','updatedAt']);
 
 export const OrderItemScalarFieldEnumSchema = z.enum(['id','order_id','product_id','pound','quantity','unitPrice','subtotal','createdAt','updatedAt']);
 
@@ -314,6 +314,7 @@ export const OrderSchema = z.object({
   phone: z.string(),
   pickup_date: z.coerce.date(),
   depository: z.string(),
+  deposit: z.number(),
   advisor: z.string().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

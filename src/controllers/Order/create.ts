@@ -68,6 +68,7 @@ export default (app: TypeApplication) =>
                 book_number: 0,
                 customerName: "",
                 depository: "",
+                deposit: 0,
                 advisor: "",
                 orderDate: "",
                 phone: "",

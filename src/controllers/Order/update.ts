@@ -72,6 +72,7 @@ export default (app: TypeApplication) =>
                 number: 0,
                 customerName: "",
                 depository: "",
+                deposit: 0,
                 advisor: "",
                 orderDate: "",
                 phone: "",
