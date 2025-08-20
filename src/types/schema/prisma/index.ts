@@ -24,7 +24,7 @@ export const ProductScalarFieldEnumSchema = z.enum(['id','name','price','unit_id
 
 export const UnitScalarFieldEnumSchema = z.enum(['id','name_th','name_en']);
 
-export const OrderScalarFieldEnumSchema = z.enum(['id','customerName','room_id','team_id','orderDate','totalPrice','book_number','number','phone','pickup_date','depository','deposit','createdAt','updatedAt']);
+export const OrderScalarFieldEnumSchema = z.enum(['id','customerName','room_id','team_id','orderDate','totalPrice','book_number','number','phone','pickup_date','depository','deposit','status','createdAt','updatedAt']);
 
 export const OrderItemScalarFieldEnumSchema = z.enum(['id','order_id','product_id','pound','quantity','unitPrice','subtotal','createdAt','updatedAt']);
 
@@ -47,6 +47,8 @@ export const GradeLevelTypeSchema = z.enum(['VOCATIONAL','HIGHER']);
 export type GradeLevelTypeType = `${z.infer<typeof GradeLevelTypeSchema>}`
 
 export const RequestStatusSchema = z.enum(['pending','approved','rejected']);
+
+export const OrderStatusSchema = z.enum(['pending','complete']);
 
 export type RequestStatusType = `${z.infer<typeof RequestStatusSchema>}`
 
@@ -316,6 +318,7 @@ export const OrderSchema = z.object({
   depository: z.string(),
   deposit: z.number(),
   advisor: z.string().nullish(),
+  status: OrderStatusSchema,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -730,6 +733,8 @@ export const OrderSelectSchema: z.ZodType<Prisma.OrderSelect> = z.object({
   phone: z.boolean().optional(),
   pickup_date: z.boolean().optional(),
   depository: z.boolean().optional(),
+  deposit: z.boolean().optional(),
+  status: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
   orderItems: z.union([z.boolean(),z.lazy(() => OrderItemArgsSchema)]).optional(),
