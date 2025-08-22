@@ -7,7 +7,7 @@ import remove from "./remove.js"
 import update from "./update.js"
 
 export default function (app: Elysia) {
-  return app.group("/team", (app) => {
+  return app.group("/teams", (app) => {
     const handlers = [getAll, getById, create, update, remove]
     handlers.forEach(handler => handler(app as TypeApplication))
     return app
