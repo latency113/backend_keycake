@@ -4,7 +4,7 @@ generator client {
 
 generator zod {
   provider                         = "zod-prisma-types"
-  output                           = "./../../src/types/schema/prisma "
+  output                           = "./../../src/types/schema/prisma"
   addIncludeType                   = "true"
   addInputTypeValidation           = "true"
   addSelectType                    = "true"
@@ -17,7 +17,7 @@ generator zod {
   useDefaultValidators             = "true"
   useMultipleFiles                 = "true"
   validateWhereUniqueInput         = "true"
-  writeBarrelFiles                 = "false"
+  writeBarrelFiles                 = "true"
   writeNullishInModelTypes         = "true"
 }
 
@@ -48,48 +48,48 @@ enum OrderStatus {
   complete
 }
 
-model Branch {
+model Department {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   name         String @unique
-  group_number String // รหัสกลุ่ม เช่น 672020101
+  group_number String
 
-  rooms       Room[]
+  classroom   Classroom[]
   CakeRequest CakeRequest[]
 }
 
-model Room {
+model Classroom {
   id             String @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  branch_id      String @db.ObjectId
+  department_id  String @db.ObjectId
   grade_level_id String @db.ObjectId
 
-  branch      Branch      @relation(fields: [branch_id], references: [id])
+  department  Department  @relation(fields: [department_id], references: [id])
   grade_level GradeLevel? @relation(fields: [grade_level_id], references: [id])
 
   teams  Team[]
   orders Order[]
 
-  @@index([branch_id], name: "idx_room_branch_id")
+  @@index([department_id], name: "idx_classroom_department_id")
 }
 
 model GradeLevel {
   id    String         @id @default(auto()) @map("_id") @db.ObjectId
-  level GradeLevelType // VOCATIONAL / HIGHER
-  year  Int // 1, 2, 3
+  level GradeLevelType
+  year  Int
 
-  rooms Room[]
+  classroom Classroom[]
 
   @@unique([level, year])
 }
 
 model User {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  fname    String
-  lastname String
-  username String  @unique
-  password String
-  email    String?
-  role     Role    @default(USER)
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstname String
+  lastname  String
+  username  String  @unique
+  password  String
+  email     String?
+  role      Role    @default(USER)
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -97,39 +97,27 @@ model User {
 }
 
 model Team {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  name    String
-  room_id String @db.ObjectId
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  classroom_id String @db.ObjectId
 
-  room   Room    @relation(fields: [room_id], references: [id])
-  orders Order[]
+  classroom Classroom @relation(fields: [classroom_id], references: [id])
+  orders    Order[]
 }
 
 model Product {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
   name    String
   price   Float
-  unit_id String @db.ObjectId
-
-  unit Unit @relation(fields: [unit_id], references: [id])
 
   orderItems OrderItem[]
-  cakeCounts CakeCount[]
   items      CakeRequestItems[]
-}
-
-model Unit {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  name_th String
-  name_en String
-
-  products Product[]
 }
 
 model Order {
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
   customerName String
-  room_id      String?     @db.ObjectId
+  classroom_id String?     @db.ObjectId
   team_id      String?     @db.ObjectId
   orderDate    DateTime
   totalPrice   Float
@@ -145,11 +133,11 @@ model Order {
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
 
-  team Team? @relation(fields: [team_id], references: [id])
-  room Room? @relation(fields: [room_id], references: [id])
+  team      Team?      @relation(fields: [team_id], references: [id])
+  classroom Classroom? @relation(fields: [classroom_id], references: [id])
 
   @@unique([book_number, number])
-  @@index([room_id], name: "idx_order_room_id")
+  @@index([classroom_id], name: "idx_order_classroom_id")
   @@index([team_id], name: "idx_order_team_id")
 }
 
@@ -169,28 +157,19 @@ model OrderItem {
   CakeRequestItems CakeRequestItems[]
 }
 
-model CakeCount {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  product_id String @db.ObjectId
-  pound      Int
-  quantity   Int
-
-  product Product @relation(fields: [product_id], references: [id])
-}
-
 model CakeRequest {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  requestDate DateTime
-  status      RequestStatus @default(pending)
-  note        String?
-  user_id     String        @db.ObjectId
-  branch_id   String        @db.ObjectId
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  requestDate   DateTime
+  status        RequestStatus @default(pending)
+  note          String?
+  user_id       String        @db.ObjectId
+  department_id String        @db.ObjectId
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
-  branch Branch             @relation(fields: [branch_id], references: [id])
-  user   User               @relation(fields: [user_id], references: [id])
-  items  CakeRequestItems[]
+  department Department         @relation(fields: [department_id], references: [id])
+  user       User               @relation(fields: [user_id], references: [id])
+  items      CakeRequestItems[]
 
   @@map("cake_requests")
 }
