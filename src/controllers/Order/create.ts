@@ -73,7 +73,7 @@ export default (app: TypeApplication) =>
                 orderDate: "",
                 phone: "",
                 pickup_date: "",
-                room_id: "หากไม่มีให้ลบ field นี้",
+                class_id: "หากไม่มีให้ลบ field นี้",
                 team_id: "หากไม่มีให้ลบ field นี้",
                 totalPrice: 0,
               },

@@ -40,9 +40,7 @@ describe("teamService", () => {
       skip: 0,
       take: undefined,
       where: { name: "Red Team" },
-      include: {
-        room: true,
-      },
+      include: { class: true },
     })
   })
 
@@ -52,9 +50,7 @@ describe("teamService", () => {
     expect(team).toMatchObject({ id: "team1", name: "Red Team" })
     expect(db.team.findFirst).toHaveBeenCalledWith({
       where: { id: "team1" },
-      include: {
-        room: true,
-      },
+      include: { class: true },
     })
   })
 
@@ -64,9 +60,7 @@ describe("teamService", () => {
     expect(team).toMatchObject({ id: "team1", name: "Red Team" })
     expect(db.team.findFirst).toHaveBeenCalledWith({
       where: { name: "Red Team" },
-      include: {
-        room: true,
-      },
+      include: { class: true },
     })
   })
 

@@ -90,7 +90,7 @@ describe("cakeRequestService", () => {
     expect(db.cakeRequest.create).toHaveBeenCalledWith({
       data,
       include: {
-        branch: true,
+        department: true,
         user: true,
         items: true,
       },
@@ -113,7 +113,7 @@ describe("cakeRequestService", () => {
       data,
       where: { id: "1" },
       include: {
-        branch: true,
+        department: true,
         user: true,
         items: true,
       },

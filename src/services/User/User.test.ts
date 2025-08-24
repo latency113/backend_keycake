@@ -13,7 +13,7 @@ describe("userService", () => {
         create: vi
           .fn()
           .mockResolvedValue({
-            branchId: "b1",
+            departmentId: "b1",
             createdAt: new Date(),
             email: "jane@example.com",
             fname: "Jane",
@@ -28,7 +28,7 @@ describe("userService", () => {
         findFirst: vi
           .fn()
           .mockResolvedValue({
-            branchId: "b1",
+            departmentId: "b1",
             createdAt: new Date(),
             email: "john@example.com",
             fname: "John",
@@ -43,7 +43,7 @@ describe("userService", () => {
           .fn()
           .mockResolvedValue([
             {
-              branchId: "b1",
+              departmentId: "b1",
               createdAt: new Date(),
               email: "john@example.com",
               fname: "John",
@@ -58,7 +58,7 @@ describe("userService", () => {
         update: vi
           .fn()
           .mockResolvedValue({
-            branchId: "b1",
+            departmentId: "b1",
             createdAt: new Date(),
             email: "john@example.com",
             fname: "John",
@@ -102,8 +102,8 @@ describe("userService", () => {
 
   it("should create a user", async () => {
     const data = {
-      branch: { connect: { id: "b1" } },
-      branchId: "b1",
+      department: { connect: { id: "b1" } },
+      departmentId: "b1",
       createdAt: new Date(),
       email: "jane@example.com",
       fname: "Jane",
@@ -117,7 +117,7 @@ describe("userService", () => {
     expect(user).toBeTruthy()
     expect(db.user.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
-        branchId: "b1",
+        departmentId: "b1",
         email: "jane@example.com",
         fname: "Jane",
         lastname: "Smith",

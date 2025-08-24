@@ -77,7 +77,7 @@ export default (app: TypeApplication) =>
                 orderDate: "",
                 phone: "",
                 pickup_date: "",
-                room_id: "",
+                class_id: "",
                 team_id: "",
                 totalPrice: 0,
               },

@@ -13,7 +13,7 @@ const TeamWithRoomSchema = TeamOptionalDefaultsSchema.extend({
 })
 
 const ResponseSchema = z.object({
-  data: TeamWithRoomSchema,
+  data: TeamWithClassSchema,
   message: z.string(),
 })
 

@@ -68,7 +68,7 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
         const result = await db.cakeRequest.create({
           data,
           include: {
-            branch: true,
+            department: true,
             user: true,
             items: true,
           },
@@ -100,7 +100,7 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
           data,
           where: { id },
           include: {
-            branch: true,
+            department: true,
             user: true,
             items: true,
           },

@@ -12,7 +12,7 @@ describe("orderService", () => {
     id: "order1",
     number: 1,
     orderDate: new Date("2025-07-14T00:00:00.000Z"),
-    room_id: "room1",
+    class_id: "class1",
     team_id: "team1",
     totalPrice: 100.5,
     updatedAt: new Date("2025-07-14T00:00:00.000Z"),
@@ -33,20 +33,20 @@ describe("orderService", () => {
   })
 
   it("should count Orders", async () => {
-    const count = await service.count({ room_id: "room1" })
+    const count = await service.count({ class_id: "class1" })
     expect(count).toBe(3)
-    expect(db.order.count).toHaveBeenCalledWith({ where: { room_id: "room1" } })
+    expect(db.order.count).toHaveBeenCalledWith({ where: { class_id: "class1" } })
   })
 
   it("should get all Orders", async () => {
-    const orders = await service.getAll({ where: { room_id: "room1" } })
+    const orders = await service.getAll({ where: { class_id: "class1" } })
     expect(Array.isArray(orders)).toBe(true)
     expect(orders.length).toBeGreaterThan(0)
-    expect(orders[0]).toMatchObject({ id: "order1", room_id: "room1" })
+    expect(orders[0]).toMatchObject({ id: "order1", class_id: "class1" })
     expect(db.order.findMany).toHaveBeenCalledWith({
       skip: 0,
       take: undefined,
-      where: { room_id: "room1" },
+      where: { class_id: "class1" },
       include: {
         orderItems: true,
       },
@@ -56,7 +56,7 @@ describe("orderService", () => {
   it("should get Order by id", async () => {
     const order = await service.getById("order1")
     expect(order).toBeTruthy()
-    expect(order).toMatchObject({ id: "order1", room_id: "room1" })
+    expect(order).toMatchObject({ id: "order1", class_id: "class1" })
     expect(db.order.findFirst).toHaveBeenCalledWith({
       where: { id: "order1" },
       include: {
@@ -83,7 +83,7 @@ describe("orderService", () => {
       customerName: "John",
       number: 1,
       orderDate: new Date("2025-07-14T00:00:00.000Z"),
-      room: { connect: { id: "room1" } },
+      class: { connect: { id: "class1" } },
       team: { connect: { id: "team1" } },
       totalPrice: 100.5,
     }

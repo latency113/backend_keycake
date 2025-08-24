@@ -1,0 +1,14 @@
+import type { Prisma } from '@prisma/client';
+
+import { z } from 'zod';
+import { OrderUncheckedCreateNestedManyWithoutClassroomInputSchema } from './OrderUncheckedCreateNestedManyWithoutClassroomInputSchema';
+
+export const ClassroomUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.ClassroomUncheckedCreateWithoutTeamsInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  department_id: z.string(),
+  grade_level_id: z.string(),
+  orders: z.lazy(() => OrderUncheckedCreateNestedManyWithoutClassroomInputSchema).optional()
+}).strict();
+
+export default ClassroomUncheckedCreateWithoutTeamsInputSchema;

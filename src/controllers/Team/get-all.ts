@@ -15,7 +15,7 @@ const TeamWithRoomSchema = TeamOptionalDefaultsSchema.extend({
 })
 
 const ResponseSchema = z.object({
-  data: TeamWithRoomSchema.array(),
+  data: TeamWithClassSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

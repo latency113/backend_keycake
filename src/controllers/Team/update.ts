@@ -64,7 +64,7 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 name: "",
-                room_id: "",
+                class_id: "",
               },
               schema: RequestSchema,
             },

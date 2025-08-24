@@ -53,7 +53,7 @@ export function TeamService({ db }: TeamDependencies) {
     async getOne(param: TypeTeamWhereInput["where"]): Promise<Team | null> {
       console.log(`[TeamService] getOne called with param:`, param)
       try {
-        const result = await db.team.findFirst({ include: { room: true }, where: param })
+        const result = await db.team.findFirst({ include: { class: true }, where: param })
         console.log(`[TeamService] getOne completed, found:`, !!result)
         return result
       }

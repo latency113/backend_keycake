@@ -75,7 +75,7 @@ export default (app: TypeApplication) =>
           content: {
             "application/json": {
               example: {
-                branch_id: "",
+                department_id: "",
                 note: "",
                 requestDate: "",
                 status: "pending",
