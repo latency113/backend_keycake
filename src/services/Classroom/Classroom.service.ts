@@ -1,5 +1,6 @@
 import type { Classroom, Prisma, PrismaClient } from "@prisma/client"
 import type { TypeClassroomService, TypeClassroomWhereInput } from "./Classroom.type.js"
+import type { ClassroomWithDepartmentSchema } from "@/types/schema/prisma"
 
 export type ClassroomDependencies = {
   db: PrismaClient
@@ -18,7 +19,7 @@ export function ClassroomService({ db }: ClassroomDependencies) {
         throw error
       }
     },
-    async getAll(param?: TypeClassroomWhereInput): Promise<ClassroomWithDepartment[]> {
+    async getAll(param?: TypeClassroomWhereInput): Promise<z.infer<typeof ClassroomWithDepartmentSchema>[]> {
       console.log(`[ClassroomService] getAll called with param:`, param)
       try {
         const result = await db.classroom.findMany({
@@ -38,7 +39,7 @@ export function ClassroomService({ db }: ClassroomDependencies) {
         throw error
       }
     },
-    async getById(id: string): Promise<ClassroomWithDepartment | null> {
+    async getById(id: string): Promise<z.infer<typeof ClassroomWithDepartmentSchema> | null> {
       console.log(`[ClassroomService] getById called with id: ${id}`)
       try {
         const result = await db.classroom.findFirst({
@@ -56,7 +57,7 @@ export function ClassroomService({ db }: ClassroomDependencies) {
         throw error
       }
     },
-    async getOne(param: TypeClassroomWhereInput["where"]): Promise<ClassroomWithDepartment | null> {
+    async getOne(param: TypeClassroomWhereInput["where"]): Promise<z.infer<typeof ClassroomWithDepartmentSchema> | null> {
       console.log(`[ClassroomService] getOne called with param:`, param)
       try {
         const result = await db.classroom.findFirst({
@@ -74,7 +75,7 @@ export function ClassroomService({ db }: ClassroomDependencies) {
         throw error
       }
     },
-    async onCreate(data: Prisma.ClassroomCreateInput): Promise<ClassroomWithDepartment> {
+    async onCreate(data: Prisma.ClassroomCreateInput): Promise<z.infer<typeof ClassroomWithDepartmentSchema>> {
       console.log(`[ClassroomService] onCreate called with data:`, data)
       try {
         const result = await db.classroom.create({
@@ -104,7 +105,7 @@ export function ClassroomService({ db }: ClassroomDependencies) {
         throw error
       }
     },
-    async onUpdate(id: string, data: Prisma.ClassroomUpdateInput): Promise<ClassroomWithDepartment> {
+    async onUpdate(id: string, data: Prisma.ClassroomUpdateInput): Promise<z.infer<typeof ClassroomWithDepartmentSchema>> {
       console.log(`[ClassroomService] onUpdate called with id: ${id}, data:`, data)
       try {
         const result = await db.classroom.update({
