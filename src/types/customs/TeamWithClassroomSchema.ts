@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { TeamSchema } from './modelSchema/TeamSchema';
-import { ClassroomSchema } from './modelSchema/ClassroomSchema';
+import { TeamSchema } from './../schema/prisma/modelSchema/TeamSchema';
+import { ClassroomSchema } from './../schema/prisma/modelSchema/ClassroomSchema';
 
 export const TeamWithClassroomSchema = TeamSchema.extend({
   classroom: ClassroomSchema,

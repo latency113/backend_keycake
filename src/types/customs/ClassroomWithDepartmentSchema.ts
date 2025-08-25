@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { ClassroomSchema } from './modelSchema/ClassroomSchema';
-import { DepartmentSchema } from './modelSchema/DepartmentSchema';
-import { GradeLevelSchema } from './modelSchema/GradeLevelSchema';
+import { ClassroomSchema } from './../schema/prisma/modelSchema/ClassroomSchema';
+import { DepartmentSchema } from './../schema/prisma/modelSchema/DepartmentSchema';
+import { GradeLevelSchema } from './../schema/prisma/modelSchema/GradeLevelSchema';
 
 export const ClassroomWithDepartmentSchema = ClassroomSchema.extend({
   department: DepartmentSchema,
