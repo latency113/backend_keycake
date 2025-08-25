@@ -4,7 +4,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { UserService } from "@/services/index.js"
 import { FailResponseSchema, SuccessResponseSchema } from "@/types/global/response.js"
 
-import { UserPartialSchema } from "@/types/schema/prisma/index.js"
+import { UserPartialSchema } from "@/types/schema/prisma/"
 
 const RequestSchema = UserPartialSchema
 

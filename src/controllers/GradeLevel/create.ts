@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { GradeLevelService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { GradeLevelOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { GradeLevelOptionalDefaultsSchema } from "@/types/schema/prisma/"
 
 const RequestSchema = GradeLevelOptionalDefaultsSchema.partial()
 

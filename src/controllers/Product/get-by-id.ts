@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { ProductService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { ProductOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { ProductOptionalDefaultsSchema } from "@/types/schema/prisma/-"
 
 const ResponseSchema = z.object({
   data: ProductOptionalDefaultsSchema,

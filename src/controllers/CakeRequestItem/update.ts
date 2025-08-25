@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { CakeRequestItemsService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { CakeRequestItemsPartialSchema } from "@/types/schema/prisma/index.js"
+import { CakeRequestItemsPartialSchema } from "@/types/schema/prisma"
 
 const RequestSchema = CakeRequestItemsPartialSchema
 
