@@ -1,24 +1,24 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { CakeRequestItemsArgsSchema } from "../outputTypeSchemas/CakeRequestItemsArgsSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 import { OrderArgsSchema } from "../outputTypeSchemas/OrderArgsSchema"
-import { OrderItemCountOutputTypeArgsSchema } from "../outputTypeSchemas/OrderItemCountOutputTypeArgsSchema"
 import { ProductArgsSchema } from "../outputTypeSchemas/ProductArgsSchema"
+import { CakeRequestItemsArgsSchema } from "../outputTypeSchemas/CakeRequestItemsArgsSchema"
+import { OrderItemCountOutputTypeArgsSchema } from "../outputTypeSchemas/OrderItemCountOutputTypeArgsSchema"
 
 export const OrderItemSelectSchema: z.ZodType<Prisma.OrderItemSelect> = z.object({
-  _count: z.union([z.boolean(), z.lazy(() => OrderItemCountOutputTypeArgsSchema)]).optional(),
-  CakeRequestItems: z.union([z.boolean(), z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
-  createdAt: z.boolean().optional(),
   id: z.boolean().optional(),
-  order: z.union([z.boolean(), z.lazy(() => OrderArgsSchema)]).optional(),
   order_id: z.boolean().optional(),
-  pound: z.boolean().optional(),
-  product: z.union([z.boolean(), z.lazy(() => ProductArgsSchema)]).optional(),
   product_id: z.boolean().optional(),
+  pound: z.boolean().optional(),
   quantity: z.boolean().optional(),
-  subtotal: z.boolean().optional(),
   unitPrice: z.boolean().optional(),
+  subtotal: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
+  order: z.union([z.boolean(),z.lazy(() => OrderArgsSchema)]).optional(),
+  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
+  CakeRequestItems: z.union([z.boolean(),z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => OrderItemCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
-export default OrderItemSelectSchema
+export default OrderItemSelectSchema;

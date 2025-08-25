@@ -1,15 +1,15 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { OrderOrderByWithRelationInputSchema } from "../inputTypeSchemas/OrderOrderByWithRelationInputSchema"
-import { OrderWhereInputSchema } from "../inputTypeSchemas/OrderWhereInputSchema"
-import { OrderWhereUniqueInputSchema } from "../inputTypeSchemas/OrderWhereUniqueInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { OrderWhereInputSchema } from '../inputTypeSchemas/OrderWhereInputSchema'
+import { OrderOrderByWithRelationInputSchema } from '../inputTypeSchemas/OrderOrderByWithRelationInputSchema'
+import { OrderWhereUniqueInputSchema } from '../inputTypeSchemas/OrderWhereUniqueInputSchema'
 
 export const OrderAggregateArgsSchema: z.ZodType<Prisma.OrderAggregateArgs> = z.object({
-  cursor: OrderWhereUniqueInputSchema.optional(),
-  orderBy: z.union([OrderOrderByWithRelationInputSchema.array(), OrderOrderByWithRelationInputSchema]).optional(),
-  skip: z.number().optional(),
-  take: z.number().optional(),
   where: OrderWhereInputSchema.optional(),
-}).strict()
+  orderBy: z.union([ OrderOrderByWithRelationInputSchema.array(),OrderOrderByWithRelationInputSchema ]).optional(),
+  cursor: OrderWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
 
-export default OrderAggregateArgsSchema
+export default OrderAggregateArgsSchema;

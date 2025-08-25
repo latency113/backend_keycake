@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestCreateWithoutUserInputSchema } from "./CakeRequestCreateWithoutUserInputSchema"
-import { CakeRequestUncheckedCreateWithoutUserInputSchema } from "./CakeRequestUncheckedCreateWithoutUserInputSchema"
-import { CakeRequestWhereUniqueInputSchema } from "./CakeRequestWhereUniqueInputSchema"
+import { z } from 'zod';
+import { CakeRequestWhereUniqueInputSchema } from './CakeRequestWhereUniqueInputSchema';
+import { CakeRequestCreateWithoutUserInputSchema } from './CakeRequestCreateWithoutUserInputSchema';
+import { CakeRequestUncheckedCreateWithoutUserInputSchema } from './CakeRequestUncheckedCreateWithoutUserInputSchema';
 
 export const CakeRequestCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestCreateOrConnectWithoutUserInput> = z.object({
-  create: z.union([z.lazy(() => CakeRequestCreateWithoutUserInputSchema), z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema)]),
   where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
-}).strict()
+  create: z.union([ z.lazy(() => CakeRequestCreateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
 
-export default CakeRequestCreateOrConnectWithoutUserInputSchema
+export default CakeRequestCreateOrConnectWithoutUserInputSchema;

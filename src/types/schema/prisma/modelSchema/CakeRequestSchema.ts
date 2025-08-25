@@ -1,19 +1,19 @@
-import { z } from "zod"
-import { RequestStatusSchema } from "../inputTypeSchemas/RequestStatusSchema"
+import { z } from 'zod';
+import { RequestStatusSchema } from '../inputTypeSchemas/RequestStatusSchema'
 
 /////////////////////////////////////////
 // CAKE REQUEST SCHEMA
 /////////////////////////////////////////
 
 export const CakeRequestSchema = z.object({
-  createdAt: z.coerce.date(),
-  department_id: z.string(),
-  id: z.string(),
-  note: z.string().nullish(),
-  requestDate: z.coerce.date(),
   status: RequestStatusSchema,
-  updatedAt: z.coerce.date(),
+  id: z.string(),
+  requestDate: z.coerce.date(),
+  note: z.string().nullish(),
   user_id: z.string(),
+  department_id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 })
 
 export type CakeRequest = z.infer<typeof CakeRequestSchema>
@@ -31,12 +31,12 @@ export type CakeRequestPartial = z.infer<typeof CakeRequestPartialSchema>
 /////////////////////////////////////////
 
 export const CakeRequestOptionalDefaultsSchema = CakeRequestSchema.merge(z.object({
-  createdAt: z.coerce.date().optional(),
-  id: z.string().optional(),
   status: RequestStatusSchema.optional(),
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type CakeRequestOptionalDefaults = z.infer<typeof CakeRequestOptionalDefaultsSchema>
 
-export default CakeRequestSchema
+export default CakeRequestSchema;

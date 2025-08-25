@@ -1,15 +1,15 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { OrderCreateOrConnectWithoutOrderItemsInputSchema } from "./OrderCreateOrConnectWithoutOrderItemsInputSchema"
-import { OrderCreateWithoutOrderItemsInputSchema } from "./OrderCreateWithoutOrderItemsInputSchema"
-import { OrderUncheckedCreateWithoutOrderItemsInputSchema } from "./OrderUncheckedCreateWithoutOrderItemsInputSchema"
-import { OrderWhereUniqueInputSchema } from "./OrderWhereUniqueInputSchema"
+import { z } from 'zod';
+import { OrderCreateWithoutOrderItemsInputSchema } from './OrderCreateWithoutOrderItemsInputSchema';
+import { OrderUncheckedCreateWithoutOrderItemsInputSchema } from './OrderUncheckedCreateWithoutOrderItemsInputSchema';
+import { OrderCreateOrConnectWithoutOrderItemsInputSchema } from './OrderCreateOrConnectWithoutOrderItemsInputSchema';
+import { OrderWhereUniqueInputSchema } from './OrderWhereUniqueInputSchema';
 
 export const OrderCreateNestedOneWithoutOrderItemsInputSchema: z.ZodType<Prisma.OrderCreateNestedOneWithoutOrderItemsInput> = z.object({
-  connect: z.lazy(() => OrderWhereUniqueInputSchema).optional(),
+  create: z.union([ z.lazy(() => OrderCreateWithoutOrderItemsInputSchema),z.lazy(() => OrderUncheckedCreateWithoutOrderItemsInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => OrderCreateOrConnectWithoutOrderItemsInputSchema).optional(),
-  create: z.union([z.lazy(() => OrderCreateWithoutOrderItemsInputSchema), z.lazy(() => OrderUncheckedCreateWithoutOrderItemsInputSchema)]).optional(),
-}).strict()
+  connect: z.lazy(() => OrderWhereUniqueInputSchema).optional()
+}).strict();
 
-export default OrderCreateNestedOneWithoutOrderItemsInputSchema
+export default OrderCreateNestedOneWithoutOrderItemsInputSchema;

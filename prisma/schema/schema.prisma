@@ -17,7 +17,7 @@ generator zod {
   useDefaultValidators             = "true"
   useMultipleFiles                 = "true"
   validateWhereUniqueInput         = "true"
-  writeBarrelFiles                 = "true"
+  writeBarrelFiles                 = "false"
   writeNullishInModelTypes         = "true"
 }
 

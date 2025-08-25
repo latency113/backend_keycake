@@ -1,11 +1,11 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { OrderWhereInputSchema } from "./OrderWhereInputSchema"
+import { z } from 'zod';
+import { OrderWhereInputSchema } from './OrderWhereInputSchema';
 
 export const OrderScalarRelationFilterSchema: z.ZodType<Prisma.OrderScalarRelationFilter> = z.object({
   is: z.lazy(() => OrderWhereInputSchema).optional(),
-  isNot: z.lazy(() => OrderWhereInputSchema).optional(),
-}).strict()
+  isNot: z.lazy(() => OrderWhereInputSchema).optional()
+}).strict();
 
-export default OrderScalarRelationFilterSchema
+export default OrderScalarRelationFilterSchema;

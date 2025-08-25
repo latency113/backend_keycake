@@ -1,16 +1,16 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema } from "./CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema"
-import { FloatFieldUpdateOperationsInputSchema } from "./FloatFieldUpdateOperationsInputSchema"
-import { OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema } from "./OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema"
-import { StringFieldUpdateOperationsInputSchema } from "./StringFieldUpdateOperationsInputSchema"
+import { z } from 'zod';
+import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
+import { FloatFieldUpdateOperationsInputSchema } from './FloatFieldUpdateOperationsInputSchema';
+import { OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema } from './OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema';
+import { CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema } from './CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema';
 
 export const ProductUncheckedUpdateInputSchema: z.ZodType<Prisma.ProductUncheckedUpdateInput> = z.object({
-  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
-  name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   orderItems: z.lazy(() => OrderItemUncheckedUpdateManyWithoutProductNestedInputSchema).optional(),
-  price: z.union([z.number(), z.lazy(() => FloatFieldUpdateOperationsInputSchema)]).optional(),
-}).strict()
+  items: z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutProductNestedInputSchema).optional()
+}).strict();
 
-export default ProductUncheckedUpdateInputSchema
+export default ProductUncheckedUpdateInputSchema;

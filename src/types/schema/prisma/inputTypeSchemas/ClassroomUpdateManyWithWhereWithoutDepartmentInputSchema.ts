@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { ClassroomScalarWhereInputSchema } from "./ClassroomScalarWhereInputSchema"
-import { ClassroomUncheckedUpdateManyWithoutDepartmentInputSchema } from "./ClassroomUncheckedUpdateManyWithoutDepartmentInputSchema"
-import { ClassroomUpdateManyMutationInputSchema } from "./ClassroomUpdateManyMutationInputSchema"
+import { z } from 'zod';
+import { ClassroomScalarWhereInputSchema } from './ClassroomScalarWhereInputSchema';
+import { ClassroomUpdateManyMutationInputSchema } from './ClassroomUpdateManyMutationInputSchema';
+import { ClassroomUncheckedUpdateManyWithoutDepartmentInputSchema } from './ClassroomUncheckedUpdateManyWithoutDepartmentInputSchema';
 
 export const ClassroomUpdateManyWithWhereWithoutDepartmentInputSchema: z.ZodType<Prisma.ClassroomUpdateManyWithWhereWithoutDepartmentInput> = z.object({
-  data: z.union([z.lazy(() => ClassroomUpdateManyMutationInputSchema), z.lazy(() => ClassroomUncheckedUpdateManyWithoutDepartmentInputSchema)]),
   where: z.lazy(() => ClassroomScalarWhereInputSchema),
-}).strict()
+  data: z.union([ z.lazy(() => ClassroomUpdateManyMutationInputSchema),z.lazy(() => ClassroomUncheckedUpdateManyWithoutDepartmentInputSchema) ]),
+}).strict();
 
-export default ClassroomUpdateManyWithWhereWithoutDepartmentInputSchema
+export default ClassroomUpdateManyWithWhereWithoutDepartmentInputSchema;

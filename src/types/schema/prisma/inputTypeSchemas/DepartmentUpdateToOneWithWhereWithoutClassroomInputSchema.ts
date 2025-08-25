@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { DepartmentUncheckedUpdateWithoutClassroomInputSchema } from "./DepartmentUncheckedUpdateWithoutClassroomInputSchema"
-import { DepartmentUpdateWithoutClassroomInputSchema } from "./DepartmentUpdateWithoutClassroomInputSchema"
-import { DepartmentWhereInputSchema } from "./DepartmentWhereInputSchema"
+import { z } from 'zod';
+import { DepartmentWhereInputSchema } from './DepartmentWhereInputSchema';
+import { DepartmentUpdateWithoutClassroomInputSchema } from './DepartmentUpdateWithoutClassroomInputSchema';
+import { DepartmentUncheckedUpdateWithoutClassroomInputSchema } from './DepartmentUncheckedUpdateWithoutClassroomInputSchema';
 
 export const DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema: z.ZodType<Prisma.DepartmentUpdateToOneWithWhereWithoutClassroomInput> = z.object({
-  data: z.union([z.lazy(() => DepartmentUpdateWithoutClassroomInputSchema), z.lazy(() => DepartmentUncheckedUpdateWithoutClassroomInputSchema)]),
   where: z.lazy(() => DepartmentWhereInputSchema).optional(),
-}).strict()
+  data: z.union([ z.lazy(() => DepartmentUpdateWithoutClassroomInputSchema),z.lazy(() => DepartmentUncheckedUpdateWithoutClassroomInputSchema) ]),
+}).strict();
 
-export default DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema
+export default DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema;

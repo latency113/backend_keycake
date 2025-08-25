@@ -1,16 +1,16 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestItemsCreateWithoutProductInputSchema } from "./CakeRequestItemsCreateWithoutProductInputSchema"
-import { CakeRequestItemsUncheckedCreateWithoutProductInputSchema } from "./CakeRequestItemsUncheckedCreateWithoutProductInputSchema"
-import { CakeRequestItemsUncheckedUpdateWithoutProductInputSchema } from "./CakeRequestItemsUncheckedUpdateWithoutProductInputSchema"
-import { CakeRequestItemsUpdateWithoutProductInputSchema } from "./CakeRequestItemsUpdateWithoutProductInputSchema"
-import { CakeRequestItemsWhereUniqueInputSchema } from "./CakeRequestItemsWhereUniqueInputSchema"
+import { z } from 'zod';
+import { CakeRequestItemsWhereUniqueInputSchema } from './CakeRequestItemsWhereUniqueInputSchema';
+import { CakeRequestItemsUpdateWithoutProductInputSchema } from './CakeRequestItemsUpdateWithoutProductInputSchema';
+import { CakeRequestItemsUncheckedUpdateWithoutProductInputSchema } from './CakeRequestItemsUncheckedUpdateWithoutProductInputSchema';
+import { CakeRequestItemsCreateWithoutProductInputSchema } from './CakeRequestItemsCreateWithoutProductInputSchema';
+import { CakeRequestItemsUncheckedCreateWithoutProductInputSchema } from './CakeRequestItemsUncheckedCreateWithoutProductInputSchema';
 
 export const CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpsertWithWhereUniqueWithoutProductInput> = z.object({
-  create: z.union([z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema), z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema)]),
-  update: z.union([z.lazy(() => CakeRequestItemsUpdateWithoutProductInputSchema), z.lazy(() => CakeRequestItemsUncheckedUpdateWithoutProductInputSchema)]),
   where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
-}).strict()
+  update: z.union([ z.lazy(() => CakeRequestItemsUpdateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateWithoutProductInputSchema) ]),
+  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema) ]),
+}).strict();
 
-export default CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema
+export default CakeRequestItemsUpsertWithWhereUniqueWithoutProductInputSchema;

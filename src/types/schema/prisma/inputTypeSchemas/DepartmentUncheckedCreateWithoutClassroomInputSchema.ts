@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestUncheckedCreateNestedManyWithoutDepartmentInputSchema } from "./CakeRequestUncheckedCreateNestedManyWithoutDepartmentInputSchema"
+import { z } from 'zod';
+import { CakeRequestUncheckedCreateNestedManyWithoutDepartmentInputSchema } from './CakeRequestUncheckedCreateNestedManyWithoutDepartmentInputSchema';
 
 export const DepartmentUncheckedCreateWithoutClassroomInputSchema: z.ZodType<Prisma.DepartmentUncheckedCreateWithoutClassroomInput> = z.object({
-  CakeRequest: z.lazy(() => CakeRequestUncheckedCreateNestedManyWithoutDepartmentInputSchema).optional(),
-  group_number: z.string(),
   id: z.string().optional(),
   name: z.string(),
-}).strict()
+  group_number: z.string(),
+  CakeRequest: z.lazy(() => CakeRequestUncheckedCreateNestedManyWithoutDepartmentInputSchema).optional()
+}).strict();
 
-export default DepartmentUncheckedCreateWithoutClassroomInputSchema
+export default DepartmentUncheckedCreateWithoutClassroomInputSchema;

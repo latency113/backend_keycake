@@ -1,14 +1,14 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema } from "./CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema"
-import { IntFieldUpdateOperationsInputSchema } from "./IntFieldUpdateOperationsInputSchema"
-import { OrderItemUpdateOneRequiredWithoutCakeRequestItemsNestedInputSchema } from "./OrderItemUpdateOneRequiredWithoutCakeRequestItemsNestedInputSchema"
+import { z } from 'zod';
+import { IntFieldUpdateOperationsInputSchema } from './IntFieldUpdateOperationsInputSchema';
+import { CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema } from './CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema';
+import { OrderItemUpdateOneRequiredWithoutCakeRequestItemsNestedInputSchema } from './OrderItemUpdateOneRequiredWithoutCakeRequestItemsNestedInputSchema';
 
 export const CakeRequestItemsUpdateWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateWithoutProductInput> = z.object({
-  orderItem: z.lazy(() => OrderItemUpdateOneRequiredWithoutCakeRequestItemsNestedInputSchema).optional(),
-  quantity: z.union([z.number().int(), z.lazy(() => IntFieldUpdateOperationsInputSchema)]).optional(),
+  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   request: z.lazy(() => CakeRequestUpdateOneRequiredWithoutItemsNestedInputSchema).optional(),
-}).strict()
+  orderItem: z.lazy(() => OrderItemUpdateOneRequiredWithoutCakeRequestItemsNestedInputSchema).optional()
+}).strict();
 
-export default CakeRequestItemsUpdateWithoutProductInputSchema
+export default CakeRequestItemsUpdateWithoutProductInputSchema;

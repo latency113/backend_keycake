@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { SortOrderSchema } from "./SortOrderSchema"
+import { z } from 'zod';
+import { SortOrderSchema } from './SortOrderSchema';
 
 export const ClassroomCountOrderByAggregateInputSchema: z.ZodType<Prisma.ClassroomCountOrderByAggregateInput> = z.object({
-  department_id: z.lazy(() => SortOrderSchema).optional(),
-  grade_level_id: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-}).strict()
+  department_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
 
-export default ClassroomCountOrderByAggregateInputSchema
+export default ClassroomCountOrderByAggregateInputSchema;

@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { OrderUncheckedUpdateManyWithoutTeamNestedInputSchema } from "./OrderUncheckedUpdateManyWithoutTeamNestedInputSchema"
-import { StringFieldUpdateOperationsInputSchema } from "./StringFieldUpdateOperationsInputSchema"
+import { z } from 'zod';
+import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
+import { OrderUncheckedUpdateManyWithoutTeamNestedInputSchema } from './OrderUncheckedUpdateManyWithoutTeamNestedInputSchema';
 
 export const TeamUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateInput> = z.object({
-  classroom_id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-  name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-  orders: z.lazy(() => OrderUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
-}).strict()
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  classroom_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  orders: z.lazy(() => OrderUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+}).strict();
 
-export default TeamUncheckedUpdateInputSchema
+export default TeamUncheckedUpdateInputSchema;

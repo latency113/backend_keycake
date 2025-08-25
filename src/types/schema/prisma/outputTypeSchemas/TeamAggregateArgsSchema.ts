@@ -1,15 +1,15 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { TeamOrderByWithRelationInputSchema } from "../inputTypeSchemas/TeamOrderByWithRelationInputSchema"
-import { TeamWhereInputSchema } from "../inputTypeSchemas/TeamWhereInputSchema"
-import { TeamWhereUniqueInputSchema } from "../inputTypeSchemas/TeamWhereUniqueInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { TeamWhereInputSchema } from '../inputTypeSchemas/TeamWhereInputSchema'
+import { TeamOrderByWithRelationInputSchema } from '../inputTypeSchemas/TeamOrderByWithRelationInputSchema'
+import { TeamWhereUniqueInputSchema } from '../inputTypeSchemas/TeamWhereUniqueInputSchema'
 
 export const TeamAggregateArgsSchema: z.ZodType<Prisma.TeamAggregateArgs> = z.object({
-  cursor: TeamWhereUniqueInputSchema.optional(),
-  orderBy: z.union([TeamOrderByWithRelationInputSchema.array(), TeamOrderByWithRelationInputSchema]).optional(),
-  skip: z.number().optional(),
-  take: z.number().optional(),
   where: TeamWhereInputSchema.optional(),
-}).strict()
+  orderBy: z.union([ TeamOrderByWithRelationInputSchema.array(),TeamOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
 
-export default TeamAggregateArgsSchema
+export default TeamAggregateArgsSchema;

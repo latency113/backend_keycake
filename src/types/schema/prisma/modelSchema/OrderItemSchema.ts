@@ -1,18 +1,18 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 /////////////////////////////////////////
 // ORDER ITEM SCHEMA
 /////////////////////////////////////////
 
 export const OrderItemSchema = z.object({
-  createdAt: z.coerce.date(),
   id: z.string(),
   order_id: z.string(),
-  pound: z.number().int(),
   product_id: z.string(),
+  pound: z.number().int(),
   quantity: z.number().int(),
-  subtotal: z.number(),
   unitPrice: z.number(),
+  subtotal: z.number(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
 
@@ -31,11 +31,11 @@ export type OrderItemPartial = z.infer<typeof OrderItemPartialSchema>
 /////////////////////////////////////////
 
 export const OrderItemOptionalDefaultsSchema = OrderItemSchema.merge(z.object({
-  createdAt: z.coerce.date().optional(),
   id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type OrderItemOptionalDefaults = z.infer<typeof OrderItemOptionalDefaultsSchema>
 
-export default OrderItemSchema
+export default OrderItemSchema;

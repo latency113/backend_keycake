@@ -1,11 +1,11 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { ProductIncludeSchema } from "../inputTypeSchemas/ProductIncludeSchema"
-import { ProductSelectSchema } from "../inputTypeSchemas/ProductSelectSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { ProductSelectSchema } from '../inputTypeSchemas/ProductSelectSchema';
+import { ProductIncludeSchema } from '../inputTypeSchemas/ProductIncludeSchema';
 
 export const ProductArgsSchema: z.ZodType<Prisma.ProductDefaultArgs> = z.object({
-  include: z.lazy(() => ProductIncludeSchema).optional(),
   select: z.lazy(() => ProductSelectSchema).optional(),
-}).strict()
+  include: z.lazy(() => ProductIncludeSchema).optional(),
+}).strict();
 
-export default ProductArgsSchema
+export default ProductArgsSchema;

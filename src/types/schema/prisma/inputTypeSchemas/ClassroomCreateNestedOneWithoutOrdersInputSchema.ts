@@ -1,15 +1,15 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { ClassroomCreateOrConnectWithoutOrdersInputSchema } from "./ClassroomCreateOrConnectWithoutOrdersInputSchema"
-import { ClassroomCreateWithoutOrdersInputSchema } from "./ClassroomCreateWithoutOrdersInputSchema"
-import { ClassroomUncheckedCreateWithoutOrdersInputSchema } from "./ClassroomUncheckedCreateWithoutOrdersInputSchema"
-import { ClassroomWhereUniqueInputSchema } from "./ClassroomWhereUniqueInputSchema"
+import { z } from 'zod';
+import { ClassroomCreateWithoutOrdersInputSchema } from './ClassroomCreateWithoutOrdersInputSchema';
+import { ClassroomUncheckedCreateWithoutOrdersInputSchema } from './ClassroomUncheckedCreateWithoutOrdersInputSchema';
+import { ClassroomCreateOrConnectWithoutOrdersInputSchema } from './ClassroomCreateOrConnectWithoutOrdersInputSchema';
+import { ClassroomWhereUniqueInputSchema } from './ClassroomWhereUniqueInputSchema';
 
 export const ClassroomCreateNestedOneWithoutOrdersInputSchema: z.ZodType<Prisma.ClassroomCreateNestedOneWithoutOrdersInput> = z.object({
-  connect: z.lazy(() => ClassroomWhereUniqueInputSchema).optional(),
+  create: z.union([ z.lazy(() => ClassroomCreateWithoutOrdersInputSchema),z.lazy(() => ClassroomUncheckedCreateWithoutOrdersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => ClassroomCreateOrConnectWithoutOrdersInputSchema).optional(),
-  create: z.union([z.lazy(() => ClassroomCreateWithoutOrdersInputSchema), z.lazy(() => ClassroomUncheckedCreateWithoutOrdersInputSchema)]).optional(),
-}).strict()
+  connect: z.lazy(() => ClassroomWhereUniqueInputSchema).optional()
+}).strict();
 
-export default ClassroomCreateNestedOneWithoutOrdersInputSchema
+export default ClassroomCreateNestedOneWithoutOrdersInputSchema;

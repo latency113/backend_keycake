@@ -2,7 +2,7 @@ import type { Department, Prisma } from "@prisma/client"
 import type z from "zod"
 import type { TypePagination } from "@/types/global/pagination.js"
 import type { DepartmentWhereInputSchema } from "@/types/schema/prisma/index.js"
-import type { DepartmentWithClassrooms } from "@/types/schema/prisma/outputTypeSchemas/DepartmentWithClassroomsSchema.js"
+import type { DepartmentWithClassrooms } from "@/types/schema/prisma/DepartmentWithClassroomsSchema.js"
 
 export type TypeDepartmentWhereInput = {
   where?: z.infer<typeof DepartmentWhereInputSchema>

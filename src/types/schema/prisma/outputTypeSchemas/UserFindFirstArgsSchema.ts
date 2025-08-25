@@ -1,38 +1,38 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { UserIncludeSchema } from "../inputTypeSchemas/UserIncludeSchema"
-import { UserOrderByWithRelationInputSchema } from "../inputTypeSchemas/UserOrderByWithRelationInputSchema"
-import { UserScalarFieldEnumSchema } from "../inputTypeSchemas/UserScalarFieldEnumSchema"
-import { UserWhereInputSchema } from "../inputTypeSchemas/UserWhereInputSchema"
-import { UserWhereUniqueInputSchema } from "../inputTypeSchemas/UserWhereUniqueInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { UserIncludeSchema } from '../inputTypeSchemas/UserIncludeSchema'
+import { UserWhereInputSchema } from '../inputTypeSchemas/UserWhereInputSchema'
+import { UserOrderByWithRelationInputSchema } from '../inputTypeSchemas/UserOrderByWithRelationInputSchema'
+import { UserWhereUniqueInputSchema } from '../inputTypeSchemas/UserWhereUniqueInputSchema'
+import { UserScalarFieldEnumSchema } from '../inputTypeSchemas/UserScalarFieldEnumSchema'
 import { CakeRequestArgsSchema } from "../outputTypeSchemas/CakeRequestArgsSchema"
 import { UserCountOutputTypeArgsSchema } from "../outputTypeSchemas/UserCountOutputTypeArgsSchema"
 // Select schema needs to be in file to prevent circular imports
-// ------------------------------------------------------
+//------------------------------------------------------
 
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
-  _count: z.union([z.boolean(), z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
-  CakeRequest: z.union([z.boolean(), z.lazy(() => CakeRequestArgsSchema)]).optional(),
-  createdAt: z.boolean().optional(),
-  email: z.boolean().optional(),
-  firstname: z.boolean().optional(),
   id: z.boolean().optional(),
+  firstname: z.boolean().optional(),
   lastname: z.boolean().optional(),
-  password: z.boolean().optional(),
-  role: z.boolean().optional(),
-  updatedAt: z.boolean().optional(),
   username: z.boolean().optional(),
+  password: z.boolean().optional(),
+  email: z.boolean().optional(),
+  role: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.object({
-  cursor: UserWhereUniqueInputSchema.optional(),
-  distinct: z.union([UserScalarFieldEnumSchema, UserScalarFieldEnumSchema.array()]).optional(),
-  include: z.lazy(() => UserIncludeSchema).optional(),
-  orderBy: z.union([UserOrderByWithRelationInputSchema.array(), UserOrderByWithRelationInputSchema]).optional(),
   select: UserSelectSchema.optional(),
-  skip: z.number().optional(),
-  take: z.number().optional(),
+  include: z.lazy(() => UserIncludeSchema).optional(),
   where: UserWhereInputSchema.optional(),
-}).strict()
+  orderBy: z.union([ UserOrderByWithRelationInputSchema.array(),UserOrderByWithRelationInputSchema ]).optional(),
+  cursor: UserWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
 
-export default UserFindFirstArgsSchema
+export default UserFindFirstArgsSchema;

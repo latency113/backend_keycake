@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { TeamCountOutputTypeSelectSchema } from "./TeamCountOutputTypeSelectSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { TeamCountOutputTypeSelectSchema } from './TeamCountOutputTypeSelectSchema';
 
 export const TeamCountOutputTypeArgsSchema: z.ZodType<Prisma.TeamCountOutputTypeDefaultArgs> = z.object({
   select: z.lazy(() => TeamCountOutputTypeSelectSchema).nullish(),
-}).strict()
+}).strict();
 
-export default TeamCountOutputTypeSelectSchema
+export default TeamCountOutputTypeSelectSchema;

@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { TeamUncheckedUpdateManyInputSchema } from "../inputTypeSchemas/TeamUncheckedUpdateManyInputSchema"
-import { TeamUpdateManyMutationInputSchema } from "../inputTypeSchemas/TeamUpdateManyMutationInputSchema"
-import { TeamWhereInputSchema } from "../inputTypeSchemas/TeamWhereInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { TeamUpdateManyMutationInputSchema } from '../inputTypeSchemas/TeamUpdateManyMutationInputSchema'
+import { TeamUncheckedUpdateManyInputSchema } from '../inputTypeSchemas/TeamUncheckedUpdateManyInputSchema'
+import { TeamWhereInputSchema } from '../inputTypeSchemas/TeamWhereInputSchema'
 
 export const TeamUpdateManyArgsSchema: z.ZodType<Prisma.TeamUpdateManyArgs> = z.object({
-  data: z.union([TeamUpdateManyMutationInputSchema, TeamUncheckedUpdateManyInputSchema]),
-  limit: z.number().optional(),
+  data: z.union([ TeamUpdateManyMutationInputSchema,TeamUncheckedUpdateManyInputSchema ]),
   where: TeamWhereInputSchema.optional(),
-}).strict()
+  limit: z.number().optional(),
+}).strict() ;
 
-export default TeamUpdateManyArgsSchema
+export default TeamUpdateManyArgsSchema;

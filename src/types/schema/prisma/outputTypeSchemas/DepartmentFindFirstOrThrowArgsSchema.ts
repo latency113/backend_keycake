@@ -1,34 +1,34 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { DepartmentIncludeSchema } from "../inputTypeSchemas/DepartmentIncludeSchema"
-import { DepartmentOrderByWithRelationInputSchema } from "../inputTypeSchemas/DepartmentOrderByWithRelationInputSchema"
-import { DepartmentScalarFieldEnumSchema } from "../inputTypeSchemas/DepartmentScalarFieldEnumSchema"
-import { DepartmentWhereInputSchema } from "../inputTypeSchemas/DepartmentWhereInputSchema"
-import { DepartmentWhereUniqueInputSchema } from "../inputTypeSchemas/DepartmentWhereUniqueInputSchema"
-import { CakeRequestArgsSchema } from "../outputTypeSchemas/CakeRequestArgsSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { DepartmentIncludeSchema } from '../inputTypeSchemas/DepartmentIncludeSchema'
+import { DepartmentWhereInputSchema } from '../inputTypeSchemas/DepartmentWhereInputSchema'
+import { DepartmentOrderByWithRelationInputSchema } from '../inputTypeSchemas/DepartmentOrderByWithRelationInputSchema'
+import { DepartmentWhereUniqueInputSchema } from '../inputTypeSchemas/DepartmentWhereUniqueInputSchema'
+import { DepartmentScalarFieldEnumSchema } from '../inputTypeSchemas/DepartmentScalarFieldEnumSchema'
 import { ClassroomArgsSchema } from "../outputTypeSchemas/ClassroomArgsSchema"
+import { CakeRequestArgsSchema } from "../outputTypeSchemas/CakeRequestArgsSchema"
 import { DepartmentCountOutputTypeArgsSchema } from "../outputTypeSchemas/DepartmentCountOutputTypeArgsSchema"
 // Select schema needs to be in file to prevent circular imports
-// ------------------------------------------------------
+//------------------------------------------------------
 
 export const DepartmentSelectSchema: z.ZodType<Prisma.DepartmentSelect> = z.object({
-  _count: z.union([z.boolean(), z.lazy(() => DepartmentCountOutputTypeArgsSchema)]).optional(),
-  CakeRequest: z.union([z.boolean(), z.lazy(() => CakeRequestArgsSchema)]).optional(),
-  classroom: z.union([z.boolean(), z.lazy(() => ClassroomArgsSchema)]).optional(),
-  group_number: z.boolean().optional(),
   id: z.boolean().optional(),
   name: z.boolean().optional(),
+  group_number: z.boolean().optional(),
+  classroom: z.union([z.boolean(),z.lazy(() => ClassroomArgsSchema)]).optional(),
+  CakeRequest: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => DepartmentCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const DepartmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.DepartmentFindFirstOrThrowArgs> = z.object({
-  cursor: DepartmentWhereUniqueInputSchema.optional(),
-  distinct: z.union([DepartmentScalarFieldEnumSchema, DepartmentScalarFieldEnumSchema.array()]).optional(),
-  include: z.lazy(() => DepartmentIncludeSchema).optional(),
-  orderBy: z.union([DepartmentOrderByWithRelationInputSchema.array(), DepartmentOrderByWithRelationInputSchema]).optional(),
   select: DepartmentSelectSchema.optional(),
-  skip: z.number().optional(),
-  take: z.number().optional(),
+  include: z.lazy(() => DepartmentIncludeSchema).optional(),
   where: DepartmentWhereInputSchema.optional(),
-}).strict()
+  orderBy: z.union([ DepartmentOrderByWithRelationInputSchema.array(),DepartmentOrderByWithRelationInputSchema ]).optional(),
+  cursor: DepartmentWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ DepartmentScalarFieldEnumSchema,DepartmentScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
 
-export default DepartmentFindFirstOrThrowArgsSchema
+export default DepartmentFindFirstOrThrowArgsSchema;

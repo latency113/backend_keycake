@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { UserCreateWithoutCakeRequestInputSchema } from "./UserCreateWithoutCakeRequestInputSchema"
-import { UserUncheckedCreateWithoutCakeRequestInputSchema } from "./UserUncheckedCreateWithoutCakeRequestInputSchema"
-import { UserWhereUniqueInputSchema } from "./UserWhereUniqueInputSchema"
+import { z } from 'zod';
+import { UserWhereUniqueInputSchema } from './UserWhereUniqueInputSchema';
+import { UserCreateWithoutCakeRequestInputSchema } from './UserCreateWithoutCakeRequestInputSchema';
+import { UserUncheckedCreateWithoutCakeRequestInputSchema } from './UserUncheckedCreateWithoutCakeRequestInputSchema';
 
 export const UserCreateOrConnectWithoutCakeRequestInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutCakeRequestInput> = z.object({
-  create: z.union([z.lazy(() => UserCreateWithoutCakeRequestInputSchema), z.lazy(() => UserUncheckedCreateWithoutCakeRequestInputSchema)]),
   where: z.lazy(() => UserWhereUniqueInputSchema),
-}).strict()
+  create: z.union([ z.lazy(() => UserCreateWithoutCakeRequestInputSchema),z.lazy(() => UserUncheckedCreateWithoutCakeRequestInputSchema) ]),
+}).strict();
 
-export default UserCreateOrConnectWithoutCakeRequestInputSchema
+export default UserCreateOrConnectWithoutCakeRequestInputSchema;

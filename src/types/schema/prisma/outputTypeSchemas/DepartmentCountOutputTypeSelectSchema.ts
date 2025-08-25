@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 
 export const DepartmentCountOutputTypeSelectSchema: z.ZodType<Prisma.DepartmentCountOutputTypeSelect> = z.object({
-  CakeRequest: z.boolean().optional(),
   classroom: z.boolean().optional(),
-}).strict()
+  CakeRequest: z.boolean().optional(),
+}).strict();
 
-export default DepartmentCountOutputTypeSelectSchema
+export default DepartmentCountOutputTypeSelectSchema;

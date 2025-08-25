@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { GradeLevelCountOutputTypeSelectSchema } from "./GradeLevelCountOutputTypeSelectSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { GradeLevelCountOutputTypeSelectSchema } from './GradeLevelCountOutputTypeSelectSchema';
 
 export const GradeLevelCountOutputTypeArgsSchema: z.ZodType<Prisma.GradeLevelCountOutputTypeDefaultArgs> = z.object({
   select: z.lazy(() => GradeLevelCountOutputTypeSelectSchema).nullish(),
-}).strict()
+}).strict();
 
-export default GradeLevelCountOutputTypeSelectSchema
+export default GradeLevelCountOutputTypeSelectSchema;

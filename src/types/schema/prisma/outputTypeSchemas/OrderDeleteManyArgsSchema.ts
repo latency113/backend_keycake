@@ -1,10 +1,10 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { OrderWhereInputSchema } from "../inputTypeSchemas/OrderWhereInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { OrderWhereInputSchema } from '../inputTypeSchemas/OrderWhereInputSchema'
 
 export const OrderDeleteManyArgsSchema: z.ZodType<Prisma.OrderDeleteManyArgs> = z.object({
-  limit: z.number().optional(),
   where: OrderWhereInputSchema.optional(),
-}).strict()
+  limit: z.number().optional(),
+}).strict() ;
 
-export default OrderDeleteManyArgsSchema
+export default OrderDeleteManyArgsSchema;

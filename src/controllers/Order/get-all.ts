@@ -1,11 +1,11 @@
-import type { Elysia } from "elysia"
-import z from "zod"
-import { NewError, ParseError } from "@/helper/error.js"
-import DatabaseContext from "@/repositories/prisma.js"
-import { OrderService } from "@/services/index.js"
-import { BaseRequestQuerySchema } from "@/types/global/index.js"
-import { FailResponseSchema } from "@/types/global/response.js"
-import { OrderWithOrderItemsSchema } from "@/types/schema/prisma/index.js"
+import type { Elysia } from "elysia";
+import z from "zod";
+import { NewError, ParseError } from "@/helper/error.js";
+import DatabaseContext from "@/repositories/prisma.js";
+import { OrderService } from "@/services/index.js";
+import { BaseRequestQuerySchema } from "@/types/global/index.js";
+import { FailResponseSchema } from "@/types/global/response.js";
+import { OrderWithOrderItemsSchema } from "@/types/schema/prisma";
 
 const ResponseSchema = z.object({
   data: OrderWithOrderItemsSchema.array(),
@@ -15,68 +15,66 @@ const ResponseSchema = z.object({
     page: z.number().optional(),
     total: z.number().optional(),
   }),
-})
+});
 
 export default (app: Elysia) =>
   app.get(
     "/",
     async ({ query, set }) => {
       try {
-        const parsed = BaseRequestQuerySchema.safeParse(query)
+        const parsed = BaseRequestQuerySchema.safeParse(query);
         if (!parsed.success) {
-          set.status = 400
+          set.status = 400;
           return {
             code: "INVALID_QUERY",
             message: "Invalid query parameters",
             status: 400,
-          }
+          };
         }
-        const { limit, page } = parsed.data
+        const { limit, page } = parsed.data;
         const deps = {
           OrderService: OrderService({ db: DatabaseContext }),
-        }
+        };
         const [result, total] = await Promise.all([
           deps.OrderService.getAll({ pagination: { limit, page } }),
           deps.OrderService.count(),
-        ])
+        ]);
         if (!result)
-          throw NewError("Failed to fetch Order", "FETCH_FAILED", 500)
+          throw NewError("Failed to fetch Order", "FETCH_FAILED", 500);
         const parse = ResponseSchema.safeParse({
-          data: result,
+          data: result.map((order) => ({
+            ...order,
+            order_items: order.orderItems,
+          })),
           message: "Order fetched successfully",
           meta_data: {
             limit,
             page,
             total,
           },
-        })
-        if (!parse.success) {
+        });
+        if (!parse.success)
           throw NewError(
             `Failed to parse response object: ${JSON.stringify(parse.error)}`,
             "RESPONSE_PARSING_FAILED",
-            500,
-          )
-        }
-        set.status = 200
-        return parse.data
-      }
-      catch (error) {
-        console.error("Error fetching OrderType:", error)
-        const err = ParseError(error)
+            500
+          );
+        set.status = 200;
+        return parse.data;
+      } catch (error) {
+        console.error("Error fetching OrderType:", error);
+        const err = ParseError(error);
 
-        set.status = err.status
+        set.status = err.status;
         return {
           code: err.code,
           message: err.message,
           status: err.status,
-        }
+        };
       }
     },
     {
       detail: {
-        params: z.object({
-          id: z.string().min(1, "Order ID is required"),
-        }),
         responses: {
           200: {
             content: {
@@ -109,5 +107,5 @@ export default (app: Elysia) =>
         },
         tags: ["Order"],
       },
-    },
-  )
+    }
+  );

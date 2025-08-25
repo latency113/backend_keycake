@@ -1,21 +1,21 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { DepartmentOrderByWithRelationInputSchema } from "./DepartmentOrderByWithRelationInputSchema"
-import { GradeLevelOrderByWithRelationInputSchema } from "./GradeLevelOrderByWithRelationInputSchema"
-import { OrderOrderByRelationAggregateInputSchema } from "./OrderOrderByRelationAggregateInputSchema"
-import { SortOrderSchema } from "./SortOrderSchema"
-import { TeamOrderByRelationAggregateInputSchema } from "./TeamOrderByRelationAggregateInputSchema"
+import { z } from 'zod';
+import { SortOrderSchema } from './SortOrderSchema';
+import { DepartmentOrderByWithRelationInputSchema } from './DepartmentOrderByWithRelationInputSchema';
+import { GradeLevelOrderByWithRelationInputSchema } from './GradeLevelOrderByWithRelationInputSchema';
+import { TeamOrderByRelationAggregateInputSchema } from './TeamOrderByRelationAggregateInputSchema';
+import { OrderOrderByRelationAggregateInputSchema } from './OrderOrderByRelationAggregateInputSchema';
 
 export const ClassroomOrderByWithRelationInputSchema: z.ZodType<Prisma.ClassroomOrderByWithRelationInput> = z.object({
-  department: z.lazy(() => DepartmentOrderByWithRelationInputSchema).optional(),
-  department_id: z.lazy(() => SortOrderSchema).optional(),
-  grade_level: z.lazy(() => GradeLevelOrderByWithRelationInputSchema).optional(),
-  grade_level_id: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  orders: z.lazy(() => OrderOrderByRelationAggregateInputSchema).optional(),
+  department_id: z.lazy(() => SortOrderSchema).optional(),
+  grade_level_id: z.lazy(() => SortOrderSchema).optional(),
+  department: z.lazy(() => DepartmentOrderByWithRelationInputSchema).optional(),
+  grade_level: z.lazy(() => GradeLevelOrderByWithRelationInputSchema).optional(),
   teams: z.lazy(() => TeamOrderByRelationAggregateInputSchema).optional(),
-}).strict()
+  orders: z.lazy(() => OrderOrderByRelationAggregateInputSchema).optional()
+}).strict();
 
-export default ClassroomOrderByWithRelationInputSchema
+export default ClassroomOrderByWithRelationInputSchema;

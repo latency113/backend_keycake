@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { UserCreateManyInputSchema } from "../inputTypeSchemas/UserCreateManyInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { UserCreateManyInputSchema } from '../inputTypeSchemas/UserCreateManyInputSchema'
 
 export const UserCreateManyArgsSchema: z.ZodType<Prisma.UserCreateManyArgs> = z.object({
-  data: z.union([UserCreateManyInputSchema, UserCreateManyInputSchema.array()]),
-}).strict()
+  data: z.union([ UserCreateManyInputSchema,UserCreateManyInputSchema.array() ]),
+}).strict() ;
 
-export default UserCreateManyArgsSchema
+export default UserCreateManyArgsSchema;

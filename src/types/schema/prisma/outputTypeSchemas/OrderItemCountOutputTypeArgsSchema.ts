@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { OrderItemCountOutputTypeSelectSchema } from "./OrderItemCountOutputTypeSelectSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { OrderItemCountOutputTypeSelectSchema } from './OrderItemCountOutputTypeSelectSchema';
 
 export const OrderItemCountOutputTypeArgsSchema: z.ZodType<Prisma.OrderItemCountOutputTypeDefaultArgs> = z.object({
   select: z.lazy(() => OrderItemCountOutputTypeSelectSchema).nullish(),
-}).strict()
+}).strict();
 
-export default OrderItemCountOutputTypeSelectSchema
+export default OrderItemCountOutputTypeSelectSchema;

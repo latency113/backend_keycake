@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { ClassroomUncheckedUpdateManyInputSchema } from "../inputTypeSchemas/ClassroomUncheckedUpdateManyInputSchema"
-import { ClassroomUpdateManyMutationInputSchema } from "../inputTypeSchemas/ClassroomUpdateManyMutationInputSchema"
-import { ClassroomWhereInputSchema } from "../inputTypeSchemas/ClassroomWhereInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { ClassroomUpdateManyMutationInputSchema } from '../inputTypeSchemas/ClassroomUpdateManyMutationInputSchema'
+import { ClassroomUncheckedUpdateManyInputSchema } from '../inputTypeSchemas/ClassroomUncheckedUpdateManyInputSchema'
+import { ClassroomWhereInputSchema } from '../inputTypeSchemas/ClassroomWhereInputSchema'
 
 export const ClassroomUpdateManyArgsSchema: z.ZodType<Prisma.ClassroomUpdateManyArgs> = z.object({
-  data: z.union([ClassroomUpdateManyMutationInputSchema, ClassroomUncheckedUpdateManyInputSchema]),
-  limit: z.number().optional(),
+  data: z.union([ ClassroomUpdateManyMutationInputSchema,ClassroomUncheckedUpdateManyInputSchema ]),
   where: ClassroomWhereInputSchema.optional(),
-}).strict()
+  limit: z.number().optional(),
+}).strict() ;
 
-export default ClassroomUpdateManyArgsSchema
+export default ClassroomUpdateManyArgsSchema;

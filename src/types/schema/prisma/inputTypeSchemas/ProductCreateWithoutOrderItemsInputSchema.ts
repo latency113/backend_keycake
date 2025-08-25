@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestItemsCreateNestedManyWithoutProductInputSchema } from "./CakeRequestItemsCreateNestedManyWithoutProductInputSchema"
+import { z } from 'zod';
+import { CakeRequestItemsCreateNestedManyWithoutProductInputSchema } from './CakeRequestItemsCreateNestedManyWithoutProductInputSchema';
 
 export const ProductCreateWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductCreateWithoutOrderItemsInput> = z.object({
   id: z.string().optional(),
-  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutProductInputSchema).optional(),
   name: z.string(),
   price: z.number(),
-}).strict()
+  items: z.lazy(() => CakeRequestItemsCreateNestedManyWithoutProductInputSchema).optional()
+}).strict();
 
-export default ProductCreateWithoutOrderItemsInputSchema
+export default ProductCreateWithoutOrderItemsInputSchema;

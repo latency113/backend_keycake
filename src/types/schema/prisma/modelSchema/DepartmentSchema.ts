@@ -1,13 +1,13 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 /////////////////////////////////////////
 // DEPARTMENT SCHEMA
 /////////////////////////////////////////
 
 export const DepartmentSchema = z.object({
-  group_number: z.string(),
   id: z.string(),
   name: z.string(),
+  group_number: z.string(),
 })
 
 export type Department = z.infer<typeof DepartmentSchema>
@@ -30,4 +30,4 @@ export const DepartmentOptionalDefaultsSchema = DepartmentSchema.merge(z.object(
 
 export type DepartmentOptionalDefaults = z.infer<typeof DepartmentOptionalDefaultsSchema>
 
-export default DepartmentSchema
+export default DepartmentSchema;

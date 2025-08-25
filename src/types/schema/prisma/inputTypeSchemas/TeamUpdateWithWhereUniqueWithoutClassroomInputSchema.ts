@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { TeamUncheckedUpdateWithoutClassroomInputSchema } from "./TeamUncheckedUpdateWithoutClassroomInputSchema"
-import { TeamUpdateWithoutClassroomInputSchema } from "./TeamUpdateWithoutClassroomInputSchema"
-import { TeamWhereUniqueInputSchema } from "./TeamWhereUniqueInputSchema"
+import { z } from 'zod';
+import { TeamWhereUniqueInputSchema } from './TeamWhereUniqueInputSchema';
+import { TeamUpdateWithoutClassroomInputSchema } from './TeamUpdateWithoutClassroomInputSchema';
+import { TeamUncheckedUpdateWithoutClassroomInputSchema } from './TeamUncheckedUpdateWithoutClassroomInputSchema';
 
 export const TeamUpdateWithWhereUniqueWithoutClassroomInputSchema: z.ZodType<Prisma.TeamUpdateWithWhereUniqueWithoutClassroomInput> = z.object({
-  data: z.union([z.lazy(() => TeamUpdateWithoutClassroomInputSchema), z.lazy(() => TeamUncheckedUpdateWithoutClassroomInputSchema)]),
   where: z.lazy(() => TeamWhereUniqueInputSchema),
-}).strict()
+  data: z.union([ z.lazy(() => TeamUpdateWithoutClassroomInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutClassroomInputSchema) ]),
+}).strict();
 
-export default TeamUpdateWithWhereUniqueWithoutClassroomInputSchema
+export default TeamUpdateWithWhereUniqueWithoutClassroomInputSchema;

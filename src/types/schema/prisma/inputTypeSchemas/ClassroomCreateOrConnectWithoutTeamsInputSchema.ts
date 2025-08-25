@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { ClassroomCreateWithoutTeamsInputSchema } from "./ClassroomCreateWithoutTeamsInputSchema"
-import { ClassroomUncheckedCreateWithoutTeamsInputSchema } from "./ClassroomUncheckedCreateWithoutTeamsInputSchema"
-import { ClassroomWhereUniqueInputSchema } from "./ClassroomWhereUniqueInputSchema"
+import { z } from 'zod';
+import { ClassroomWhereUniqueInputSchema } from './ClassroomWhereUniqueInputSchema';
+import { ClassroomCreateWithoutTeamsInputSchema } from './ClassroomCreateWithoutTeamsInputSchema';
+import { ClassroomUncheckedCreateWithoutTeamsInputSchema } from './ClassroomUncheckedCreateWithoutTeamsInputSchema';
 
 export const ClassroomCreateOrConnectWithoutTeamsInputSchema: z.ZodType<Prisma.ClassroomCreateOrConnectWithoutTeamsInput> = z.object({
-  create: z.union([z.lazy(() => ClassroomCreateWithoutTeamsInputSchema), z.lazy(() => ClassroomUncheckedCreateWithoutTeamsInputSchema)]),
   where: z.lazy(() => ClassroomWhereUniqueInputSchema),
-}).strict()
+  create: z.union([ z.lazy(() => ClassroomCreateWithoutTeamsInputSchema),z.lazy(() => ClassroomUncheckedCreateWithoutTeamsInputSchema) ]),
+}).strict();
 
-export default ClassroomCreateOrConnectWithoutTeamsInputSchema
+export default ClassroomCreateOrConnectWithoutTeamsInputSchema;

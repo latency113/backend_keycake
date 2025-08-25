@@ -1,13 +1,13 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { DepartmentUncheckedUpdateManyInputSchema } from "../inputTypeSchemas/DepartmentUncheckedUpdateManyInputSchema"
-import { DepartmentUpdateManyMutationInputSchema } from "../inputTypeSchemas/DepartmentUpdateManyMutationInputSchema"
-import { DepartmentWhereInputSchema } from "../inputTypeSchemas/DepartmentWhereInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { DepartmentUpdateManyMutationInputSchema } from '../inputTypeSchemas/DepartmentUpdateManyMutationInputSchema'
+import { DepartmentUncheckedUpdateManyInputSchema } from '../inputTypeSchemas/DepartmentUncheckedUpdateManyInputSchema'
+import { DepartmentWhereInputSchema } from '../inputTypeSchemas/DepartmentWhereInputSchema'
 
 export const DepartmentUpdateManyArgsSchema: z.ZodType<Prisma.DepartmentUpdateManyArgs> = z.object({
-  data: z.union([DepartmentUpdateManyMutationInputSchema, DepartmentUncheckedUpdateManyInputSchema]),
-  limit: z.number().optional(),
+  data: z.union([ DepartmentUpdateManyMutationInputSchema,DepartmentUncheckedUpdateManyInputSchema ]),
   where: DepartmentWhereInputSchema.optional(),
-}).strict()
+  limit: z.number().optional(),
+}).strict() ;
 
-export default DepartmentUpdateManyArgsSchema
+export default DepartmentUpdateManyArgsSchema;

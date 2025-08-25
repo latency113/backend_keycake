@@ -1,10 +1,10 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
+import { z } from 'zod';
 
 export const OrderBook_numberNumberCompoundUniqueInputSchema: z.ZodType<Prisma.OrderBook_numberNumberCompoundUniqueInput> = z.object({
   book_number: z.number(),
-  number: z.number(),
-}).strict()
+  number: z.number()
+}).strict();
 
-export default OrderBook_numberNumberCompoundUniqueInputSchema
+export default OrderBook_numberNumberCompoundUniqueInputSchema;

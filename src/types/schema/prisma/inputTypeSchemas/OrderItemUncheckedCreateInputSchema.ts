@@ -1,19 +1,19 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestItemsUncheckedCreateNestedManyWithoutOrderItemInputSchema } from "./CakeRequestItemsUncheckedCreateNestedManyWithoutOrderItemInputSchema"
+import { z } from 'zod';
+import { CakeRequestItemsUncheckedCreateNestedManyWithoutOrderItemInputSchema } from './CakeRequestItemsUncheckedCreateNestedManyWithoutOrderItemInputSchema';
 
 export const OrderItemUncheckedCreateInputSchema: z.ZodType<Prisma.OrderItemUncheckedCreateInput> = z.object({
-  CakeRequestItems: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutOrderItemInputSchema).optional(),
-  createdAt: z.coerce.date().optional(),
   id: z.string().optional(),
   order_id: z.string(),
-  pound: z.number().int(),
   product_id: z.string(),
+  pound: z.number().int(),
   quantity: z.number().int(),
-  subtotal: z.number(),
   unitPrice: z.number(),
+  subtotal: z.number(),
+  createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-}).strict()
+  CakeRequestItems: z.lazy(() => CakeRequestItemsUncheckedCreateNestedManyWithoutOrderItemInputSchema).optional()
+}).strict();
 
-export default OrderItemUncheckedCreateInputSchema
+export default OrderItemUncheckedCreateInputSchema;

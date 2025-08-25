@@ -1,17 +1,17 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { ProductOrderByWithAggregationInputSchema } from "../inputTypeSchemas/ProductOrderByWithAggregationInputSchema"
-import { ProductScalarFieldEnumSchema } from "../inputTypeSchemas/ProductScalarFieldEnumSchema"
-import { ProductScalarWhereWithAggregatesInputSchema } from "../inputTypeSchemas/ProductScalarWhereWithAggregatesInputSchema"
-import { ProductWhereInputSchema } from "../inputTypeSchemas/ProductWhereInputSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { ProductWhereInputSchema } from '../inputTypeSchemas/ProductWhereInputSchema'
+import { ProductOrderByWithAggregationInputSchema } from '../inputTypeSchemas/ProductOrderByWithAggregationInputSchema'
+import { ProductScalarFieldEnumSchema } from '../inputTypeSchemas/ProductScalarFieldEnumSchema'
+import { ProductScalarWhereWithAggregatesInputSchema } from '../inputTypeSchemas/ProductScalarWhereWithAggregatesInputSchema'
 
 export const ProductGroupByArgsSchema: z.ZodType<Prisma.ProductGroupByArgs> = z.object({
+  where: ProductWhereInputSchema.optional(),
+  orderBy: z.union([ ProductOrderByWithAggregationInputSchema.array(),ProductOrderByWithAggregationInputSchema ]).optional(),
   by: ProductScalarFieldEnumSchema.array(),
   having: ProductScalarWhereWithAggregatesInputSchema.optional(),
-  orderBy: z.union([ProductOrderByWithAggregationInputSchema.array(), ProductOrderByWithAggregationInputSchema]).optional(),
-  skip: z.number().optional(),
   take: z.number().optional(),
-  where: ProductWhereInputSchema.optional(),
-}).strict()
+  skip: z.number().optional(),
+}).strict() ;
 
-export default ProductGroupByArgsSchema
+export default ProductGroupByArgsSchema;

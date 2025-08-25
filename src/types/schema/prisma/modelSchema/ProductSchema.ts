@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 /////////////////////////////////////////
 // PRODUCT SCHEMA
@@ -30,4 +30,4 @@ export const ProductOptionalDefaultsSchema = ProductSchema.merge(z.object({
 
 export type ProductOptionalDefaults = z.infer<typeof ProductOptionalDefaultsSchema>
 
-export default ProductSchema
+export default ProductSchema;

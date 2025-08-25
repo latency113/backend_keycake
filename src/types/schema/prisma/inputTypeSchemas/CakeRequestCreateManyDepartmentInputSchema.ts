@@ -1,16 +1,16 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { RequestStatusSchema } from "./RequestStatusSchema"
+import { z } from 'zod';
+import { RequestStatusSchema } from './RequestStatusSchema';
 
 export const CakeRequestCreateManyDepartmentInputSchema: z.ZodType<Prisma.CakeRequestCreateManyDepartmentInput> = z.object({
-  createdAt: z.coerce.date().optional(),
   id: z.string().optional(),
-  note: z.string().optional().nullable(),
   requestDate: z.coerce.date(),
   status: z.lazy(() => RequestStatusSchema).optional(),
-  updatedAt: z.coerce.date().optional(),
+  note: z.string().optional().nullable(),
   user_id: z.string(),
-}).strict()
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
+}).strict();
 
-export default CakeRequestCreateManyDepartmentInputSchema
+export default CakeRequestCreateManyDepartmentInputSchema;

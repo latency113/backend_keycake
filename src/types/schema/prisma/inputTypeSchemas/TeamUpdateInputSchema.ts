@@ -1,14 +1,14 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { ClassroomUpdateOneRequiredWithoutTeamsNestedInputSchema } from "./ClassroomUpdateOneRequiredWithoutTeamsNestedInputSchema"
-import { OrderUpdateManyWithoutTeamNestedInputSchema } from "./OrderUpdateManyWithoutTeamNestedInputSchema"
-import { StringFieldUpdateOperationsInputSchema } from "./StringFieldUpdateOperationsInputSchema"
+import { z } from 'zod';
+import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
+import { ClassroomUpdateOneRequiredWithoutTeamsNestedInputSchema } from './ClassroomUpdateOneRequiredWithoutTeamsNestedInputSchema';
+import { OrderUpdateManyWithoutTeamNestedInputSchema } from './OrderUpdateManyWithoutTeamNestedInputSchema';
 
 export const TeamUpdateInputSchema: z.ZodType<Prisma.TeamUpdateInput> = z.object({
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   classroom: z.lazy(() => ClassroomUpdateOneRequiredWithoutTeamsNestedInputSchema).optional(),
-  name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-  orders: z.lazy(() => OrderUpdateManyWithoutTeamNestedInputSchema).optional(),
-}).strict()
+  orders: z.lazy(() => OrderUpdateManyWithoutTeamNestedInputSchema).optional()
+}).strict();
 
-export default TeamUpdateInputSchema
+export default TeamUpdateInputSchema;

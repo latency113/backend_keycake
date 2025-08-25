@@ -1,11 +1,11 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
+import { z } from 'zod';
 
 export const DepartmentCreateManyInputSchema: z.ZodType<Prisma.DepartmentCreateManyInput> = z.object({
-  group_number: z.string(),
   id: z.string().optional(),
   name: z.string(),
-}).strict()
+  group_number: z.string()
+}).strict();
 
-export default DepartmentCreateManyInputSchema
+export default DepartmentCreateManyInputSchema;

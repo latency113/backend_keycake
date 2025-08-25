@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 
 export const ProductCountOutputTypeSelectSchema: z.ZodType<Prisma.ProductCountOutputTypeSelect> = z.object({
-  items: z.boolean().optional(),
   orderItems: z.boolean().optional(),
-}).strict()
+  items: z.boolean().optional(),
+}).strict();
 
-export default ProductCountOutputTypeSelectSchema
+export default ProductCountOutputTypeSelectSchema;

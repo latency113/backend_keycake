@@ -1,29 +1,29 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { ClassroomCreateNestedOneWithoutOrdersInputSchema } from "./ClassroomCreateNestedOneWithoutOrdersInputSchema"
-import { OrderItemCreateNestedManyWithoutOrderInputSchema } from "./OrderItemCreateNestedManyWithoutOrderInputSchema"
-import { OrderStatusSchema } from "./OrderStatusSchema"
-import { TeamCreateNestedOneWithoutOrdersInputSchema } from "./TeamCreateNestedOneWithoutOrdersInputSchema"
+import { z } from 'zod';
+import { OrderStatusSchema } from './OrderStatusSchema';
+import { OrderItemCreateNestedManyWithoutOrderInputSchema } from './OrderItemCreateNestedManyWithoutOrderInputSchema';
+import { TeamCreateNestedOneWithoutOrdersInputSchema } from './TeamCreateNestedOneWithoutOrdersInputSchema';
+import { ClassroomCreateNestedOneWithoutOrdersInputSchema } from './ClassroomCreateNestedOneWithoutOrdersInputSchema';
 
 export const OrderCreateInputSchema: z.ZodType<Prisma.OrderCreateInput> = z.object({
-  advisor: z.string(),
-  book_number: z.number().int(),
-  classroom: z.lazy(() => ClassroomCreateNestedOneWithoutOrdersInputSchema).optional(),
-  createdAt: z.coerce.date().optional(),
-  customerName: z.string(),
-  deposit: z.number().int(),
-  depository: z.string().optional().nullable(),
   id: z.string().optional(),
-  number: z.number().int(),
+  customerName: z.string(),
   orderDate: z.coerce.date(),
-  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
+  totalPrice: z.number(),
+  book_number: z.number().int(),
+  number: z.number().int(),
   phone: z.string(),
   pickup_date: z.coerce.date(),
+  depository: z.string().optional().nullable(),
+  deposit: z.number().int(),
+  advisor: z.string(),
   status: z.lazy(() => OrderStatusSchema).optional(),
-  team: z.lazy(() => TeamCreateNestedOneWithoutOrdersInputSchema).optional(),
-  totalPrice: z.number(),
+  createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-}).strict()
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
+  team: z.lazy(() => TeamCreateNestedOneWithoutOrdersInputSchema).optional(),
+  classroom: z.lazy(() => ClassroomCreateNestedOneWithoutOrdersInputSchema).optional()
+}).strict();
 
-export default OrderCreateInputSchema
+export default OrderCreateInputSchema;

@@ -1,6 +1,6 @@
 import type { Department, Prisma, PrismaClient } from "@prisma/client"
 import type { TypeDepartmentService, TypeDepartmentWhereInput } from "./Department.type.js"
-import type { DepartmentWithClassrooms } from "@/types/schema/prisma/outputTypeSchemas/DepartmentWithClassroomsSchema.js"
+import type { DepartmentWithClassrooms } from "@/types/schema/prisma/DepartmentWithClassroomsSchema.js"
 import type { GradeLevelWithClassRoomCount } from "@/types/schema/prisma/outputTypeSchemas/GradeLevelWithClassRoomCountSchema.js"
 
 export type DepartmentDependencies = {

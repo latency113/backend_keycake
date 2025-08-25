@@ -1,14 +1,14 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 /////////////////////////////////////////
 // CLASSROOM SCHEMA
 /////////////////////////////////////////
 
 export const ClassroomSchema = z.object({
-  department_id: z.string(),
-  grade_level_id: z.string(),
   id: z.string(),
   name: z.string(),
+  department_id: z.string(),
+  grade_level_id: z.string(),
 })
 
 export type Classroom = z.infer<typeof ClassroomSchema>
@@ -31,4 +31,4 @@ export const ClassroomOptionalDefaultsSchema = ClassroomSchema.merge(z.object({
 
 export type ClassroomOptionalDefaults = z.infer<typeof ClassroomOptionalDefaultsSchema>
 
-export default ClassroomSchema
+export default ClassroomSchema;

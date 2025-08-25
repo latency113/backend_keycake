@@ -1,11 +1,11 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { OrderIncludeSchema } from "../inputTypeSchemas/OrderIncludeSchema"
-import { OrderSelectSchema } from "../inputTypeSchemas/OrderSelectSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { OrderSelectSchema } from '../inputTypeSchemas/OrderSelectSchema';
+import { OrderIncludeSchema } from '../inputTypeSchemas/OrderIncludeSchema';
 
 export const OrderArgsSchema: z.ZodType<Prisma.OrderDefaultArgs> = z.object({
-  include: z.lazy(() => OrderIncludeSchema).optional(),
   select: z.lazy(() => OrderSelectSchema).optional(),
-}).strict()
+  include: z.lazy(() => OrderIncludeSchema).optional(),
+}).strict();
 
-export default OrderArgsSchema
+export default OrderArgsSchema;

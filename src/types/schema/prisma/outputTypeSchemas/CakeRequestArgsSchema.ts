@@ -1,11 +1,11 @@
-import type { Prisma } from "@prisma/client"
-import { z } from "zod"
-import { CakeRequestIncludeSchema } from "../inputTypeSchemas/CakeRequestIncludeSchema"
-import { CakeRequestSelectSchema } from "../inputTypeSchemas/CakeRequestSelectSchema"
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { CakeRequestSelectSchema } from '../inputTypeSchemas/CakeRequestSelectSchema';
+import { CakeRequestIncludeSchema } from '../inputTypeSchemas/CakeRequestIncludeSchema';
 
 export const CakeRequestArgsSchema: z.ZodType<Prisma.CakeRequestDefaultArgs> = z.object({
-  include: z.lazy(() => CakeRequestIncludeSchema).optional(),
   select: z.lazy(() => CakeRequestSelectSchema).optional(),
-}).strict()
+  include: z.lazy(() => CakeRequestIncludeSchema).optional(),
+}).strict();
 
-export default CakeRequestArgsSchema
+export default CakeRequestArgsSchema;

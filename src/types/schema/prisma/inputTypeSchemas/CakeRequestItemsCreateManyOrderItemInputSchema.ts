@@ -1,12 +1,12 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
+import { z } from 'zod';
 
 export const CakeRequestItemsCreateManyOrderItemInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyOrderItemInput> = z.object({
   id: z.string().optional(),
-  product_id: z.string(),
-  quantity: z.number().int(),
   request_id: z.string(),
-}).strict()
+  product_id: z.string(),
+  quantity: z.number().int()
+}).strict();
 
-export default CakeRequestItemsCreateManyOrderItemInputSchema
+export default CakeRequestItemsCreateManyOrderItemInputSchema;

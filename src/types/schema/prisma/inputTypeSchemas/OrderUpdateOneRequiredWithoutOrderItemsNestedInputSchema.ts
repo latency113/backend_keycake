@@ -1,21 +1,21 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { OrderCreateOrConnectWithoutOrderItemsInputSchema } from "./OrderCreateOrConnectWithoutOrderItemsInputSchema"
-import { OrderCreateWithoutOrderItemsInputSchema } from "./OrderCreateWithoutOrderItemsInputSchema"
-import { OrderUncheckedCreateWithoutOrderItemsInputSchema } from "./OrderUncheckedCreateWithoutOrderItemsInputSchema"
-import { OrderUncheckedUpdateWithoutOrderItemsInputSchema } from "./OrderUncheckedUpdateWithoutOrderItemsInputSchema"
-import { OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema } from "./OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema"
-import { OrderUpdateWithoutOrderItemsInputSchema } from "./OrderUpdateWithoutOrderItemsInputSchema"
-import { OrderUpsertWithoutOrderItemsInputSchema } from "./OrderUpsertWithoutOrderItemsInputSchema"
-import { OrderWhereUniqueInputSchema } from "./OrderWhereUniqueInputSchema"
+import { z } from 'zod';
+import { OrderCreateWithoutOrderItemsInputSchema } from './OrderCreateWithoutOrderItemsInputSchema';
+import { OrderUncheckedCreateWithoutOrderItemsInputSchema } from './OrderUncheckedCreateWithoutOrderItemsInputSchema';
+import { OrderCreateOrConnectWithoutOrderItemsInputSchema } from './OrderCreateOrConnectWithoutOrderItemsInputSchema';
+import { OrderUpsertWithoutOrderItemsInputSchema } from './OrderUpsertWithoutOrderItemsInputSchema';
+import { OrderWhereUniqueInputSchema } from './OrderWhereUniqueInputSchema';
+import { OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema } from './OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema';
+import { OrderUpdateWithoutOrderItemsInputSchema } from './OrderUpdateWithoutOrderItemsInputSchema';
+import { OrderUncheckedUpdateWithoutOrderItemsInputSchema } from './OrderUncheckedUpdateWithoutOrderItemsInputSchema';
 
 export const OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema: z.ZodType<Prisma.OrderUpdateOneRequiredWithoutOrderItemsNestedInput> = z.object({
-  connect: z.lazy(() => OrderWhereUniqueInputSchema).optional(),
+  create: z.union([ z.lazy(() => OrderCreateWithoutOrderItemsInputSchema),z.lazy(() => OrderUncheckedCreateWithoutOrderItemsInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => OrderCreateOrConnectWithoutOrderItemsInputSchema).optional(),
-  create: z.union([z.lazy(() => OrderCreateWithoutOrderItemsInputSchema), z.lazy(() => OrderUncheckedCreateWithoutOrderItemsInputSchema)]).optional(),
-  update: z.union([z.lazy(() => OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema), z.lazy(() => OrderUpdateWithoutOrderItemsInputSchema), z.lazy(() => OrderUncheckedUpdateWithoutOrderItemsInputSchema)]).optional(),
   upsert: z.lazy(() => OrderUpsertWithoutOrderItemsInputSchema).optional(),
-}).strict()
+  connect: z.lazy(() => OrderWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => OrderUpdateToOneWithWhereWithoutOrderItemsInputSchema),z.lazy(() => OrderUpdateWithoutOrderItemsInputSchema),z.lazy(() => OrderUncheckedUpdateWithoutOrderItemsInputSchema) ]).optional(),
+}).strict();
 
-export default OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema
+export default OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema;

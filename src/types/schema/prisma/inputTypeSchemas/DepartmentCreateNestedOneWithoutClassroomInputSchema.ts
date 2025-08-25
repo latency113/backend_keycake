@@ -1,15 +1,15 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { DepartmentCreateOrConnectWithoutClassroomInputSchema } from "./DepartmentCreateOrConnectWithoutClassroomInputSchema"
-import { DepartmentCreateWithoutClassroomInputSchema } from "./DepartmentCreateWithoutClassroomInputSchema"
-import { DepartmentUncheckedCreateWithoutClassroomInputSchema } from "./DepartmentUncheckedCreateWithoutClassroomInputSchema"
-import { DepartmentWhereUniqueInputSchema } from "./DepartmentWhereUniqueInputSchema"
+import { z } from 'zod';
+import { DepartmentCreateWithoutClassroomInputSchema } from './DepartmentCreateWithoutClassroomInputSchema';
+import { DepartmentUncheckedCreateWithoutClassroomInputSchema } from './DepartmentUncheckedCreateWithoutClassroomInputSchema';
+import { DepartmentCreateOrConnectWithoutClassroomInputSchema } from './DepartmentCreateOrConnectWithoutClassroomInputSchema';
+import { DepartmentWhereUniqueInputSchema } from './DepartmentWhereUniqueInputSchema';
 
 export const DepartmentCreateNestedOneWithoutClassroomInputSchema: z.ZodType<Prisma.DepartmentCreateNestedOneWithoutClassroomInput> = z.object({
-  connect: z.lazy(() => DepartmentWhereUniqueInputSchema).optional(),
+  create: z.union([ z.lazy(() => DepartmentCreateWithoutClassroomInputSchema),z.lazy(() => DepartmentUncheckedCreateWithoutClassroomInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => DepartmentCreateOrConnectWithoutClassroomInputSchema).optional(),
-  create: z.union([z.lazy(() => DepartmentCreateWithoutClassroomInputSchema), z.lazy(() => DepartmentUncheckedCreateWithoutClassroomInputSchema)]).optional(),
-}).strict()
+  connect: z.lazy(() => DepartmentWhereUniqueInputSchema).optional()
+}).strict();
 
-export default DepartmentCreateNestedOneWithoutClassroomInputSchema
+export default DepartmentCreateNestedOneWithoutClassroomInputSchema;

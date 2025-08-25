@@ -1,23 +1,23 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { NestedStringNullableFilterSchema } from "./NestedStringNullableFilterSchema"
-import { QueryModeSchema } from "./QueryModeSchema"
+import { z } from 'zod';
+import { QueryModeSchema } from './QueryModeSchema';
+import { NestedStringNullableFilterSchema } from './NestedStringNullableFilterSchema';
 
 export const StringNullableFilterSchema: z.ZodType<Prisma.StringNullableFilter> = z.object({
-  contains: z.string().optional(),
-  endsWith: z.string().optional(),
   equals: z.string().optional().nullable(),
-  gt: z.string().optional(),
-  gte: z.string().optional(),
   in: z.string().array().optional().nullable(),
-  isSet: z.boolean().optional(),
+  notIn: z.string().array().optional().nullable(),
   lt: z.string().optional(),
   lte: z.string().optional(),
-  mode: z.lazy(() => QueryModeSchema).optional(),
-  not: z.union([z.string(), z.lazy(() => NestedStringNullableFilterSchema)]).optional().nullable(),
-  notIn: z.string().array().optional().nullable(),
+  gt: z.string().optional(),
+  gte: z.string().optional(),
+  contains: z.string().optional(),
   startsWith: z.string().optional(),
-}).strict()
+  endsWith: z.string().optional(),
+  mode: z.lazy(() => QueryModeSchema).optional(),
+  not: z.union([ z.string(),z.lazy(() => NestedStringNullableFilterSchema) ]).optional().nullable(),
+  isSet: z.boolean().optional()
+}).strict();
 
-export default StringNullableFilterSchema
+export default StringNullableFilterSchema;

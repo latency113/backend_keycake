@@ -1,18 +1,18 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { NestedEnumOrderStatusFilterSchema } from "./NestedEnumOrderStatusFilterSchema"
-import { NestedIntFilterSchema } from "./NestedIntFilterSchema"
-import { OrderStatusSchema } from "./OrderStatusSchema"
+import { z } from 'zod';
+import { OrderStatusSchema } from './OrderStatusSchema';
+import { NestedIntFilterSchema } from './NestedIntFilterSchema';
+import { NestedEnumOrderStatusFilterSchema } from './NestedEnumOrderStatusFilterSchema';
 
 export const NestedEnumOrderStatusWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumOrderStatusWithAggregatesFilter> = z.object({
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _max: z.lazy(() => NestedEnumOrderStatusFilterSchema).optional(),
-  _min: z.lazy(() => NestedEnumOrderStatusFilterSchema).optional(),
   equals: z.lazy(() => OrderStatusSchema).optional(),
   in: z.lazy(() => OrderStatusSchema).array().optional(),
-  not: z.union([z.lazy(() => OrderStatusSchema), z.lazy(() => NestedEnumOrderStatusWithAggregatesFilterSchema)]).optional(),
   notIn: z.lazy(() => OrderStatusSchema).array().optional(),
-}).strict()
+  not: z.union([ z.lazy(() => OrderStatusSchema),z.lazy(() => NestedEnumOrderStatusWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumOrderStatusFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumOrderStatusFilterSchema).optional()
+}).strict();
 
-export default NestedEnumOrderStatusWithAggregatesFilterSchema
+export default NestedEnumOrderStatusWithAggregatesFilterSchema;

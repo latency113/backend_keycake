@@ -1,15 +1,15 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { TeamCreateOrConnectWithoutOrdersInputSchema } from "./TeamCreateOrConnectWithoutOrdersInputSchema"
-import { TeamCreateWithoutOrdersInputSchema } from "./TeamCreateWithoutOrdersInputSchema"
-import { TeamUncheckedCreateWithoutOrdersInputSchema } from "./TeamUncheckedCreateWithoutOrdersInputSchema"
-import { TeamWhereUniqueInputSchema } from "./TeamWhereUniqueInputSchema"
+import { z } from 'zod';
+import { TeamCreateWithoutOrdersInputSchema } from './TeamCreateWithoutOrdersInputSchema';
+import { TeamUncheckedCreateWithoutOrdersInputSchema } from './TeamUncheckedCreateWithoutOrdersInputSchema';
+import { TeamCreateOrConnectWithoutOrdersInputSchema } from './TeamCreateOrConnectWithoutOrdersInputSchema';
+import { TeamWhereUniqueInputSchema } from './TeamWhereUniqueInputSchema';
 
 export const TeamCreateNestedOneWithoutOrdersInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutOrdersInput> = z.object({
-  connect: z.lazy(() => TeamWhereUniqueInputSchema).optional(),
+  create: z.union([ z.lazy(() => TeamCreateWithoutOrdersInputSchema),z.lazy(() => TeamUncheckedCreateWithoutOrdersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutOrdersInputSchema).optional(),
-  create: z.union([z.lazy(() => TeamCreateWithoutOrdersInputSchema), z.lazy(() => TeamUncheckedCreateWithoutOrdersInputSchema)]).optional(),
-}).strict()
+  connect: z.lazy(() => TeamWhereUniqueInputSchema).optional()
+}).strict();
 
-export default TeamCreateNestedOneWithoutOrdersInputSchema
+export default TeamCreateNestedOneWithoutOrdersInputSchema;

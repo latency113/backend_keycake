@@ -1,26 +1,26 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema } from "./OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema"
-import { OrderStatusSchema } from "./OrderStatusSchema"
+import { z } from 'zod';
+import { OrderStatusSchema } from './OrderStatusSchema';
+import { OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema } from './OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema';
 
 export const OrderUncheckedCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderUncheckedCreateWithoutTeamInput> = z.object({
-  advisor: z.string(),
-  book_number: z.number().int(),
-  classroom_id: z.string().optional().nullable(),
-  createdAt: z.coerce.date().optional(),
-  customerName: z.string(),
-  deposit: z.number().int(),
-  depository: z.string().optional().nullable(),
   id: z.string().optional(),
-  number: z.number().int(),
+  customerName: z.string(),
+  classroom_id: z.string().optional().nullable(),
   orderDate: z.coerce.date(),
-  orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema).optional(),
+  totalPrice: z.number(),
+  book_number: z.number().int(),
+  number: z.number().int(),
   phone: z.string(),
   pickup_date: z.coerce.date(),
+  depository: z.string().optional().nullable(),
+  deposit: z.number().int(),
+  advisor: z.string(),
   status: z.lazy(() => OrderStatusSchema).optional(),
-  totalPrice: z.number(),
+  createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-}).strict()
+  orderItems: z.lazy(() => OrderItemUncheckedCreateNestedManyWithoutOrderInputSchema).optional()
+}).strict();
 
-export default OrderUncheckedCreateWithoutTeamInputSchema
+export default OrderUncheckedCreateWithoutTeamInputSchema;

@@ -1,23 +1,23 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from '@prisma/client';
 
-import { z } from "zod"
-import { CakeRequestItemsOrderByRelationAggregateInputSchema } from "./CakeRequestItemsOrderByRelationAggregateInputSchema"
-import { DepartmentOrderByWithRelationInputSchema } from "./DepartmentOrderByWithRelationInputSchema"
-import { SortOrderSchema } from "./SortOrderSchema"
-import { UserOrderByWithRelationInputSchema } from "./UserOrderByWithRelationInputSchema"
+import { z } from 'zod';
+import { SortOrderSchema } from './SortOrderSchema';
+import { DepartmentOrderByWithRelationInputSchema } from './DepartmentOrderByWithRelationInputSchema';
+import { UserOrderByWithRelationInputSchema } from './UserOrderByWithRelationInputSchema';
+import { CakeRequestItemsOrderByRelationAggregateInputSchema } from './CakeRequestItemsOrderByRelationAggregateInputSchema';
 
 export const CakeRequestOrderByWithRelationInputSchema: z.ZodType<Prisma.CakeRequestOrderByWithRelationInput> = z.object({
-  createdAt: z.lazy(() => SortOrderSchema).optional(),
-  department: z.lazy(() => DepartmentOrderByWithRelationInputSchema).optional(),
-  department_id: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
-  items: z.lazy(() => CakeRequestItemsOrderByRelationAggregateInputSchema).optional(),
-  note: z.lazy(() => SortOrderSchema).optional(),
   requestDate: z.lazy(() => SortOrderSchema).optional(),
   status: z.lazy(() => SortOrderSchema).optional(),
-  updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  note: z.lazy(() => SortOrderSchema).optional(),
   user_id: z.lazy(() => SortOrderSchema).optional(),
-}).strict()
+  department_id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  department: z.lazy(() => DepartmentOrderByWithRelationInputSchema).optional(),
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  items: z.lazy(() => CakeRequestItemsOrderByRelationAggregateInputSchema).optional()
+}).strict();
 
-export default CakeRequestOrderByWithRelationInputSchema
+export default CakeRequestOrderByWithRelationInputSchema;
