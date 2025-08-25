@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { TeamWhereUniqueInputSchema } from './TeamWhereUniqueInputSchema';
-import { TeamUpdateWithoutClassroomInputSchema } from './TeamUpdateWithoutClassroomInputSchema';
-import { TeamUncheckedUpdateWithoutClassroomInputSchema } from './TeamUncheckedUpdateWithoutClassroomInputSchema';
-import { TeamCreateWithoutClassroomInputSchema } from './TeamCreateWithoutClassroomInputSchema';
-import { TeamUncheckedCreateWithoutClassroomInputSchema } from './TeamUncheckedCreateWithoutClassroomInputSchema';
+import { z } from "zod"
+import { TeamCreateWithoutClassroomInputSchema } from "./TeamCreateWithoutClassroomInputSchema"
+import { TeamUncheckedCreateWithoutClassroomInputSchema } from "./TeamUncheckedCreateWithoutClassroomInputSchema"
+import { TeamUncheckedUpdateWithoutClassroomInputSchema } from "./TeamUncheckedUpdateWithoutClassroomInputSchema"
+import { TeamUpdateWithoutClassroomInputSchema } from "./TeamUpdateWithoutClassroomInputSchema"
+import { TeamWhereUniqueInputSchema } from "./TeamWhereUniqueInputSchema"
 
 export const TeamUpsertWithWhereUniqueWithoutClassroomInputSchema: z.ZodType<Prisma.TeamUpsertWithWhereUniqueWithoutClassroomInput> = z.object({
+  create: z.union([z.lazy(() => TeamCreateWithoutClassroomInputSchema), z.lazy(() => TeamUncheckedCreateWithoutClassroomInputSchema)]),
+  update: z.union([z.lazy(() => TeamUpdateWithoutClassroomInputSchema), z.lazy(() => TeamUncheckedUpdateWithoutClassroomInputSchema)]),
   where: z.lazy(() => TeamWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => TeamUpdateWithoutClassroomInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutClassroomInputSchema) ]),
-  create: z.union([ z.lazy(() => TeamCreateWithoutClassroomInputSchema),z.lazy(() => TeamUncheckedCreateWithoutClassroomInputSchema) ]),
-}).strict();
+}).strict()
 
-export default TeamUpsertWithWhereUniqueWithoutClassroomInputSchema;
+export default TeamUpsertWithWhereUniqueWithoutClassroomInputSchema

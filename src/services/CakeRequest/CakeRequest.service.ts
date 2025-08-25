@@ -69,8 +69,8 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
           data,
           include: {
             department: true,
-            user: true,
             items: true,
+            user: true,
           },
         })
         console.log(`[CakeRequestService] onCreate completed, created id: ${result.id}`)
@@ -98,12 +98,12 @@ export function CakeRequestService({ db }: CakeRequestDependencies) {
       try {
         const result = await db.cakeRequest.update({
           data,
-          where: { id },
           include: {
             department: true,
-            user: true,
             items: true,
+            user: true,
           },
+          where: { id },
         })
         console.log(`[CakeRequestService] onUpdate completed for id: ${id}`)
         return result

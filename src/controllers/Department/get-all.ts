@@ -2,13 +2,13 @@ import type { Elysia } from "elysia"
 import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { BranchService } from "@/services/index.js"
+import { DepartmentService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { BranchWithRoomsSchema } from "@/types/schema/prisma/index.js"
+import { DepartmentWithClassroomsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
-  data: BranchWithRoomsSchema.array(),
+  data: DepartmentWithClassroomsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),
@@ -33,17 +33,17 @@ export default (app: Elysia) =>
         }
         const { limit, page } = parsed.data
         const deps = {
-          BranchService: BranchService({ db: DatabaseContext }),
+          DepartmentService: DepartmentService({ db: DatabaseContext }),
         }
         const [result, total] = await Promise.all([
-          deps.BranchService.getAll({ pagination: { limit, page } }),
-          deps.BranchService.count(),
+          deps.DepartmentService.getAll({ pagination: { limit, page } }),
+          deps.DepartmentService.count(),
         ])
         if (!result)
-          throw NewError("Failed to fetch Branch", "FETCH_FAILED", 500)
+          throw NewError("Failed to fetch Department", "FETCH_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Branch fetched successfully",
+          message: "Department fetched successfully",
           meta_data: {
             limit,
             page,
@@ -61,7 +61,7 @@ export default (app: Elysia) =>
         return parse.data
       }
       catch (error) {
-        console.error("Error fetching BranchType:", error)
+        console.error("Error fetching DepartmentType:", error)
         const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
@@ -90,7 +90,7 @@ export default (app: Elysia) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Branch fetch success",
+            description: "Department fetch success",
           },
           500: {
             content: {
@@ -98,7 +98,7 @@ export default (app: Elysia) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Branch fetch fail",
+            description: "Department fetch fail",
           },
         },
         tags: ["Department"],

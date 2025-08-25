@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { ProductWhereInputSchema } from './ProductWhereInputSchema';
-import { ProductUpdateWithoutOrderItemsInputSchema } from './ProductUpdateWithoutOrderItemsInputSchema';
-import { ProductUncheckedUpdateWithoutOrderItemsInputSchema } from './ProductUncheckedUpdateWithoutOrderItemsInputSchema';
+import { z } from "zod"
+import { ProductUncheckedUpdateWithoutOrderItemsInputSchema } from "./ProductUncheckedUpdateWithoutOrderItemsInputSchema"
+import { ProductUpdateWithoutOrderItemsInputSchema } from "./ProductUpdateWithoutOrderItemsInputSchema"
+import { ProductWhereInputSchema } from "./ProductWhereInputSchema"
 
 export const ProductUpdateToOneWithWhereWithoutOrderItemsInputSchema: z.ZodType<Prisma.ProductUpdateToOneWithWhereWithoutOrderItemsInput> = z.object({
+  data: z.union([z.lazy(() => ProductUpdateWithoutOrderItemsInputSchema), z.lazy(() => ProductUncheckedUpdateWithoutOrderItemsInputSchema)]),
   where: z.lazy(() => ProductWhereInputSchema).optional(),
-  data: z.union([ z.lazy(() => ProductUpdateWithoutOrderItemsInputSchema),z.lazy(() => ProductUncheckedUpdateWithoutOrderItemsInputSchema) ]),
-}).strict();
+}).strict()
 
-export default ProductUpdateToOneWithWhereWithoutOrderItemsInputSchema;
+export default ProductUpdateToOneWithWhereWithoutOrderItemsInputSchema

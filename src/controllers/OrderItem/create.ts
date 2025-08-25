@@ -67,8 +67,8 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 order_id: "",
-                product_id: "",
                 pound: 0,
+                product_id: "",
                 quantity: 0,
                 subtotal: 0,
                 unitPrice: 0,

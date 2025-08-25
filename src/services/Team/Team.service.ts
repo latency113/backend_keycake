@@ -24,7 +24,7 @@ export function TeamService({ db }: TeamDependencies) {
       try {
         const result = await db.team.findMany({
           include: {
-            room: true,
+            classroom: true,
           },
           skip: (param?.pagination?.page || 0) * (param?.pagination?.limit || 10),
           take: param?.pagination?.limit,
@@ -41,7 +41,7 @@ export function TeamService({ db }: TeamDependencies) {
     async getById(id: string): Promise<Team | null> {
       console.log(`[TeamService] getById called with id: ${id}`)
       try {
-        const result = await db.team.findFirst({ include: { room: true }, where: { id } })
+        const result = await db.team.findFirst({ include: { classroom: true }, where: { id } })
         console.log(`[TeamService] getById completed, found:`, !!result)
         return result
       }
@@ -53,7 +53,7 @@ export function TeamService({ db }: TeamDependencies) {
     async getOne(param: TypeTeamWhereInput["where"]): Promise<Team | null> {
       console.log(`[TeamService] getOne called with param:`, param)
       try {
-        const result = await db.team.findFirst({ include: { class: true }, where: param })
+        const result = await db.team.findFirst({ include: { classroom: true }, where: param })
         console.log(`[TeamService] getOne completed, found:`, !!result)
         return result
       }

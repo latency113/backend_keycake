@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
-import { CakeRequestUncheckedUpdateManyWithoutDepartmentNestedInputSchema } from './CakeRequestUncheckedUpdateManyWithoutDepartmentNestedInputSchema';
+import { z } from "zod"
+import { CakeRequestUncheckedUpdateManyWithoutDepartmentNestedInputSchema } from "./CakeRequestUncheckedUpdateManyWithoutDepartmentNestedInputSchema"
+import { StringFieldUpdateOperationsInputSchema } from "./StringFieldUpdateOperationsInputSchema"
 
 export const DepartmentUncheckedUpdateWithoutClassroomInputSchema: z.ZodType<Prisma.DepartmentUncheckedUpdateWithoutClassroomInput> = z.object({
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  group_number: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  CakeRequest: z.lazy(() => CakeRequestUncheckedUpdateManyWithoutDepartmentNestedInputSchema).optional()
-}).strict();
+  CakeRequest: z.lazy(() => CakeRequestUncheckedUpdateManyWithoutDepartmentNestedInputSchema).optional(),
+  group_number: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
+  name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
+}).strict()
 
-export default DepartmentUncheckedUpdateWithoutClassroomInputSchema;
+export default DepartmentUncheckedUpdateWithoutClassroomInputSchema

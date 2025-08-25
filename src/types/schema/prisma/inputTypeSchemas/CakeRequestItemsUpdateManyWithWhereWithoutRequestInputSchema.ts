@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { CakeRequestItemsScalarWhereInputSchema } from './CakeRequestItemsScalarWhereInputSchema';
-import { CakeRequestItemsUpdateManyMutationInputSchema } from './CakeRequestItemsUpdateManyMutationInputSchema';
-import { CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema } from './CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema';
+import { z } from "zod"
+import { CakeRequestItemsScalarWhereInputSchema } from "./CakeRequestItemsScalarWhereInputSchema"
+import { CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema } from "./CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema"
+import { CakeRequestItemsUpdateManyMutationInputSchema } from "./CakeRequestItemsUpdateManyMutationInputSchema"
 
 export const CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsUpdateManyWithWhereWithoutRequestInput> = z.object({
+  data: z.union([z.lazy(() => CakeRequestItemsUpdateManyMutationInputSchema), z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema)]),
   where: z.lazy(() => CakeRequestItemsScalarWhereInputSchema),
-  data: z.union([ z.lazy(() => CakeRequestItemsUpdateManyMutationInputSchema),z.lazy(() => CakeRequestItemsUncheckedUpdateManyWithoutRequestInputSchema) ]),
-}).strict();
+}).strict()
 
-export default CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema;
+export default CakeRequestItemsUpdateManyWithWhereWithoutRequestInputSchema

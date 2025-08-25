@@ -1,21 +1,21 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { ClassroomCountOutputTypeArgsSchema } from "../outputTypeSchemas/ClassroomCountOutputTypeArgsSchema"
 import { DepartmentArgsSchema } from "../outputTypeSchemas/DepartmentArgsSchema"
 import { GradeLevelArgsSchema } from "../outputTypeSchemas/GradeLevelArgsSchema"
-import { TeamArgsSchema } from "../outputTypeSchemas/TeamArgsSchema"
 import { OrderArgsSchema } from "../outputTypeSchemas/OrderArgsSchema"
-import { ClassroomCountOutputTypeArgsSchema } from "../outputTypeSchemas/ClassroomCountOutputTypeArgsSchema"
+import { TeamArgsSchema } from "../outputTypeSchemas/TeamArgsSchema"
 
 export const ClassroomSelectSchema: z.ZodType<Prisma.ClassroomSelect> = z.object({
+  _count: z.union([z.boolean(), z.lazy(() => ClassroomCountOutputTypeArgsSchema)]).optional(),
+  department: z.union([z.boolean(), z.lazy(() => DepartmentArgsSchema)]).optional(),
+  department_id: z.boolean().optional(),
+  grade_level: z.union([z.boolean(), z.lazy(() => GradeLevelArgsSchema)]).optional(),
+  grade_level_id: z.boolean().optional(),
   id: z.boolean().optional(),
   name: z.boolean().optional(),
-  department_id: z.boolean().optional(),
-  grade_level_id: z.boolean().optional(),
-  department: z.union([z.boolean(),z.lazy(() => DepartmentArgsSchema)]).optional(),
-  grade_level: z.union([z.boolean(),z.lazy(() => GradeLevelArgsSchema)]).optional(),
-  teams: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
-  orders: z.union([z.boolean(),z.lazy(() => OrderArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => ClassroomCountOutputTypeArgsSchema)]).optional(),
+  orders: z.union([z.boolean(), z.lazy(() => OrderArgsSchema)]).optional(),
+  teams: z.union([z.boolean(), z.lazy(() => TeamArgsSchema)]).optional(),
 }).strict()
 
-export default ClassroomSelectSchema;
+export default ClassroomSelectSchema

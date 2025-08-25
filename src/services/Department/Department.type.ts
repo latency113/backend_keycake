@@ -1,16 +1,13 @@
 import type { Department, Prisma } from "@prisma/client"
 import type z from "zod"
 import type { TypePagination } from "@/types/global/pagination.js"
-import type { DepartmentWhereInputSchema, DepartmentWithClassRoomsSchema, GradeLevelWithClassRoomCountSchema } from "@/types/schema/prisma/index.js"
+import type { DepartmentWhereInputSchema } from "@/types/schema/prisma/index.js"
+import type { DepartmentWithClassrooms } from "@/types/schema/prisma/outputTypeSchemas/DepartmentWithClassroomsSchema.js"
 
 export type TypeDepartmentWhereInput = {
   where?: z.infer<typeof DepartmentWhereInputSchema>
   pagination?: TypePagination
 }
-
-export type GradeLevelWithClassroomCount = z.infer<typeof GradeLevelWithClassRoomCountSchema>
-
-export type DepartmentWithClassrooms = z.infer<typeof DepartmentWithClassRoomsSchema>
 
 export type TypeDepartmentService = {
   onCreate: (data: Prisma.DepartmentCreateInput) => Promise<Department>

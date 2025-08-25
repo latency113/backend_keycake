@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import { z } from "zod"
 
 /////////////////////////////////////////
 // TEAM SCHEMA
 /////////////////////////////////////////
 
 export const TeamSchema = z.object({
+  classroom_id: z.string(),
   id: z.string(),
   name: z.string(),
-  classroom_id: z.string(),
 })
 
 export type Team = z.infer<typeof TeamSchema>
@@ -30,4 +30,4 @@ export const TeamOptionalDefaultsSchema = TeamSchema.merge(z.object({
 
 export type TeamOptionalDefaults = z.infer<typeof TeamOptionalDefaultsSchema>
 
-export default TeamSchema;
+export default TeamSchema

@@ -2,16 +2,16 @@ import type { TypeApplication } from "@/configure/create-application.js"
 import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { BranchService } from "@/services/index.js"
+import { DepartmentService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { BranchPartialSchema } from "@/types/schema/prisma/index.js"
+import { DepartmentPartialSchema } from "@/types/schema/prisma/index.js"
 
-const RequestSchema = BranchPartialSchema
+const RequestSchema = DepartmentPartialSchema
 
 const ResponseSchema = z.object({
-  data: BranchPartialSchema,
-  message: z.string().default("Branch updated successfully"),
+  data: DepartmentPartialSchema,
+  message: z.string().default("Department updated successfully"),
 })
 
 export default (app: TypeApplication) =>
@@ -22,14 +22,14 @@ export default (app: TypeApplication) =>
         const validBody = RequestSchema.parse(body)
         const { id } = params
         const deps = {
-          BranchService: BranchService({ db: DatabaseContext }),
+          DepartmentService: DepartmentService({ db: DatabaseContext }),
         }
-        const result = await deps.BranchService.onUpdate(id, validBody)
+        const result = await deps.DepartmentService.onUpdate(id, validBody)
         if (!result)
-          throw NewError("Failed to update Branch", "UPDATE_FAILED", 500)
+          throw NewError("Failed to update Department", "UPDATE_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Branch updated successfully",
+          message: "Department updated successfully",
         })
         if (!parse.success)
           throw NewError(`Failed to parse response object: ${JSON.stringify(parse.error)}`, "RESPONSE_PARSING_FAILED", 500)
@@ -37,7 +37,7 @@ export default (app: TypeApplication) =>
         return parse.data
       }
       catch (error) {
-        console.error("Error updating Branch:", error)
+        console.error("Error updating Department:", error)
         const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
@@ -77,7 +77,7 @@ export default (app: TypeApplication) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Branch update success",
+            description: "Department update success",
           },
           500: {
             content: {
@@ -85,7 +85,7 @@ export default (app: TypeApplication) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Branch update fail",
+            description: "Department update fail",
           },
         },
         tags: ["Department"],

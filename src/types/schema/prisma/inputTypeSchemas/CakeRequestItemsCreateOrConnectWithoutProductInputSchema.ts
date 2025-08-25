@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { CakeRequestItemsWhereUniqueInputSchema } from './CakeRequestItemsWhereUniqueInputSchema';
-import { CakeRequestItemsCreateWithoutProductInputSchema } from './CakeRequestItemsCreateWithoutProductInputSchema';
-import { CakeRequestItemsUncheckedCreateWithoutProductInputSchema } from './CakeRequestItemsUncheckedCreateWithoutProductInputSchema';
+import { z } from "zod"
+import { CakeRequestItemsCreateWithoutProductInputSchema } from "./CakeRequestItemsCreateWithoutProductInputSchema"
+import { CakeRequestItemsUncheckedCreateWithoutProductInputSchema } from "./CakeRequestItemsUncheckedCreateWithoutProductInputSchema"
+import { CakeRequestItemsWhereUniqueInputSchema } from "./CakeRequestItemsWhereUniqueInputSchema"
 
 export const CakeRequestItemsCreateOrConnectWithoutProductInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateOrConnectWithoutProductInput> = z.object({
+  create: z.union([z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema), z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema)]),
   where: z.lazy(() => CakeRequestItemsWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => CakeRequestItemsCreateWithoutProductInputSchema),z.lazy(() => CakeRequestItemsUncheckedCreateWithoutProductInputSchema) ]),
-}).strict();
+}).strict()
 
-export default CakeRequestItemsCreateOrConnectWithoutProductInputSchema;
+export default CakeRequestItemsCreateOrConnectWithoutProductInputSchema

@@ -24,11 +24,11 @@ export function AuthService({ db }: AuthDependencies) {
 
       return user
     },
-    async register(userInfo: any) {
+    async register(_userInfo: any) {
       // TODO: Implement register logic
       return { message: "User registered successfully" }
     },
-    async verifyToken(token: string) {
+    async verifyToken(_token: string) {
       // TODO: Implement token verification
 
     },

@@ -63,26 +63,20 @@ export default (app: Elysia) =>
       catch (error) {
         console.error("Error fetching OrderType:", error)
         const err = ParseError(error)
-        const fail = FailResponseSchema.safeParse({
+
+        set.status = err.status
+        return {
           code: err.code,
           message: err.message,
           status: err.status,
-        })
-        set.status = err.status
-        if (fail.success) {
-          return fail.data
-        }
-        else {
-          return {
-            code: "RESPONSE_PARSING_FAILED",
-            message: "Failed to parse error response",
-            status: 500,
-          }
         }
       }
     },
     {
       detail: {
+        params: z.object({
+          id: z.string().min(1, "Order ID is required"),
+        }),
         responses: {
           200: {
             content: {
@@ -90,7 +84,19 @@ export default (app: Elysia) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Order fetch success",
+            description: "Order fetch data success",
+          },
+          404: {
+            content: {
+              "application/json": {
+                schema: FailResponseSchema.default({
+                  code: "FETCH_FAILED",
+                  message: "Failed to fetch Order Not Found",
+                  status: 404,
+                }),
+              },
+            },
+            description: "Order not found",
           },
           500: {
             content: {
@@ -98,7 +104,7 @@ export default (app: Elysia) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Order fetch fail",
+            description: "Order fetch data fail",
           },
         },
         tags: ["Order"],

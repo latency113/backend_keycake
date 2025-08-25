@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { DepartmentCreateNestedOneWithoutClassroomInputSchema } from './DepartmentCreateNestedOneWithoutClassroomInputSchema';
-import { TeamCreateNestedManyWithoutClassroomInputSchema } from './TeamCreateNestedManyWithoutClassroomInputSchema';
-import { OrderCreateNestedManyWithoutClassroomInputSchema } from './OrderCreateNestedManyWithoutClassroomInputSchema';
+import { z } from "zod"
+import { DepartmentCreateNestedOneWithoutClassroomInputSchema } from "./DepartmentCreateNestedOneWithoutClassroomInputSchema"
+import { OrderCreateNestedManyWithoutClassroomInputSchema } from "./OrderCreateNestedManyWithoutClassroomInputSchema"
+import { TeamCreateNestedManyWithoutClassroomInputSchema } from "./TeamCreateNestedManyWithoutClassroomInputSchema"
 
 export const ClassroomCreateWithoutGrade_levelInputSchema: z.ZodType<Prisma.ClassroomCreateWithoutGrade_levelInput> = z.object({
+  department: z.lazy(() => DepartmentCreateNestedOneWithoutClassroomInputSchema),
   id: z.string().optional(),
   name: z.string(),
-  department: z.lazy(() => DepartmentCreateNestedOneWithoutClassroomInputSchema),
+  orders: z.lazy(() => OrderCreateNestedManyWithoutClassroomInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutClassroomInputSchema).optional(),
-  orders: z.lazy(() => OrderCreateNestedManyWithoutClassroomInputSchema).optional()
-}).strict();
+}).strict()
 
-export default ClassroomCreateWithoutGrade_levelInputSchema;
+export default ClassroomCreateWithoutGrade_levelInputSchema

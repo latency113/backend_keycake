@@ -1,15 +1,15 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { GradeLevelWhereInputSchema } from '../inputTypeSchemas/GradeLevelWhereInputSchema'
-import { GradeLevelOrderByWithRelationInputSchema } from '../inputTypeSchemas/GradeLevelOrderByWithRelationInputSchema'
-import { GradeLevelWhereUniqueInputSchema } from '../inputTypeSchemas/GradeLevelWhereUniqueInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { GradeLevelOrderByWithRelationInputSchema } from "../inputTypeSchemas/GradeLevelOrderByWithRelationInputSchema"
+import { GradeLevelWhereInputSchema } from "../inputTypeSchemas/GradeLevelWhereInputSchema"
+import { GradeLevelWhereUniqueInputSchema } from "../inputTypeSchemas/GradeLevelWhereUniqueInputSchema"
 
 export const GradeLevelAggregateArgsSchema: z.ZodType<Prisma.GradeLevelAggregateArgs> = z.object({
-  where: GradeLevelWhereInputSchema.optional(),
-  orderBy: z.union([ GradeLevelOrderByWithRelationInputSchema.array(),GradeLevelOrderByWithRelationInputSchema ]).optional(),
   cursor: GradeLevelWhereUniqueInputSchema.optional(),
-  take: z.number().optional(),
+  orderBy: z.union([GradeLevelOrderByWithRelationInputSchema.array(), GradeLevelOrderByWithRelationInputSchema]).optional(),
   skip: z.number().optional(),
-}).strict() ;
+  take: z.number().optional(),
+  where: GradeLevelWhereInputSchema.optional(),
+}).strict()
 
-export default GradeLevelAggregateArgsSchema;
+export default GradeLevelAggregateArgsSchema

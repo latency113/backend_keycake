@@ -1,11 +1,11 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { ClassroomWhereInputSchema } from './ClassroomWhereInputSchema';
+import { z } from "zod"
+import { ClassroomWhereInputSchema } from "./ClassroomWhereInputSchema"
 
 export const ClassroomNullableScalarRelationFilterSchema: z.ZodType<Prisma.ClassroomNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => ClassroomWhereInputSchema).optional().nullable(),
-  isNot: z.lazy(() => ClassroomWhereInputSchema).optional().nullable()
-}).strict();
+  isNot: z.lazy(() => ClassroomWhereInputSchema).optional().nullable(),
+}).strict()
 
-export default ClassroomNullableScalarRelationFilterSchema;
+export default ClassroomNullableScalarRelationFilterSchema

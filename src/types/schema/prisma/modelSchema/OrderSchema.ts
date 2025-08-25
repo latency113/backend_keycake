@@ -1,26 +1,26 @@
-import { z } from 'zod';
-import { OrderStatusSchema } from '../inputTypeSchemas/OrderStatusSchema'
+import { z } from "zod"
+import { OrderStatusSchema } from "../inputTypeSchemas/OrderStatusSchema"
 
 /////////////////////////////////////////
 // ORDER SCHEMA
 /////////////////////////////////////////
 
 export const OrderSchema = z.object({
-  status: OrderStatusSchema,
-  id: z.string(),
-  customerName: z.string(),
-  classroom_id: z.string().nullish(),
-  team_id: z.string().nullish(),
-  orderDate: z.coerce.date(),
-  totalPrice: z.number(),
+  advisor: z.string(),
   book_number: z.number().int(),
+  classroom_id: z.string().nullish(),
+  createdAt: z.coerce.date(),
+  customerName: z.string(),
+  deposit: z.number().int(),
+  depository: z.string().nullish(),
+  id: z.string(),
   number: z.number().int(),
+  orderDate: z.coerce.date(),
   phone: z.string(),
   pickup_date: z.coerce.date(),
-  depository: z.string().nullish(),
-  deposit: z.number().int(),
-  advisor: z.string(),
-  createdAt: z.coerce.date(),
+  status: OrderStatusSchema,
+  team_id: z.string().nullish(),
+  totalPrice: z.number(),
   updatedAt: z.coerce.date(),
 })
 
@@ -39,12 +39,12 @@ export type OrderPartial = z.infer<typeof OrderPartialSchema>
 /////////////////////////////////////////
 
 export const OrderOptionalDefaultsSchema = OrderSchema.merge(z.object({
-  status: OrderStatusSchema.optional(),
-  id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
+  id: z.string().optional(),
+  status: OrderStatusSchema.optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type OrderOptionalDefaults = z.infer<typeof OrderOptionalDefaultsSchema>
 
-export default OrderSchema;
+export default OrderSchema

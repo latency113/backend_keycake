@@ -54,8 +54,8 @@ describe("gradeLevelService", () => {
     const GradeLevel = await service.getById("1")
     expect(GradeLevel).toBeTruthy()
     expect(db.gradeLevel.findFirst).toHaveBeenCalledWith({
-      where: { id: "1" },
       include: { rooms: true },
+      where: { id: "1" },
     })
   })
 
@@ -63,8 +63,8 @@ describe("gradeLevelService", () => {
     const GradeLevel = await service.getOne({ level: "VOCATIONAL" })
     expect(GradeLevel).toBeTruthy()
     expect(db.gradeLevel.findFirst).toHaveBeenCalledWith({
-      where: { level: "VOCATIONAL" },
       include: { rooms: true },
+      where: { level: "VOCATIONAL" },
     })
   })
 

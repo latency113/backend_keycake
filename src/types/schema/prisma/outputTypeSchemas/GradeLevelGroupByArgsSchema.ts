@@ -1,17 +1,17 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { GradeLevelWhereInputSchema } from '../inputTypeSchemas/GradeLevelWhereInputSchema'
-import { GradeLevelOrderByWithAggregationInputSchema } from '../inputTypeSchemas/GradeLevelOrderByWithAggregationInputSchema'
-import { GradeLevelScalarFieldEnumSchema } from '../inputTypeSchemas/GradeLevelScalarFieldEnumSchema'
-import { GradeLevelScalarWhereWithAggregatesInputSchema } from '../inputTypeSchemas/GradeLevelScalarWhereWithAggregatesInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { GradeLevelOrderByWithAggregationInputSchema } from "../inputTypeSchemas/GradeLevelOrderByWithAggregationInputSchema"
+import { GradeLevelScalarFieldEnumSchema } from "../inputTypeSchemas/GradeLevelScalarFieldEnumSchema"
+import { GradeLevelScalarWhereWithAggregatesInputSchema } from "../inputTypeSchemas/GradeLevelScalarWhereWithAggregatesInputSchema"
+import { GradeLevelWhereInputSchema } from "../inputTypeSchemas/GradeLevelWhereInputSchema"
 
 export const GradeLevelGroupByArgsSchema: z.ZodType<Prisma.GradeLevelGroupByArgs> = z.object({
-  where: GradeLevelWhereInputSchema.optional(),
-  orderBy: z.union([ GradeLevelOrderByWithAggregationInputSchema.array(),GradeLevelOrderByWithAggregationInputSchema ]).optional(),
   by: GradeLevelScalarFieldEnumSchema.array(),
   having: GradeLevelScalarWhereWithAggregatesInputSchema.optional(),
-  take: z.number().optional(),
+  orderBy: z.union([GradeLevelOrderByWithAggregationInputSchema.array(), GradeLevelOrderByWithAggregationInputSchema]).optional(),
   skip: z.number().optional(),
-}).strict() ;
+  take: z.number().optional(),
+  where: GradeLevelWhereInputSchema.optional(),
+}).strict()
 
-export default GradeLevelGroupByArgsSchema;
+export default GradeLevelGroupByArgsSchema

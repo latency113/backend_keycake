@@ -1,36 +1,36 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { CakeRequestItemsIncludeSchema } from '../inputTypeSchemas/CakeRequestItemsIncludeSchema'
-import { CakeRequestItemsWhereInputSchema } from '../inputTypeSchemas/CakeRequestItemsWhereInputSchema'
-import { CakeRequestItemsOrderByWithRelationInputSchema } from '../inputTypeSchemas/CakeRequestItemsOrderByWithRelationInputSchema'
-import { CakeRequestItemsWhereUniqueInputSchema } from '../inputTypeSchemas/CakeRequestItemsWhereUniqueInputSchema'
-import { CakeRequestItemsScalarFieldEnumSchema } from '../inputTypeSchemas/CakeRequestItemsScalarFieldEnumSchema'
-import { ProductArgsSchema } from "../outputTypeSchemas/ProductArgsSchema"
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { CakeRequestItemsIncludeSchema } from "../inputTypeSchemas/CakeRequestItemsIncludeSchema"
+import { CakeRequestItemsOrderByWithRelationInputSchema } from "../inputTypeSchemas/CakeRequestItemsOrderByWithRelationInputSchema"
+import { CakeRequestItemsScalarFieldEnumSchema } from "../inputTypeSchemas/CakeRequestItemsScalarFieldEnumSchema"
+import { CakeRequestItemsWhereInputSchema } from "../inputTypeSchemas/CakeRequestItemsWhereInputSchema"
+import { CakeRequestItemsWhereUniqueInputSchema } from "../inputTypeSchemas/CakeRequestItemsWhereUniqueInputSchema"
 import { CakeRequestArgsSchema } from "../outputTypeSchemas/CakeRequestArgsSchema"
 import { OrderItemArgsSchema } from "../outputTypeSchemas/OrderItemArgsSchema"
+import { ProductArgsSchema } from "../outputTypeSchemas/ProductArgsSchema"
 // Select schema needs to be in file to prevent circular imports
-//------------------------------------------------------
+// ------------------------------------------------------
 
 export const CakeRequestItemsSelectSchema: z.ZodType<Prisma.CakeRequestItemsSelect> = z.object({
   id: z.boolean().optional(),
-  request_id: z.boolean().optional(),
-  product_id: z.boolean().optional(),
   order_item_id: z.boolean().optional(),
+  orderItem: z.union([z.boolean(), z.lazy(() => OrderItemArgsSchema)]).optional(),
+  product: z.union([z.boolean(), z.lazy(() => ProductArgsSchema)]).optional(),
+  product_id: z.boolean().optional(),
   quantity: z.boolean().optional(),
-  product: z.union([z.boolean(),z.lazy(() => ProductArgsSchema)]).optional(),
-  request: z.union([z.boolean(),z.lazy(() => CakeRequestArgsSchema)]).optional(),
-  orderItem: z.union([z.boolean(),z.lazy(() => OrderItemArgsSchema)]).optional(),
+  request: z.union([z.boolean(), z.lazy(() => CakeRequestArgsSchema)]).optional(),
+  request_id: z.boolean().optional(),
 }).strict()
 
 export const CakeRequestItemsFindManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsFindManyArgs> = z.object({
-  select: CakeRequestItemsSelectSchema.optional(),
-  include: z.lazy(() => CakeRequestItemsIncludeSchema).optional(),
-  where: CakeRequestItemsWhereInputSchema.optional(),
-  orderBy: z.union([ CakeRequestItemsOrderByWithRelationInputSchema.array(),CakeRequestItemsOrderByWithRelationInputSchema ]).optional(),
   cursor: CakeRequestItemsWhereUniqueInputSchema.optional(),
-  take: z.number().optional(),
+  distinct: z.union([CakeRequestItemsScalarFieldEnumSchema, CakeRequestItemsScalarFieldEnumSchema.array()]).optional(),
+  include: z.lazy(() => CakeRequestItemsIncludeSchema).optional(),
+  orderBy: z.union([CakeRequestItemsOrderByWithRelationInputSchema.array(), CakeRequestItemsOrderByWithRelationInputSchema]).optional(),
+  select: CakeRequestItemsSelectSchema.optional(),
   skip: z.number().optional(),
-  distinct: z.union([ CakeRequestItemsScalarFieldEnumSchema,CakeRequestItemsScalarFieldEnumSchema.array() ]).optional(),
-}).strict() ;
+  take: z.number().optional(),
+  where: CakeRequestItemsWhereInputSchema.optional(),
+}).strict()
 
-export default CakeRequestItemsFindManyArgsSchema;
+export default CakeRequestItemsFindManyArgsSchema

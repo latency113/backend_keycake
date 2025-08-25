@@ -1,13 +1,13 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { GradeLevelUpdateManyMutationInputSchema } from '../inputTypeSchemas/GradeLevelUpdateManyMutationInputSchema'
-import { GradeLevelUncheckedUpdateManyInputSchema } from '../inputTypeSchemas/GradeLevelUncheckedUpdateManyInputSchema'
-import { GradeLevelWhereInputSchema } from '../inputTypeSchemas/GradeLevelWhereInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { GradeLevelUncheckedUpdateManyInputSchema } from "../inputTypeSchemas/GradeLevelUncheckedUpdateManyInputSchema"
+import { GradeLevelUpdateManyMutationInputSchema } from "../inputTypeSchemas/GradeLevelUpdateManyMutationInputSchema"
+import { GradeLevelWhereInputSchema } from "../inputTypeSchemas/GradeLevelWhereInputSchema"
 
 export const GradeLevelUpdateManyArgsSchema: z.ZodType<Prisma.GradeLevelUpdateManyArgs> = z.object({
-  data: z.union([ GradeLevelUpdateManyMutationInputSchema,GradeLevelUncheckedUpdateManyInputSchema ]),
-  where: GradeLevelWhereInputSchema.optional(),
+  data: z.union([GradeLevelUpdateManyMutationInputSchema, GradeLevelUncheckedUpdateManyInputSchema]),
   limit: z.number().optional(),
-}).strict() ;
+  where: GradeLevelWhereInputSchema.optional(),
+}).strict()
 
-export default GradeLevelUpdateManyArgsSchema;
+export default GradeLevelUpdateManyArgsSchema

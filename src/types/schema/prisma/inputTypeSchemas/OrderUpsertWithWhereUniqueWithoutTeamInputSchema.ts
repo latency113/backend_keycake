@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { OrderWhereUniqueInputSchema } from './OrderWhereUniqueInputSchema';
-import { OrderUpdateWithoutTeamInputSchema } from './OrderUpdateWithoutTeamInputSchema';
-import { OrderUncheckedUpdateWithoutTeamInputSchema } from './OrderUncheckedUpdateWithoutTeamInputSchema';
-import { OrderCreateWithoutTeamInputSchema } from './OrderCreateWithoutTeamInputSchema';
-import { OrderUncheckedCreateWithoutTeamInputSchema } from './OrderUncheckedCreateWithoutTeamInputSchema';
+import { z } from "zod"
+import { OrderCreateWithoutTeamInputSchema } from "./OrderCreateWithoutTeamInputSchema"
+import { OrderUncheckedCreateWithoutTeamInputSchema } from "./OrderUncheckedCreateWithoutTeamInputSchema"
+import { OrderUncheckedUpdateWithoutTeamInputSchema } from "./OrderUncheckedUpdateWithoutTeamInputSchema"
+import { OrderUpdateWithoutTeamInputSchema } from "./OrderUpdateWithoutTeamInputSchema"
+import { OrderWhereUniqueInputSchema } from "./OrderWhereUniqueInputSchema"
 
 export const OrderUpsertWithWhereUniqueWithoutTeamInputSchema: z.ZodType<Prisma.OrderUpsertWithWhereUniqueWithoutTeamInput> = z.object({
+  create: z.union([z.lazy(() => OrderCreateWithoutTeamInputSchema), z.lazy(() => OrderUncheckedCreateWithoutTeamInputSchema)]),
+  update: z.union([z.lazy(() => OrderUpdateWithoutTeamInputSchema), z.lazy(() => OrderUncheckedUpdateWithoutTeamInputSchema)]),
   where: z.lazy(() => OrderWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => OrderUpdateWithoutTeamInputSchema),z.lazy(() => OrderUncheckedUpdateWithoutTeamInputSchema) ]),
-  create: z.union([ z.lazy(() => OrderCreateWithoutTeamInputSchema),z.lazy(() => OrderUncheckedCreateWithoutTeamInputSchema) ]),
-}).strict();
+}).strict()
 
-export default OrderUpsertWithWhereUniqueWithoutTeamInputSchema;
+export default OrderUpsertWithWhereUniqueWithoutTeamInputSchema

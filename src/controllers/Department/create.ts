@@ -2,16 +2,16 @@ import type { TypeApplication } from "@/configure/create-application.js"
 import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { BranchService } from "@/services/index.js"
+import { DepartmentService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { BranchOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { DepartmentOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
-const RequestSchema = BranchOptionalDefaultsSchema
+const RequestSchema = DepartmentOptionalDefaultsSchema
 
 const ResponseSchema = z.object({
-  data: BranchOptionalDefaultsSchema,
-  message: z.string().default("Branch created successfully"),
+  data: DepartmentOptionalDefaultsSchema,
+  message: z.string().default("Department created successfully"),
 })
 
 export default (app: TypeApplication) =>
@@ -20,14 +20,14 @@ export default (app: TypeApplication) =>
     async ({ body, set }) => {
       try {
         const deps = {
-          BranchService: BranchService({ db: DatabaseContext }),
+          DepartmentService: DepartmentService({ db: DatabaseContext }),
         }
-        const result = await deps.BranchService.onCreate(body)
+        const result = await deps.DepartmentService.onCreate(body)
         if (result === null)
-          throw NewError("Failed to create Branch", "CREATION_FAILED", 500)
+          throw NewError("Failed to create Department", "CREATION_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Branch created successfully",
+          message: "Department created successfully",
         })
         if (!parse.success)
           throw NewError(`Failed to parse response object: ${JSON.stringify(parse.error)}`, "RESPONSE_PARSING_FAILED", 500)
@@ -35,7 +35,7 @@ export default (app: TypeApplication) =>
         return parse.data
       }
       catch (error) {
-        console.error("Error creating Branch:", error)
+        console.error("Error creating Department:", error)
         const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
@@ -75,7 +75,7 @@ export default (app: TypeApplication) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Branch creation success",
+            description: "Department creation success",
           },
           500: {
             content: {
@@ -83,7 +83,7 @@ export default (app: TypeApplication) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Branch creation fail",
+            description: "Department creation fail",
           },
         },
         tags: ["Department"],

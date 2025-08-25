@@ -1,19 +1,19 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { RequestStatusSchema } from './RequestStatusSchema';
-import { NestedEnumRequestStatusWithAggregatesFilterSchema } from './NestedEnumRequestStatusWithAggregatesFilterSchema';
-import { NestedIntFilterSchema } from './NestedIntFilterSchema';
-import { NestedEnumRequestStatusFilterSchema } from './NestedEnumRequestStatusFilterSchema';
+import { z } from "zod"
+import { NestedEnumRequestStatusFilterSchema } from "./NestedEnumRequestStatusFilterSchema"
+import { NestedEnumRequestStatusWithAggregatesFilterSchema } from "./NestedEnumRequestStatusWithAggregatesFilterSchema"
+import { NestedIntFilterSchema } from "./NestedIntFilterSchema"
+import { RequestStatusSchema } from "./RequestStatusSchema"
 
 export const EnumRequestStatusWithAggregatesFilterSchema: z.ZodType<Prisma.EnumRequestStatusWithAggregatesFilter> = z.object({
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional(),
   equals: z.lazy(() => RequestStatusSchema).optional(),
   in: z.lazy(() => RequestStatusSchema).array().optional(),
+  not: z.union([z.lazy(() => RequestStatusSchema), z.lazy(() => NestedEnumRequestStatusWithAggregatesFilterSchema)]).optional(),
   notIn: z.lazy(() => RequestStatusSchema).array().optional(),
-  not: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => NestedEnumRequestStatusWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional(),
-  _max: z.lazy(() => NestedEnumRequestStatusFilterSchema).optional()
-}).strict();
+}).strict()
 
-export default EnumRequestStatusWithAggregatesFilterSchema;
+export default EnumRequestStatusWithAggregatesFilterSchema

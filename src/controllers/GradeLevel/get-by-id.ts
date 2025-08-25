@@ -5,15 +5,17 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { GradeLevelService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { GradeLevelOptionalDefaultsSchema , RoomOptionalDefaultsSchema,} from "@/types/schema/prisma/index.js"
+import {
+  ClassroomOptionalDefaultsSchema,
+  GradeLevelOptionalDefaultsSchema,
+} from "@/types/schema/prisma/index.js"
 
-
-const GradeLevelWithRoomsSchema = GradeLevelOptionalDefaultsSchema.extend({
-  rooms: z.lazy(() => RoomOptionalDefaultsSchema).array(),
+const GradeLevelWithClassroomsSchema = GradeLevelOptionalDefaultsSchema.extend({
+  classroom: z.lazy(() => ClassroomOptionalDefaultsSchema).array(),
 })
 
 const ResponseSchema = z.object({
-  data: GradeLevelWithRoomsSchema,
+  data: GradeLevelWithClassroomsSchema,
   message: z.string(),
 })
 
@@ -27,15 +29,24 @@ export default (app: TypeApplication) =>
           GradeLevelService: GradeLevelService({ db: DatabaseContext }),
         }
         const result = await deps.GradeLevelService.getOne({ id })
-        if (!result)
-          throw NewError("Failed to fetch GradeLevel Not Found", "FETCH_FAILED", 404)
+        if (!result) {
+          throw NewError(
+            "Failed to fetch GradeLevel Not Found",
+            "FETCH_FAILED",
+            404,
+          )
+        }
         const parse = ResponseSchema.safeParse({
           data: result,
           message: "GradeLevel fetched successfully",
-
         })
-        if (!parse.success)
-          throw NewError(`Failed to parse response object: ${JSON.stringify(parse.error)}`, "RESPONSE_PARSING_FAILED", 500)
+        if (!parse.success) {
+          throw NewError(
+            `Failed to parse response object: ${JSON.stringify(parse.error)}`,
+            "RESPONSE_PARSING_FAILED",
+            500,
+          )
+        }
         set.status = 200
         return parse.data
       }

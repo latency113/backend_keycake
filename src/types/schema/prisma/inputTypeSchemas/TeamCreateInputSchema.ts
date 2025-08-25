@@ -1,14 +1,14 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { ClassroomCreateNestedOneWithoutTeamsInputSchema } from './ClassroomCreateNestedOneWithoutTeamsInputSchema';
-import { OrderCreateNestedManyWithoutTeamInputSchema } from './OrderCreateNestedManyWithoutTeamInputSchema';
+import { z } from "zod"
+import { ClassroomCreateNestedOneWithoutTeamsInputSchema } from "./ClassroomCreateNestedOneWithoutTeamsInputSchema"
+import { OrderCreateNestedManyWithoutTeamInputSchema } from "./OrderCreateNestedManyWithoutTeamInputSchema"
 
 export const TeamCreateInputSchema: z.ZodType<Prisma.TeamCreateInput> = z.object({
+  classroom: z.lazy(() => ClassroomCreateNestedOneWithoutTeamsInputSchema),
   id: z.string().optional(),
   name: z.string(),
-  classroom: z.lazy(() => ClassroomCreateNestedOneWithoutTeamsInputSchema),
-  orders: z.lazy(() => OrderCreateNestedManyWithoutTeamInputSchema).optional()
-}).strict();
+  orders: z.lazy(() => OrderCreateNestedManyWithoutTeamInputSchema).optional(),
+}).strict()
 
-export default TeamCreateInputSchema;
+export default TeamCreateInputSchema

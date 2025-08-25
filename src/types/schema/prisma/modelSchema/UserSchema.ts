@@ -1,20 +1,20 @@
-import { z } from 'zod';
-import { RoleSchema } from '../inputTypeSchemas/RoleSchema'
+import { z } from "zod"
+import { RoleSchema } from "../inputTypeSchemas/RoleSchema"
 
 /////////////////////////////////////////
 // USER SCHEMA
 /////////////////////////////////////////
 
 export const UserSchema = z.object({
-  role: RoleSchema,
-  id: z.string(),
-  firstname: z.string(),
-  lastname: z.string(),
-  username: z.string(),
-  password: z.string(),
-  email: z.string().nullish(),
   createdAt: z.coerce.date(),
+  email: z.string().nullish(),
+  firstname: z.string(),
+  id: z.string(),
+  lastname: z.string(),
+  password: z.string(),
+  role: RoleSchema,
   updatedAt: z.coerce.date(),
+  username: z.string(),
 })
 
 export type User = z.infer<typeof UserSchema>
@@ -32,12 +32,12 @@ export type UserPartial = z.infer<typeof UserPartialSchema>
 /////////////////////////////////////////
 
 export const UserOptionalDefaultsSchema = UserSchema.merge(z.object({
-  role: RoleSchema.optional(),
-  id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
+  id: z.string().optional(),
+  role: RoleSchema.optional(),
   updatedAt: z.coerce.date().optional(),
 }))
 
 export type UserOptionalDefaults = z.infer<typeof UserOptionalDefaultsSchema>
 
-export default UserSchema;
+export default UserSchema

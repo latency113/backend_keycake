@@ -1,8 +1,8 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
 
 export const OrderItemCountOutputTypeSelectSchema: z.ZodType<Prisma.OrderItemCountOutputTypeSelect> = z.object({
   CakeRequestItems: z.boolean().optional(),
-}).strict();
+}).strict()
 
-export default OrderItemCountOutputTypeSelectSchema;
+export default OrderItemCountOutputTypeSelectSchema

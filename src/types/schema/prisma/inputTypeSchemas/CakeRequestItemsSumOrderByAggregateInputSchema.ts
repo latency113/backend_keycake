@@ -1,10 +1,10 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { SortOrderSchema } from './SortOrderSchema';
+import { z } from "zod"
+import { SortOrderSchema } from "./SortOrderSchema"
 
 export const CakeRequestItemsSumOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsSumOrderByAggregateInput> = z.object({
-  quantity: z.lazy(() => SortOrderSchema).optional()
-}).strict();
+  quantity: z.lazy(() => SortOrderSchema).optional(),
+}).strict()
 
-export default CakeRequestItemsSumOrderByAggregateInputSchema;
+export default CakeRequestItemsSumOrderByAggregateInputSchema

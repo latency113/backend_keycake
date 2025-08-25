@@ -1,11 +1,11 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { DepartmentSelectSchema } from '../inputTypeSchemas/DepartmentSelectSchema';
-import { DepartmentIncludeSchema } from '../inputTypeSchemas/DepartmentIncludeSchema';
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { DepartmentIncludeSchema } from "../inputTypeSchemas/DepartmentIncludeSchema"
+import { DepartmentSelectSchema } from "../inputTypeSchemas/DepartmentSelectSchema"
 
 export const DepartmentArgsSchema: z.ZodType<Prisma.DepartmentDefaultArgs> = z.object({
-  select: z.lazy(() => DepartmentSelectSchema).optional(),
   include: z.lazy(() => DepartmentIncludeSchema).optional(),
-}).strict();
+  select: z.lazy(() => DepartmentSelectSchema).optional(),
+}).strict()
 
-export default DepartmentArgsSchema;
+export default DepartmentArgsSchema

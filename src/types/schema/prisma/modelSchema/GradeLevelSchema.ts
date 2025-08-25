@@ -1,13 +1,13 @@
-import { z } from 'zod';
-import { GradeLevelTypeSchema } from '../inputTypeSchemas/GradeLevelTypeSchema'
+import { z } from "zod"
+import { GradeLevelTypeSchema } from "../inputTypeSchemas/GradeLevelTypeSchema"
 
 /////////////////////////////////////////
 // GRADE LEVEL SCHEMA
 /////////////////////////////////////////
 
 export const GradeLevelSchema = z.object({
-  level: GradeLevelTypeSchema,
   id: z.string(),
+  level: GradeLevelTypeSchema,
   year: z.number().int(),
 })
 
@@ -31,4 +31,4 @@ export const GradeLevelOptionalDefaultsSchema = GradeLevelSchema.merge(z.object(
 
 export type GradeLevelOptionalDefaults = z.infer<typeof GradeLevelOptionalDefaultsSchema>
 
-export default GradeLevelSchema;
+export default GradeLevelSchema

@@ -1,26 +1,26 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { ProductIncludeSchema } from '../inputTypeSchemas/ProductIncludeSchema'
-import { ProductWhereUniqueInputSchema } from '../inputTypeSchemas/ProductWhereUniqueInputSchema'
-import { OrderItemArgsSchema } from "../outputTypeSchemas/OrderItemArgsSchema"
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { ProductIncludeSchema } from "../inputTypeSchemas/ProductIncludeSchema"
+import { ProductWhereUniqueInputSchema } from "../inputTypeSchemas/ProductWhereUniqueInputSchema"
 import { CakeRequestItemsArgsSchema } from "../outputTypeSchemas/CakeRequestItemsArgsSchema"
+import { OrderItemArgsSchema } from "../outputTypeSchemas/OrderItemArgsSchema"
 import { ProductCountOutputTypeArgsSchema } from "../outputTypeSchemas/ProductCountOutputTypeArgsSchema"
 // Select schema needs to be in file to prevent circular imports
-//------------------------------------------------------
+// ------------------------------------------------------
 
 export const ProductSelectSchema: z.ZodType<Prisma.ProductSelect> = z.object({
+  _count: z.union([z.boolean(), z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
   id: z.boolean().optional(),
+  items: z.union([z.boolean(), z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
   name: z.boolean().optional(),
+  orderItems: z.union([z.boolean(), z.lazy(() => OrderItemArgsSchema)]).optional(),
   price: z.boolean().optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemArgsSchema)]).optional(),
-  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const ProductFindUniqueArgsSchema: z.ZodType<Prisma.ProductFindUniqueArgs> = z.object({
-  select: ProductSelectSchema.optional(),
   include: z.lazy(() => ProductIncludeSchema).optional(),
+  select: ProductSelectSchema.optional(),
   where: ProductWhereUniqueInputSchema,
-}).strict() ;
+}).strict()
 
-export default ProductFindUniqueArgsSchema;
+export default ProductFindUniqueArgsSchema

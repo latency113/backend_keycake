@@ -1,32 +1,32 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { ProductIncludeSchema } from '../inputTypeSchemas/ProductIncludeSchema'
-import { ProductWhereUniqueInputSchema } from '../inputTypeSchemas/ProductWhereUniqueInputSchema'
-import { ProductCreateInputSchema } from '../inputTypeSchemas/ProductCreateInputSchema'
-import { ProductUncheckedCreateInputSchema } from '../inputTypeSchemas/ProductUncheckedCreateInputSchema'
-import { ProductUpdateInputSchema } from '../inputTypeSchemas/ProductUpdateInputSchema'
-import { ProductUncheckedUpdateInputSchema } from '../inputTypeSchemas/ProductUncheckedUpdateInputSchema'
-import { OrderItemArgsSchema } from "../outputTypeSchemas/OrderItemArgsSchema"
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { ProductCreateInputSchema } from "../inputTypeSchemas/ProductCreateInputSchema"
+import { ProductIncludeSchema } from "../inputTypeSchemas/ProductIncludeSchema"
+import { ProductUncheckedCreateInputSchema } from "../inputTypeSchemas/ProductUncheckedCreateInputSchema"
+import { ProductUncheckedUpdateInputSchema } from "../inputTypeSchemas/ProductUncheckedUpdateInputSchema"
+import { ProductUpdateInputSchema } from "../inputTypeSchemas/ProductUpdateInputSchema"
+import { ProductWhereUniqueInputSchema } from "../inputTypeSchemas/ProductWhereUniqueInputSchema"
 import { CakeRequestItemsArgsSchema } from "../outputTypeSchemas/CakeRequestItemsArgsSchema"
+import { OrderItemArgsSchema } from "../outputTypeSchemas/OrderItemArgsSchema"
 import { ProductCountOutputTypeArgsSchema } from "../outputTypeSchemas/ProductCountOutputTypeArgsSchema"
 // Select schema needs to be in file to prevent circular imports
-//------------------------------------------------------
+// ------------------------------------------------------
 
 export const ProductSelectSchema: z.ZodType<Prisma.ProductSelect> = z.object({
+  _count: z.union([z.boolean(), z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
   id: z.boolean().optional(),
+  items: z.union([z.boolean(), z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
   name: z.boolean().optional(),
+  orderItems: z.union([z.boolean(), z.lazy(() => OrderItemArgsSchema)]).optional(),
   price: z.boolean().optional(),
-  orderItems: z.union([z.boolean(),z.lazy(() => OrderItemArgsSchema)]).optional(),
-  items: z.union([z.boolean(),z.lazy(() => CakeRequestItemsArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => ProductCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const ProductUpsertArgsSchema: z.ZodType<Prisma.ProductUpsertArgs> = z.object({
-  select: ProductSelectSchema.optional(),
+  create: z.union([ProductCreateInputSchema, ProductUncheckedCreateInputSchema]),
   include: z.lazy(() => ProductIncludeSchema).optional(),
+  select: ProductSelectSchema.optional(),
+  update: z.union([ProductUpdateInputSchema, ProductUncheckedUpdateInputSchema]),
   where: ProductWhereUniqueInputSchema,
-  create: z.union([ ProductCreateInputSchema,ProductUncheckedCreateInputSchema ]),
-  update: z.union([ ProductUpdateInputSchema,ProductUncheckedUpdateInputSchema ]),
-}).strict() ;
+}).strict()
 
-export default ProductUpsertArgsSchema;
+export default ProductUpsertArgsSchema

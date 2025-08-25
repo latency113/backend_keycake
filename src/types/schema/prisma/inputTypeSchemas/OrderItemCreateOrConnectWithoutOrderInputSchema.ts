@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { OrderItemWhereUniqueInputSchema } from './OrderItemWhereUniqueInputSchema';
-import { OrderItemCreateWithoutOrderInputSchema } from './OrderItemCreateWithoutOrderInputSchema';
-import { OrderItemUncheckedCreateWithoutOrderInputSchema } from './OrderItemUncheckedCreateWithoutOrderInputSchema';
+import { z } from "zod"
+import { OrderItemCreateWithoutOrderInputSchema } from "./OrderItemCreateWithoutOrderInputSchema"
+import { OrderItemUncheckedCreateWithoutOrderInputSchema } from "./OrderItemUncheckedCreateWithoutOrderInputSchema"
+import { OrderItemWhereUniqueInputSchema } from "./OrderItemWhereUniqueInputSchema"
 
 export const OrderItemCreateOrConnectWithoutOrderInputSchema: z.ZodType<Prisma.OrderItemCreateOrConnectWithoutOrderInput> = z.object({
+  create: z.union([z.lazy(() => OrderItemCreateWithoutOrderInputSchema), z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema)]),
   where: z.lazy(() => OrderItemWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => OrderItemCreateWithoutOrderInputSchema),z.lazy(() => OrderItemUncheckedCreateWithoutOrderInputSchema) ]),
-}).strict();
+}).strict()
 
-export default OrderItemCreateOrConnectWithoutOrderInputSchema;
+export default OrderItemCreateOrConnectWithoutOrderInputSchema

@@ -1,15 +1,15 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { CakeRequestWhereInputSchema } from '../inputTypeSchemas/CakeRequestWhereInputSchema'
-import { CakeRequestOrderByWithRelationInputSchema } from '../inputTypeSchemas/CakeRequestOrderByWithRelationInputSchema'
-import { CakeRequestWhereUniqueInputSchema } from '../inputTypeSchemas/CakeRequestWhereUniqueInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { CakeRequestOrderByWithRelationInputSchema } from "../inputTypeSchemas/CakeRequestOrderByWithRelationInputSchema"
+import { CakeRequestWhereInputSchema } from "../inputTypeSchemas/CakeRequestWhereInputSchema"
+import { CakeRequestWhereUniqueInputSchema } from "../inputTypeSchemas/CakeRequestWhereUniqueInputSchema"
 
 export const CakeRequestAggregateArgsSchema: z.ZodType<Prisma.CakeRequestAggregateArgs> = z.object({
-  where: CakeRequestWhereInputSchema.optional(),
-  orderBy: z.union([ CakeRequestOrderByWithRelationInputSchema.array(),CakeRequestOrderByWithRelationInputSchema ]).optional(),
   cursor: CakeRequestWhereUniqueInputSchema.optional(),
-  take: z.number().optional(),
+  orderBy: z.union([CakeRequestOrderByWithRelationInputSchema.array(), CakeRequestOrderByWithRelationInputSchema]).optional(),
   skip: z.number().optional(),
-}).strict() ;
+  take: z.number().optional(),
+  where: CakeRequestWhereInputSchema.optional(),
+}).strict()
 
-export default CakeRequestAggregateArgsSchema;
+export default CakeRequestAggregateArgsSchema

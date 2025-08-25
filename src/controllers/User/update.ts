@@ -1,5 +1,4 @@
 import type { TypeApplication } from "@/configure/create-application.js"
-import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
 import { UserService } from "@/services/index.js"

@@ -1,24 +1,24 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { GradeLevelIncludeSchema } from '../inputTypeSchemas/GradeLevelIncludeSchema'
-import { GradeLevelWhereUniqueInputSchema } from '../inputTypeSchemas/GradeLevelWhereUniqueInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { GradeLevelIncludeSchema } from "../inputTypeSchemas/GradeLevelIncludeSchema"
+import { GradeLevelWhereUniqueInputSchema } from "../inputTypeSchemas/GradeLevelWhereUniqueInputSchema"
 import { ClassroomArgsSchema } from "../outputTypeSchemas/ClassroomArgsSchema"
 import { GradeLevelCountOutputTypeArgsSchema } from "../outputTypeSchemas/GradeLevelCountOutputTypeArgsSchema"
 // Select schema needs to be in file to prevent circular imports
-//------------------------------------------------------
+// ------------------------------------------------------
 
 export const GradeLevelSelectSchema: z.ZodType<Prisma.GradeLevelSelect> = z.object({
+  _count: z.union([z.boolean(), z.lazy(() => GradeLevelCountOutputTypeArgsSchema)]).optional(),
+  classroom: z.union([z.boolean(), z.lazy(() => ClassroomArgsSchema)]).optional(),
   id: z.boolean().optional(),
   level: z.boolean().optional(),
   year: z.boolean().optional(),
-  classroom: z.union([z.boolean(),z.lazy(() => ClassroomArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => GradeLevelCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const GradeLevelFindUniqueArgsSchema: z.ZodType<Prisma.GradeLevelFindUniqueArgs> = z.object({
-  select: GradeLevelSelectSchema.optional(),
   include: z.lazy(() => GradeLevelIncludeSchema).optional(),
+  select: GradeLevelSelectSchema.optional(),
   where: GradeLevelWhereUniqueInputSchema,
-}).strict() ;
+}).strict()
 
-export default GradeLevelFindUniqueArgsSchema;
+export default GradeLevelFindUniqueArgsSchema

@@ -1,21 +1,21 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { DepartmentCreateWithoutClassroomInputSchema } from './DepartmentCreateWithoutClassroomInputSchema';
-import { DepartmentUncheckedCreateWithoutClassroomInputSchema } from './DepartmentUncheckedCreateWithoutClassroomInputSchema';
-import { DepartmentCreateOrConnectWithoutClassroomInputSchema } from './DepartmentCreateOrConnectWithoutClassroomInputSchema';
-import { DepartmentUpsertWithoutClassroomInputSchema } from './DepartmentUpsertWithoutClassroomInputSchema';
-import { DepartmentWhereUniqueInputSchema } from './DepartmentWhereUniqueInputSchema';
-import { DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema } from './DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema';
-import { DepartmentUpdateWithoutClassroomInputSchema } from './DepartmentUpdateWithoutClassroomInputSchema';
-import { DepartmentUncheckedUpdateWithoutClassroomInputSchema } from './DepartmentUncheckedUpdateWithoutClassroomInputSchema';
+import { z } from "zod"
+import { DepartmentCreateOrConnectWithoutClassroomInputSchema } from "./DepartmentCreateOrConnectWithoutClassroomInputSchema"
+import { DepartmentCreateWithoutClassroomInputSchema } from "./DepartmentCreateWithoutClassroomInputSchema"
+import { DepartmentUncheckedCreateWithoutClassroomInputSchema } from "./DepartmentUncheckedCreateWithoutClassroomInputSchema"
+import { DepartmentUncheckedUpdateWithoutClassroomInputSchema } from "./DepartmentUncheckedUpdateWithoutClassroomInputSchema"
+import { DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema } from "./DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema"
+import { DepartmentUpdateWithoutClassroomInputSchema } from "./DepartmentUpdateWithoutClassroomInputSchema"
+import { DepartmentUpsertWithoutClassroomInputSchema } from "./DepartmentUpsertWithoutClassroomInputSchema"
+import { DepartmentWhereUniqueInputSchema } from "./DepartmentWhereUniqueInputSchema"
 
 export const DepartmentUpdateOneRequiredWithoutClassroomNestedInputSchema: z.ZodType<Prisma.DepartmentUpdateOneRequiredWithoutClassroomNestedInput> = z.object({
-  create: z.union([ z.lazy(() => DepartmentCreateWithoutClassroomInputSchema),z.lazy(() => DepartmentUncheckedCreateWithoutClassroomInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => DepartmentCreateOrConnectWithoutClassroomInputSchema).optional(),
-  upsert: z.lazy(() => DepartmentUpsertWithoutClassroomInputSchema).optional(),
   connect: z.lazy(() => DepartmentWhereUniqueInputSchema).optional(),
-  update: z.union([ z.lazy(() => DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema),z.lazy(() => DepartmentUpdateWithoutClassroomInputSchema),z.lazy(() => DepartmentUncheckedUpdateWithoutClassroomInputSchema) ]).optional(),
-}).strict();
+  connectOrCreate: z.lazy(() => DepartmentCreateOrConnectWithoutClassroomInputSchema).optional(),
+  create: z.union([z.lazy(() => DepartmentCreateWithoutClassroomInputSchema), z.lazy(() => DepartmentUncheckedCreateWithoutClassroomInputSchema)]).optional(),
+  update: z.union([z.lazy(() => DepartmentUpdateToOneWithWhereWithoutClassroomInputSchema), z.lazy(() => DepartmentUpdateWithoutClassroomInputSchema), z.lazy(() => DepartmentUncheckedUpdateWithoutClassroomInputSchema)]).optional(),
+  upsert: z.lazy(() => DepartmentUpsertWithoutClassroomInputSchema).optional(),
+}).strict()
 
-export default DepartmentUpdateOneRequiredWithoutClassroomNestedInputSchema;
+export default DepartmentUpdateOneRequiredWithoutClassroomNestedInputSchema

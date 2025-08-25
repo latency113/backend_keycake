@@ -21,11 +21,11 @@ describe("cakeRequestService", () => {
     db = {
       cakeRequest: {
         count: vi.fn().mockResolvedValue(1),
-        create: vi.fn().mockResolvedValue({ ...baseCakeRequest, id: "2", branch: {}, user: {}, items: [] }),
+        create: vi.fn().mockResolvedValue({ ...baseCakeRequest, branch: {}, id: "2", items: [], user: {} }),
         delete: vi.fn().mockResolvedValue({ ...baseCakeRequest }),
         findFirst: vi.fn().mockResolvedValue({ ...baseCakeRequest, items: [] }),
         findMany: vi.fn().mockResolvedValue([{ ...baseCakeRequest, items: [] }]),
-        update: vi.fn().mockResolvedValue({ ...baseCakeRequest, note: "updated note", branch: {}, user: {}, items: [] }),
+        update: vi.fn().mockResolvedValue({ ...baseCakeRequest, branch: {}, items: [], note: "updated note", user: {} }),
       },
     }
     service = CakeRequestService({ db: db as unknown as PrismaClient })
@@ -43,12 +43,12 @@ describe("cakeRequestService", () => {
     expect(CakeRequests.length).toBeGreaterThan(0)
     expect(CakeRequests[0]).toMatchObject({ id: "1", status: RequestStatus.pending })
     expect(db.cakeRequest.findMany).toHaveBeenCalledWith({
-      skip: 0,
-      take: undefined,
-      where: { status: RequestStatus.pending },
       include: {
         items: true,
       },
+      skip: 0,
+      take: undefined,
+      where: { status: RequestStatus.pending },
     })
   })
 
@@ -57,10 +57,10 @@ describe("cakeRequestService", () => {
     expect(CakeRequest).toBeTruthy()
     expect(CakeRequest).toMatchObject({ id: "1", status: RequestStatus.pending })
     expect(db.cakeRequest.findFirst).toHaveBeenCalledWith({
-      where: { id: "1" },
       include: {
         items: true,
       },
+      where: { id: "1" },
     })
   })
 
@@ -69,10 +69,10 @@ describe("cakeRequestService", () => {
     expect(CakeRequest).toBeTruthy()
     expect(CakeRequest).toMatchObject({ id: "1", status: RequestStatus.pending })
     expect(db.cakeRequest.findFirst).toHaveBeenCalledWith({
-      where: { status: RequestStatus.pending },
       include: {
         items: true,
       },
+      where: { status: RequestStatus.pending },
     })
   })
 
@@ -91,8 +91,8 @@ describe("cakeRequestService", () => {
       data,
       include: {
         department: true,
-        user: true,
         items: true,
+        user: true,
       },
     })
   })
@@ -111,12 +111,12 @@ describe("cakeRequestService", () => {
     expect(CakeRequest).toMatchObject({ id: "1", note: "updated note" })
     expect(db.cakeRequest.update).toHaveBeenCalledWith({
       data,
-      where: { id: "1" },
       include: {
         department: true,
-        user: true,
         items: true,
+        user: true,
       },
+      where: { id: "1" },
     })
   })
 })

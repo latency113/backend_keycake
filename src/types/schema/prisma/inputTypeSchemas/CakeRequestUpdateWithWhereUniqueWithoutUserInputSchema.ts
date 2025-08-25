@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { CakeRequestWhereUniqueInputSchema } from './CakeRequestWhereUniqueInputSchema';
-import { CakeRequestUpdateWithoutUserInputSchema } from './CakeRequestUpdateWithoutUserInputSchema';
-import { CakeRequestUncheckedUpdateWithoutUserInputSchema } from './CakeRequestUncheckedUpdateWithoutUserInputSchema';
+import { z } from "zod"
+import { CakeRequestUncheckedUpdateWithoutUserInputSchema } from "./CakeRequestUncheckedUpdateWithoutUserInputSchema"
+import { CakeRequestUpdateWithoutUserInputSchema } from "./CakeRequestUpdateWithoutUserInputSchema"
+import { CakeRequestWhereUniqueInputSchema } from "./CakeRequestWhereUniqueInputSchema"
 
 export const CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithWhereUniqueWithoutUserInput> = z.object({
+  data: z.union([z.lazy(() => CakeRequestUpdateWithoutUserInputSchema), z.lazy(() => CakeRequestUncheckedUpdateWithoutUserInputSchema)]),
   where: z.lazy(() => CakeRequestWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => CakeRequestUpdateWithoutUserInputSchema),z.lazy(() => CakeRequestUncheckedUpdateWithoutUserInputSchema) ]),
-}).strict();
+}).strict()
 
-export default CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema;
+export default CakeRequestUpdateWithWhereUniqueWithoutUserInputSchema

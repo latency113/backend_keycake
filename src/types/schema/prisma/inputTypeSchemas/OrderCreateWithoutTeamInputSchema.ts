@@ -1,27 +1,27 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { OrderStatusSchema } from './OrderStatusSchema';
-import { OrderItemCreateNestedManyWithoutOrderInputSchema } from './OrderItemCreateNestedManyWithoutOrderInputSchema';
-import { ClassroomCreateNestedOneWithoutOrdersInputSchema } from './ClassroomCreateNestedOneWithoutOrdersInputSchema';
+import { z } from "zod"
+import { ClassroomCreateNestedOneWithoutOrdersInputSchema } from "./ClassroomCreateNestedOneWithoutOrdersInputSchema"
+import { OrderItemCreateNestedManyWithoutOrderInputSchema } from "./OrderItemCreateNestedManyWithoutOrderInputSchema"
+import { OrderStatusSchema } from "./OrderStatusSchema"
 
 export const OrderCreateWithoutTeamInputSchema: z.ZodType<Prisma.OrderCreateWithoutTeamInput> = z.object({
-  id: z.string().optional(),
-  customerName: z.string(),
-  orderDate: z.coerce.date(),
-  totalPrice: z.number(),
+  advisor: z.string(),
   book_number: z.number().int(),
+  classroom: z.lazy(() => ClassroomCreateNestedOneWithoutOrdersInputSchema).optional(),
+  createdAt: z.coerce.date().optional(),
+  customerName: z.string(),
+  deposit: z.number().int(),
+  depository: z.string().optional().nullable(),
+  id: z.string().optional(),
   number: z.number().int(),
+  orderDate: z.coerce.date(),
+  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
   phone: z.string(),
   pickup_date: z.coerce.date(),
-  depository: z.string().optional().nullable(),
-  deposit: z.number().int(),
-  advisor: z.string(),
   status: z.lazy(() => OrderStatusSchema).optional(),
-  createdAt: z.coerce.date().optional(),
+  totalPrice: z.number(),
   updatedAt: z.coerce.date().optional(),
-  orderItems: z.lazy(() => OrderItemCreateNestedManyWithoutOrderInputSchema).optional(),
-  classroom: z.lazy(() => ClassroomCreateNestedOneWithoutOrdersInputSchema).optional()
-}).strict();
+}).strict()
 
-export default OrderCreateWithoutTeamInputSchema;
+export default OrderCreateWithoutTeamInputSchema

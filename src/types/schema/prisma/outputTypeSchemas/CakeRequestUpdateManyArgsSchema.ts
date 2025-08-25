@@ -1,13 +1,13 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { CakeRequestUpdateManyMutationInputSchema } from '../inputTypeSchemas/CakeRequestUpdateManyMutationInputSchema'
-import { CakeRequestUncheckedUpdateManyInputSchema } from '../inputTypeSchemas/CakeRequestUncheckedUpdateManyInputSchema'
-import { CakeRequestWhereInputSchema } from '../inputTypeSchemas/CakeRequestWhereInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { CakeRequestUncheckedUpdateManyInputSchema } from "../inputTypeSchemas/CakeRequestUncheckedUpdateManyInputSchema"
+import { CakeRequestUpdateManyMutationInputSchema } from "../inputTypeSchemas/CakeRequestUpdateManyMutationInputSchema"
+import { CakeRequestWhereInputSchema } from "../inputTypeSchemas/CakeRequestWhereInputSchema"
 
 export const CakeRequestUpdateManyArgsSchema: z.ZodType<Prisma.CakeRequestUpdateManyArgs> = z.object({
-  data: z.union([ CakeRequestUpdateManyMutationInputSchema,CakeRequestUncheckedUpdateManyInputSchema ]),
-  where: CakeRequestWhereInputSchema.optional(),
+  data: z.union([CakeRequestUpdateManyMutationInputSchema, CakeRequestUncheckedUpdateManyInputSchema]),
   limit: z.number().optional(),
-}).strict() ;
+  where: CakeRequestWhereInputSchema.optional(),
+}).strict()
 
-export default CakeRequestUpdateManyArgsSchema;
+export default CakeRequestUpdateManyArgsSchema

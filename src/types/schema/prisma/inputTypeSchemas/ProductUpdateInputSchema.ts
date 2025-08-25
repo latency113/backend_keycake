@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
-import { FloatFieldUpdateOperationsInputSchema } from './FloatFieldUpdateOperationsInputSchema';
-import { OrderItemUpdateManyWithoutProductNestedInputSchema } from './OrderItemUpdateManyWithoutProductNestedInputSchema';
-import { CakeRequestItemsUpdateManyWithoutProductNestedInputSchema } from './CakeRequestItemsUpdateManyWithoutProductNestedInputSchema';
+import { z } from "zod"
+import { CakeRequestItemsUpdateManyWithoutProductNestedInputSchema } from "./CakeRequestItemsUpdateManyWithoutProductNestedInputSchema"
+import { FloatFieldUpdateOperationsInputSchema } from "./FloatFieldUpdateOperationsInputSchema"
+import { OrderItemUpdateManyWithoutProductNestedInputSchema } from "./OrderItemUpdateManyWithoutProductNestedInputSchema"
+import { StringFieldUpdateOperationsInputSchema } from "./StringFieldUpdateOperationsInputSchema"
 
 export const ProductUpdateInputSchema: z.ZodType<Prisma.ProductUpdateInput> = z.object({
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  price: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutProductNestedInputSchema).optional(),
+  name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
   orderItems: z.lazy(() => OrderItemUpdateManyWithoutProductNestedInputSchema).optional(),
-  items: z.lazy(() => CakeRequestItemsUpdateManyWithoutProductNestedInputSchema).optional()
-}).strict();
+  price: z.union([z.number(), z.lazy(() => FloatFieldUpdateOperationsInputSchema)]).optional(),
+}).strict()
 
-export default ProductUpdateInputSchema;
+export default ProductUpdateInputSchema

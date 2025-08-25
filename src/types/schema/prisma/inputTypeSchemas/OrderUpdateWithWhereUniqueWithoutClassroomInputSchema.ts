@@ -1,13 +1,13 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { OrderWhereUniqueInputSchema } from './OrderWhereUniqueInputSchema';
-import { OrderUpdateWithoutClassroomInputSchema } from './OrderUpdateWithoutClassroomInputSchema';
-import { OrderUncheckedUpdateWithoutClassroomInputSchema } from './OrderUncheckedUpdateWithoutClassroomInputSchema';
+import { z } from "zod"
+import { OrderUncheckedUpdateWithoutClassroomInputSchema } from "./OrderUncheckedUpdateWithoutClassroomInputSchema"
+import { OrderUpdateWithoutClassroomInputSchema } from "./OrderUpdateWithoutClassroomInputSchema"
+import { OrderWhereUniqueInputSchema } from "./OrderWhereUniqueInputSchema"
 
 export const OrderUpdateWithWhereUniqueWithoutClassroomInputSchema: z.ZodType<Prisma.OrderUpdateWithWhereUniqueWithoutClassroomInput> = z.object({
+  data: z.union([z.lazy(() => OrderUpdateWithoutClassroomInputSchema), z.lazy(() => OrderUncheckedUpdateWithoutClassroomInputSchema)]),
   where: z.lazy(() => OrderWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => OrderUpdateWithoutClassroomInputSchema),z.lazy(() => OrderUncheckedUpdateWithoutClassroomInputSchema) ]),
-}).strict();
+}).strict()
 
-export default OrderUpdateWithWhereUniqueWithoutClassroomInputSchema;
+export default OrderUpdateWithWhereUniqueWithoutClassroomInputSchema

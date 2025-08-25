@@ -1,5 +1,5 @@
-import { z } from 'zod';
+import { z } from "zod"
 
-export const ProductScalarFieldEnumSchema = z.enum(['id','name','price']);
+export const ProductScalarFieldEnumSchema = z.enum(["id", "name", "price"])
 
-export default ProductScalarFieldEnumSchema;
+export default ProductScalarFieldEnumSchema

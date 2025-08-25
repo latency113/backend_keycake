@@ -1,23 +1,23 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { IntFieldUpdateOperationsInputSchema } from './IntFieldUpdateOperationsInputSchema';
-import { FloatFieldUpdateOperationsInputSchema } from './FloatFieldUpdateOperationsInputSchema';
-import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
-import { OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema } from './OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema';
-import { ProductUpdateOneRequiredWithoutOrderItemsNestedInputSchema } from './ProductUpdateOneRequiredWithoutOrderItemsNestedInputSchema';
-import { CakeRequestItemsUpdateManyWithoutOrderItemNestedInputSchema } from './CakeRequestItemsUpdateManyWithoutOrderItemNestedInputSchema';
+import { z } from "zod"
+import { CakeRequestItemsUpdateManyWithoutOrderItemNestedInputSchema } from "./CakeRequestItemsUpdateManyWithoutOrderItemNestedInputSchema"
+import { DateTimeFieldUpdateOperationsInputSchema } from "./DateTimeFieldUpdateOperationsInputSchema"
+import { FloatFieldUpdateOperationsInputSchema } from "./FloatFieldUpdateOperationsInputSchema"
+import { IntFieldUpdateOperationsInputSchema } from "./IntFieldUpdateOperationsInputSchema"
+import { OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema } from "./OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema"
+import { ProductUpdateOneRequiredWithoutOrderItemsNestedInputSchema } from "./ProductUpdateOneRequiredWithoutOrderItemsNestedInputSchema"
 
 export const OrderItemUpdateInputSchema: z.ZodType<Prisma.OrderItemUpdateInput> = z.object({
-  pound: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  quantity: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  unitPrice: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
-  subtotal: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  CakeRequestItems: z.lazy(() => CakeRequestItemsUpdateManyWithoutOrderItemNestedInputSchema).optional(),
+  createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
   order: z.lazy(() => OrderUpdateOneRequiredWithoutOrderItemsNestedInputSchema).optional(),
+  pound: z.union([z.number().int(), z.lazy(() => IntFieldUpdateOperationsInputSchema)]).optional(),
   product: z.lazy(() => ProductUpdateOneRequiredWithoutOrderItemsNestedInputSchema).optional(),
-  CakeRequestItems: z.lazy(() => CakeRequestItemsUpdateManyWithoutOrderItemNestedInputSchema).optional()
-}).strict();
+  quantity: z.union([z.number().int(), z.lazy(() => IntFieldUpdateOperationsInputSchema)]).optional(),
+  subtotal: z.union([z.number(), z.lazy(() => FloatFieldUpdateOperationsInputSchema)]).optional(),
+  unitPrice: z.union([z.number(), z.lazy(() => FloatFieldUpdateOperationsInputSchema)]).optional(),
+  updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
+}).strict()
 
-export default OrderItemUpdateInputSchema;
+export default OrderItemUpdateInputSchema

@@ -2,16 +2,16 @@ import type { TypeApplication } from "@/configure/create-application.js"
 import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { RoomService } from "@/services/index.js"
+import { ClassroomService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { RoomPartialSchema } from "@/types/schema/prisma/index.js"
+import { ClassroomPartialSchema } from "@/types/schema/prisma/index.js"
 
-const RequestSchema = RoomPartialSchema
+const RequestSchema = ClassroomPartialSchema
 
 const ResponseSchema = z.object({
-  data: RoomPartialSchema,
-  message: z.string().default("Room updated successfully"),
+  data: ClassroomPartialSchema,
+  message: z.string().default("Classroom updated successfully"),
 })
 
 export default (app: TypeApplication) =>
@@ -22,14 +22,14 @@ export default (app: TypeApplication) =>
         const validBody = RequestSchema.parse(body)
         const { id } = params
         const deps = {
-          RoomService: RoomService({ db: DatabaseContext }),
+          ClassroomService: ClassroomService({ db: DatabaseContext }),
         }
-        const result = await deps.RoomService.onUpdate(id, validBody)
+        const result = await deps.ClassroomService.onUpdate(id, validBody)
         if (!result)
-          throw NewError("Failed to update Room", "UPDATE_FAILED", 500)
+          throw NewError("Failed to update Classroom", "UPDATE_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Room updated successfully",
+          message: "Classroom updated successfully",
         })
         if (!parse.success) {
           throw NewError(
@@ -42,7 +42,7 @@ export default (app: TypeApplication) =>
         return parse.data
       }
       catch (error) {
-        console.error("Error updating Room:", error)
+        console.error("Error updating Classroom:", error)
         const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
@@ -68,7 +68,7 @@ export default (app: TypeApplication) =>
           content: {
             "application/json": {
               example: {
-                branch_id: "",
+                department_id: "",
                 grade_level_id: "",
                 name: "",
               },
@@ -83,7 +83,7 @@ export default (app: TypeApplication) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Room update success",
+            description: "Classroom update success",
           },
           500: {
             content: {
@@ -91,10 +91,10 @@ export default (app: TypeApplication) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Room update fail",
+            description: "Classroom update fail",
           },
         },
-        tags: ["Class"],
+        tags: ["Classroom"],
       },
     },
   )

@@ -1,7 +1,7 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
 
 export const GradeLevelIncludeSchema: z.ZodType<Prisma.GradeLevelInclude> = z.object({
 }).strict()
 
-export default GradeLevelIncludeSchema;
+export default GradeLevelIncludeSchema

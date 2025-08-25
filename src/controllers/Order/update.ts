@@ -68,16 +68,16 @@ export default (app: TypeApplication) =>
           content: {
             "application/json": {
               example: {
-                book_number: 0,
-                number: 0,
-                customerName: "",
-                depository: "",
-                deposit: 0,
                 advisor: "",
+                book_number: 0,
+                classroom_id: "",
+                customerName: "",
+                deposit: 0,
+                depository: "",
+                number: 0,
                 orderDate: "",
                 phone: "",
                 pickup_date: "",
-                class_id: "",
                 team_id: "",
                 totalPrice: 0,
               },

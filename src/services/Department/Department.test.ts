@@ -21,42 +21,31 @@ describe("departmentService", () => {
         findFirst: vi
           .fn()
           .mockResolvedValue({
+            classrooms: [],
             gradeLevels: [],
             group_number: "GN1",
             id: "1",
             name: "Department 1",
-            rooms: [],
           }),
         findMany: vi
           .fn()
           .mockResolvedValue([
             {
+              classrooms: [],
               gradeLevels: [],
               group_number: "GN1",
               id: "1",
               name: "Department 1",
-              rooms: [],
-            },
-          ]),
-        findMany: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              gradeLevels: [],
-              group_number: "GN1",
-              id: "1",
-              name: "Department 1",
-              rooms: [],
             },
           ]),
         update: vi
           .fn()
           .mockResolvedValue({
+            classrooms: [],
             gradeLevels: [],
             group_number: "GN1-U",
             id: "1",
             name: "Department 1 Updated",
-            rooms: [],
           }),
       },
     }
@@ -79,14 +68,14 @@ describe("departmentService", () => {
     const department = await service.getById("1")
     expect(department).toBeTruthy()
     expect(db.department.findFirst).toHaveBeenCalledWith({
-      where: { id: "1" },
       include: {
-        rooms: {
+        classrooms: {
           include: {
             grade_level: true,
           },
         },
       },
+      where: { id: "1" },
     })
   })
 
@@ -94,14 +83,14 @@ describe("departmentService", () => {
     const department = await service.getOne({ name: "Department 1" })
     expect(department).toBeTruthy()
     expect(db.department.findFirst).toHaveBeenCalledWith({
-      where: { name: "Department 1" },
       include: {
-        rooms: {
+        classrooms: {
           include: {
             grade_level: true,
           },
         },
       },
+      where: { name: "Department 1" },
     })
   })
 
@@ -127,4 +116,4 @@ describe("departmentService", () => {
     expect(department).toBeTruthy()
     expect(db.department.update).toHaveBeenCalledWith({ data, where: { id: "1" } })
   })
-}
+})

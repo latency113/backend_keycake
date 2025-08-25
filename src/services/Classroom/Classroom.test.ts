@@ -1,100 +1,100 @@
 import type { PrismaClient } from "@prisma/client"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { ClassService } from "./Classroom.service"
+import { ClassroomService } from "./Classroom.service"
 
-describe("classService", () => {
-  let db: { class: any }
-  let service: ReturnType<typeof ClassService>
+describe("classroomService", () => {
+  let db: { classroom: any }
+  let service: ReturnType<typeof ClassroomService>
 
   beforeEach(() => {
     db = {
-      class: {
+      classroom: {
         count: vi.fn().mockResolvedValue(1),
         create: vi.fn().mockResolvedValue({
+          department: { group_number: "GN2", id: "GN2", name: "Department 2" },
           department_id: "GN2",
+          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
           grade_level_id: "GL1",
           id: "2",
-          name: "Class 2",
-          department: { id: "GN2", name: "Department 2", group_number: "GN2" },
-          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
+          name: "Classroom 2",
         }),
         delete: vi.fn().mockResolvedValue({ id: "1" }),
         findFirst: vi.fn().mockResolvedValue({
+          department: { group_number: "GN1", id: "GN1", name: "Department 1" },
           department_id: "GN1",
+          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
           grade_level_id: "GL1",
           id: "1",
-          name: "Class 1",
-          department: { id: "GN1", name: "Department 1", group_number: "GN1" },
-          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
+          name: "Classroom 1",
         }),
         findMany: vi.fn().mockResolvedValue([
           {
+            department: { group_number: "GN1", id: "GN1", name: "Department 1" },
             department_id: "GN1",
+            grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
             grade_level_id: "GL1",
             id: "1",
-            name: "Class 1",
-            department: { id: "GN1", name: "Department 1", group_number: "GN1" },
-            grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
+            name: "Classroom 1",
           },
         ]),
         update: vi.fn().mockResolvedValue({
+          department: { group_number: "GN1-U", id: "GN1-U", name: "Department 1 Updated" },
           department_id: "GN1-U",
+          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
           grade_level_id: "GL1",
           id: "1",
-          name: "Class 1 Updated",
-          department: { id: "GN1-U", name: "Department 1 Updated", group_number: "GN1-U" },
-          grade_level: { id: "GL1", level: "VOCATIONAL", year: 2023 },
+          name: "Classroom 1 Updated",
         }),
       },
     }
-    service = ClassService({ db: db as unknown as PrismaClient })
+    service = ClassroomService({ db: db as unknown as PrismaClient })
   })
 
-  it("should count Classes", async () => {
+  it("should count Classrooms", async () => {
     const count = await service.count()
     expect(count).toBe(1)
-    expect(db.class.count).toHaveBeenCalled()
+    expect(db.classroom.count).toHaveBeenCalled()
   })
 
-  it("should get all Classes", async () => {
-    const classes = await service.getAll()
-    expect(classes.length).toBeGreaterThan(0)
-    expect(db.class.findMany).toHaveBeenCalled()
+  it("should get all Classrooms", async () => {
+    const classrooms = await service.getAll()
+    expect(classrooms.length).toBeGreaterThan(0)
+    expect(db.classroom.findMany).toHaveBeenCalled()
   })
 
-  it("should get Class by id", async () => {
-    const class_ = await service.getById("1")
-    expect(class_).toBeTruthy()
-    expect(db.class.findFirst).toHaveBeenCalledWith({
+  it("should get Classroom by id", async () => {
+    const classroom_ = await service.getById("1")
+    expect(classroom_).toBeTruthy()
+    expect(db.classroom.findFirst).toHaveBeenCalledWith({
+      include: {
+        department: true,
+        grade_level: true,
+      },
       where: { id: "1" },
+    })
+  })
+
+  it("should get one Classroom by param", async () => {
+    const classroom_ = await service.getOne({ name: "Classroom 1" })
+    expect(classroom_).toBeTruthy()
+    expect(db.classroom.findFirst).toHaveBeenCalledWith({
       include: {
         department: true,
         grade_level: true,
       },
+      where: { name: "Classroom 1" },
     })
   })
 
-  it("should get one Class by param", async () => {
-    const class_ = await service.getOne({ name: "Class 1" })
-    expect(class_).toBeTruthy()
-    expect(db.class.findFirst).toHaveBeenCalledWith({
-      where: { name: "Class 1" },
-      include: {
-        department: true,
-        grade_level: true,
-      },
-    })
-  })
-
-  it("should create a Class", async () => {
+  it("should create a Classroom", async () => {
     const data = {
       department_id: "GN2",
       grade_level_id: "GL1",
-      name: "Class 2",
+      name: "Classroom 2",
     }
-    const class_ = await service.onCreate(data)
-    expect(class_).toBeTruthy()
-    expect(db.class.create).toHaveBeenCalledWith({
+    const classroom_ = await service.onCreate(data)
+    expect(classroom_).toBeTruthy()
+    expect(db.classroom.create).toHaveBeenCalledWith({
       data,
       include: {
         department: true,
@@ -103,23 +103,23 @@ describe("classService", () => {
     })
   })
 
-  it("should delete a Class", async () => {
-    const class_ = await service.onDelete("1")
-    expect(class_).toBeTruthy()
-    expect(db.class.delete).toHaveBeenCalledWith({ where: { id: "1" } })
+  it("should delete a Classroom", async () => {
+    const classroom_ = await service.onDelete("1")
+    expect(classroom_).toBeTruthy()
+    expect(db.classroom.delete).toHaveBeenCalledWith({ where: { id: "1" } })
   })
 
-  it("should update a Class", async () => {
-    const data = { grade_level_id: "GL1", name: "Class 1 Updated" }
-    const class_ = await service.onUpdate("1", data)
-    expect(class_).toBeTruthy()
-    expect(db.class.update).toHaveBeenCalledWith({
+  it("should update a Classroom", async () => {
+    const data = { grade_level_id: "GL1", name: "Classroom 1 Updated" }
+    const classroom_ = await service.onUpdate("1", data)
+    expect(classroom_).toBeTruthy()
+    expect(db.classroom.update).toHaveBeenCalledWith({
       data,
-      where: { id: "1" },
       include: {
         department: true,
         grade_level: true,
       },
+      where: { id: "1" },
     })
   })
 })

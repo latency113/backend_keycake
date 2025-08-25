@@ -1,15 +1,15 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { GradeLevelTypeSchema } from './GradeLevelTypeSchema';
-import { EnumGradeLevelTypeFieldUpdateOperationsInputSchema } from './EnumGradeLevelTypeFieldUpdateOperationsInputSchema';
-import { IntFieldUpdateOperationsInputSchema } from './IntFieldUpdateOperationsInputSchema';
-import { ClassroomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema } from './ClassroomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema';
+import { z } from "zod"
+import { ClassroomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema } from "./ClassroomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema"
+import { EnumGradeLevelTypeFieldUpdateOperationsInputSchema } from "./EnumGradeLevelTypeFieldUpdateOperationsInputSchema"
+import { GradeLevelTypeSchema } from "./GradeLevelTypeSchema"
+import { IntFieldUpdateOperationsInputSchema } from "./IntFieldUpdateOperationsInputSchema"
 
 export const GradeLevelUncheckedUpdateInputSchema: z.ZodType<Prisma.GradeLevelUncheckedUpdateInput> = z.object({
-  level: z.union([ z.lazy(() => GradeLevelTypeSchema),z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema) ]).optional(),
-  year: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  classroom: z.lazy(() => ClassroomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema).optional()
-}).strict();
+  classroom: z.lazy(() => ClassroomUncheckedUpdateManyWithoutGrade_levelNestedInputSchema).optional(),
+  level: z.union([z.lazy(() => GradeLevelTypeSchema), z.lazy(() => EnumGradeLevelTypeFieldUpdateOperationsInputSchema)]).optional(),
+  year: z.union([z.number().int(), z.lazy(() => IntFieldUpdateOperationsInputSchema)]).optional(),
+}).strict()
 
-export default GradeLevelUncheckedUpdateInputSchema;
+export default GradeLevelUncheckedUpdateInputSchema

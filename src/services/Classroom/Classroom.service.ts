@@ -1,27 +1,27 @@
-import type { Prisma, PrismaClient, Class } from "@prisma/client"
-import type { TypeClassService, TypeClassWhereInput } from "./Classroom.type.js"
+import type { Classroom, Prisma, PrismaClient } from "@prisma/client"
+import type { TypeClassroomService, TypeClassroomWhereInput } from "./Classroom.type.js"
 
-export type ClassDependencies = {
+export type ClassroomDependencies = {
   db: PrismaClient
 }
-export function ClassService({ db }: ClassDependencies) {
+export function ClassroomService({ db }: ClassroomDependencies) {
   return {
-    async count(where?: TypeClassWhereInput["where"]): Promise<number> {
-      console.log(`[ClassService] count called with where:`, where)
+    async count(where?: TypeClassroomWhereInput["where"]): Promise<number> {
+      console.log(`[ClassroomService] count called with where:`, where)
       try {
-        const result = await db.class.count({ where })
-        console.log(`[ClassService] count completed, result: ${result}`)
+        const result = await db.classroom.count({ where })
+        console.log(`[ClassroomService] count completed, result: ${result}`)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] count error:`, error)
+        console.error(`[ClassroomService] count error:`, error)
         throw error
       }
     },
-    async getAll(param?: TypeClassWhereInput): Promise<ClassWithDepartment[]> {
-      console.log(`[ClassService] getAll called with param:`, param)
+    async getAll(param?: TypeClassroomWhereInput): Promise<ClassroomWithDepartment[]> {
+      console.log(`[ClassroomService] getAll called with param:`, param)
       try {
-        const result = await db.class.findMany({
+        const result = await db.classroom.findMany({
           include: {
             department: true,
             grade_level: true,
@@ -30,98 +30,98 @@ export function ClassService({ db }: ClassDependencies) {
           take: param?.pagination?.limit,
           where: param?.where,
         })
-        console.log(`[ClassService] getAll completed, found ${result.length} items`)
+        console.log(`[ClassroomService] getAll completed, found ${result.length} items`)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] getAll error:`, error)
+        console.error(`[ClassroomService] getAll error:`, error)
         throw error
       }
     },
-    async getById(id: string): Promise<ClassWithDepartment | null> {
-      console.log(`[ClassService] getById called with id: ${id}`)
+    async getById(id: string): Promise<ClassroomWithDepartment | null> {
+      console.log(`[ClassroomService] getById called with id: ${id}`)
       try {
-        const result = await db.class.findFirst({
-          where: { id },
+        const result = await db.classroom.findFirst({
           include: {
             department: true,
             grade_level: true,
           },
+          where: { id },
         })
-        console.log(`[ClassService] getById completed, found:`, !!result)
+        console.log(`[ClassroomService] getById completed, found:`, !!result)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] getById error:`, error)
+        console.error(`[ClassroomService] getById error:`, error)
         throw error
       }
     },
-    async getOne(param: TypeClassWhereInput["where"]): Promise<ClassWithDepartment | null> {
-      console.log(`[ClassService] getOne called with param:`, param)
+    async getOne(param: TypeClassroomWhereInput["where"]): Promise<ClassroomWithDepartment | null> {
+      console.log(`[ClassroomService] getOne called with param:`, param)
       try {
-        const result = await db.class.findFirst({
+        const result = await db.classroom.findFirst({
+          include: {
+            department: true,
+            grade_level: true,
+          },
           where: param,
-          include: {
-            department: true,
-            grade_level: true,
-          },
         })
-        console.log(`[ClassService] getOne completed, found:`, !!result)
+        console.log(`[ClassroomService] getOne completed, found:`, !!result)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] getOne error:`, error)
+        console.error(`[ClassroomService] getOne error:`, error)
         throw error
       }
     },
-    async onCreate(data: Prisma.ClassCreateInput): Promise<ClassWithDepartment> {
-      console.log(`[ClassService] onCreate called with data:`, data)
+    async onCreate(data: Prisma.ClassroomCreateInput): Promise<ClassroomWithDepartment> {
+      console.log(`[ClassroomService] onCreate called with data:`, data)
       try {
-        const result = await db.class.create({
+        const result = await db.classroom.create({
           data,
           include: {
             department: true,
             grade_level: true,
           },
         })
-        console.log(`[ClassService] onCreate completed, created id: ${result.id}`)
+        console.log(`[ClassroomService] onCreate completed, created id: ${result.id}`)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] onCreate error:`, error)
+        console.error(`[ClassroomService] onCreate error:`, error)
         throw error
       }
     },
-    async onDelete(id: string): Promise<Class | null> {
-      console.log(`[ClassService] onDelete called with id: ${id}`)
+    async onDelete(id: string): Promise<Classroom | null> {
+      console.log(`[ClassroomService] onDelete called with id: ${id}`)
       try {
-        const result = await db.class.delete({ where: { id } })
-        console.log(`[ClassService] onDelete completed for id: ${id}`)
+        const result = await db.classroom.delete({ where: { id } })
+        console.log(`[ClassroomService] onDelete completed for id: ${id}`)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] onDelete error:`, error)
+        console.error(`[ClassroomService] onDelete error:`, error)
         throw error
       }
     },
-    async onUpdate(id: string, data: Prisma.ClassUpdateInput): Promise<ClassWithDepartment> {
-      console.log(`[ClassService] onUpdate called with id: ${id}, data:`, data)
+    async onUpdate(id: string, data: Prisma.ClassroomUpdateInput): Promise<ClassroomWithDepartment> {
+      console.log(`[ClassroomService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const result = await db.class.update({
+        const result = await db.classroom.update({
           data,
+          include: {
+            department: true,
+            grade_level: true,
+          },
           where: { id },
-          include: {
-            department: true,
-            grade_level: true,
-          },
         })
-        console.log(`[ClassService] onUpdate completed for id: ${id}`)
+        console.log(`[ClassroomService] onUpdate completed for id: ${id}`)
         return result
       }
       catch (error) {
-        console.error(`[ClassService] onUpdate error:`, error)
+        console.error(`[ClassroomService] onUpdate error:`, error)
         throw error
       }
     },
-  } satisfies TypeClassService
+  } satisfies TypeClassroomService
 }

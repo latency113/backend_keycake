@@ -20,8 +20,8 @@ describe("productService", () => {
         delete: vi.fn().mockResolvedValue({ ...baseProduct }),
         findFirst: vi.fn().mockResolvedValue({ ...baseProduct, unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
         findMany: vi.fn().mockResolvedValue([{ ...baseProduct, unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }]),
-        update: vi.fn().mockResolvedValue({ ...baseProduct, name: "Vanilla Cake", unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
         findUnique: vi.fn().mockResolvedValue({ ...baseProduct, unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
+        update: vi.fn().mockResolvedValue({ ...baseProduct, name: "Vanilla Cake", unit: { id: "unit1", name_en: "unit_en", name_th: "unit_th" } }),
       },
     }
     service = ProductService({ db: db as unknown as PrismaClient })
@@ -39,12 +39,12 @@ describe("productService", () => {
     expect(products.length).toBeGreaterThan(0)
     expect(products[0]).toMatchObject({ id: "prod1", name: "Chocolate Cake" })
     expect(db.product.findMany).toHaveBeenCalledWith({
-      skip: 0,
-      take: undefined,
-      where: { name: "Chocolate Cake" },
       include: {
         unit: true,
       },
+      skip: 0,
+      take: undefined,
+      where: { name: "Chocolate Cake" },
     })
   })
 
@@ -53,10 +53,10 @@ describe("productService", () => {
     expect(product).toBeTruthy()
     expect(product).toMatchObject({ id: "prod1", name: "Chocolate Cake" })
     expect(db.product.findFirst).toHaveBeenCalledWith({
-      where: { id: "prod1" },
       include: {
         unit: true,
       },
+      where: { id: "prod1" },
     })
   })
 
@@ -65,10 +65,10 @@ describe("productService", () => {
     expect(product).toBeTruthy()
     expect(product).toMatchObject({ id: "prod1", name: "Chocolate Cake" })
     expect(db.product.findFirst).toHaveBeenCalledWith({
-      where: { name: "Chocolate Cake" },
       include: {
         unit: true,
       },
+      where: { name: "Chocolate Cake" },
     })
   })
 
@@ -103,10 +103,10 @@ describe("productService", () => {
     expect(product).toMatchObject({ id: "prod1", name: "Vanilla Cake" })
     expect(db.product.update).toHaveBeenCalledWith({
       data,
-      where: { id: "prod1" },
       include: {
         unit: true,
       },
+      where: { id: "prod1" },
     })
   })
 })

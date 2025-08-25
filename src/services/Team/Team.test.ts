@@ -6,9 +6,9 @@ describe("teamService", () => {
   let db: { team: any }
   let service: ReturnType<typeof TeamService>
   const baseTeam = {
+    classroom_id: "classroom1",
     id: "team1",
     name: "Red Team",
-    room_id: "room1",
   }
 
   beforeEach(() => {
@@ -17,8 +17,8 @@ describe("teamService", () => {
         count: vi.fn().mockResolvedValue(2),
         create: vi.fn().mockResolvedValue({ ...baseTeam, id: "team2" }),
         delete: vi.fn().mockResolvedValue({ ...baseTeam }),
-        findFirst: vi.fn().mockResolvedValue({ ...baseTeam, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }),
-        findMany: vi.fn().mockResolvedValue([{ ...baseTeam, room: { id: "room1", name: "Room 1", branch_id: "branch1", grade_level_id: "gl1" } }]),
+        findFirst: vi.fn().mockResolvedValue({ ...baseTeam, classroom: { department_id: "department1", grade_level_id: "gl1", id: "classroom1", name: "Classroom 1" } }),
+        findMany: vi.fn().mockResolvedValue([{ ...baseTeam, classroom: { department_id: "department1", grade_level_id: "gl1", id: "classroom1", name: "Classroom 1" } }]),
         update: vi.fn().mockResolvedValue({ ...baseTeam, name: "Blue Team" }),
       },
     }
@@ -37,10 +37,10 @@ describe("teamService", () => {
     expect(teams.length).toBeGreaterThan(0)
     expect(teams[0]).toMatchObject({ id: "team1", name: "Red Team" })
     expect(db.team.findMany).toHaveBeenCalledWith({
+      include: { classroom: true },
       skip: 0,
       take: undefined,
       where: { name: "Red Team" },
-      include: { class: true },
     })
   })
 
@@ -49,8 +49,8 @@ describe("teamService", () => {
     expect(team).toBeTruthy()
     expect(team).toMatchObject({ id: "team1", name: "Red Team" })
     expect(db.team.findFirst).toHaveBeenCalledWith({
+      include: { classroom: true },
       where: { id: "team1" },
-      include: { class: true },
     })
   })
 
@@ -59,15 +59,15 @@ describe("teamService", () => {
     expect(team).toBeTruthy()
     expect(team).toMatchObject({ id: "team1", name: "Red Team" })
     expect(db.team.findFirst).toHaveBeenCalledWith({
+      include: { classroom: true },
       where: { name: "Red Team" },
-      include: { class: true },
     })
   })
 
   it("should create a Team", async () => {
     const data = {
+      classroom: { connect: { id: "classroom1" } },
       name: "Red Team",
-      room: { connect: { id: "room1" } },
     }
     const team = await service.onCreate(data)
     expect(team).toBeTruthy()

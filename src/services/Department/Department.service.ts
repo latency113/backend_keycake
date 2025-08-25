@@ -1,5 +1,7 @@
 import type { Department, Prisma, PrismaClient } from "@prisma/client"
-import type { DepartmentWithClassRooms, GradeLevelWithClassRoomCount, TypeDepartmentService, TypeDepartmentWhereInput } from "./Department.type.js"
+import type { TypeDepartmentService, TypeDepartmentWhereInput } from "./Department.type.js"
+import type { DepartmentWithClassrooms } from "@/types/schema/prisma/outputTypeSchemas/DepartmentWithClassroomsSchema.js"
+import type { GradeLevelWithClassRoomCount } from "@/types/schema/prisma/outputTypeSchemas/GradeLevelWithClassRoomCountSchema.js"
 
 export type DepartmentDependencies = {
   db: PrismaClient
@@ -9,7 +11,7 @@ export function DepartmentService({ db }: DepartmentDependencies) {
     async count(where?: TypeDepartmentWhereInput["where"]): Promise<number> {
       console.log(`[DepartmentService] count called with where:`, where)
       try {
-        const result = await db.Department.count({ where })
+        const result = await db.department.count({ where })
         console.log(`[DepartmentService] count completed, result: ${result}`)
         return result
       }
@@ -18,12 +20,12 @@ export function DepartmentService({ db }: DepartmentDependencies) {
         throw error
       }
     },
-    async getAll(param?: TypeDepartmentWhereInput): Promise<DepartmentWithClassRooms[]> {
+    async getAll(param?: TypeDepartmentWhereInput): Promise<DepartmentWithClassrooms[]> {
       console.log(`[DepartmentService] getAll called with param:`, param)
       try {
-        const Departmentes = await db.Department.findMany({
+        const Departmentes = await db.department.findMany({
           include: {
-            ClassRooms: {
+            classroom: {
               include: {
                 grade_level: true,
               },
@@ -34,10 +36,10 @@ export function DepartmentService({ db }: DepartmentDependencies) {
           where: param?.where,
         })
 
-        const result: DepartmentWithClassRooms[] = Departmentes.map((Department) => {
+        const result: DepartmentWithClassrooms[] = Departmentes.map((Department) => {
           const gradeLevelsMap = new Map<string, GradeLevelWithClassRoomCount>()
 
-          Department.ClassRooms.forEach((ClassRoom) => {
+          Department.classroom.forEach((ClassRoom) => {
             if (ClassRoom.grade_level) {
               const key = `${ClassRoom.grade_level.level}-${ClassRoom.grade_level.year}`
               if (gradeLevelsMap.has(key)) {
@@ -47,8 +49,8 @@ export function DepartmentService({ db }: DepartmentDependencies) {
               }
               else {
                 gradeLevelsMap.set(key, {
-                  level: ClassRoom.grade_level.level,
                   ClassRoomCount: 1,
+                  level: ClassRoom.grade_level.level,
                   year: ClassRoom.grade_level.year,
                 })
               }
@@ -69,12 +71,12 @@ export function DepartmentService({ db }: DepartmentDependencies) {
         throw error
       }
     },
-    async getById(id: string): Promise<DepartmentWithClassRooms | null> {
+    async getById(id: string): Promise<DepartmentWithClassrooms | null> {
       console.log(`[DepartmentService] getById called with id: ${id}`)
       try {
-        const Department = await db.Department.findFirst({
+        const Department = await db.department.findFirst({
           include: {
-            ClassRooms: {
+            classroom: {
               include: {
                 grade_level: true,
               },
@@ -91,7 +93,7 @@ export function DepartmentService({ db }: DepartmentDependencies) {
 
         const gradeLevelsMap = new Map<string, GradeLevelWithClassRoomCount>()
 
-        Department.ClassRooms.forEach((ClassRoom) => {
+        Department.classroom.forEach((ClassRoom) => {
           if (ClassRoom.grade_level) {
             const key = `${ClassRoom.grade_level.level}-${ClassRoom.grade_level.year}`
             if (gradeLevelsMap.has(key)) {
@@ -101,15 +103,15 @@ export function DepartmentService({ db }: DepartmentDependencies) {
             }
             else {
               gradeLevelsMap.set(key, {
-                level: ClassRoom.grade_level.level,
                 ClassRoomCount: 1,
+                level: ClassRoom.grade_level.level,
                 year: ClassRoom.grade_level.year,
               })
             }
           }
         })
 
-        const result: DepartmentWithClassRooms = {
+        const result: DepartmentWithClassrooms = {
           ...Department,
           gradeLevels: Array.from(gradeLevelsMap.values()),
         }
@@ -125,9 +127,9 @@ export function DepartmentService({ db }: DepartmentDependencies) {
     async getOne(param: TypeDepartmentWhereInput["where"]): Promise<Department | null> {
       console.log(`[DepartmentService] getOne called with param:`, param)
       try {
-        const result = await db.Department.findFirst({
+        const result = await db.department.findFirst({
           include: {
-            ClassRooms: {
+            classroom: {
               include: {
                 grade_level: true,
               },
@@ -146,7 +148,7 @@ export function DepartmentService({ db }: DepartmentDependencies) {
     async onCreate(data: Prisma.DepartmentCreateInput): Promise<Department> {
       console.log(`[DepartmentService] onCreate called with data:`, data)
       try {
-        const result = await db.Department.create({ data })
+        const result = await db.department.create({ data })
         console.log(`[DepartmentService] onCreate completed, created id: ${result.id}`)
         return result
       }
@@ -158,7 +160,7 @@ export function DepartmentService({ db }: DepartmentDependencies) {
     async onDelete(id: string): Promise<Department | null> {
       console.log(`[DepartmentService] onDelete called with id: ${id}`)
       try {
-        const result = await db.Department.delete({ where: { id } })
+        const result = await db.department.delete({ where: { id } })
         console.log(`[DepartmentService] onDelete completed for id: ${id}`)
         return result
       }
@@ -170,7 +172,7 @@ export function DepartmentService({ db }: DepartmentDependencies) {
     async onUpdate(id: string, data: Prisma.DepartmentUpdateInput): Promise<Department> {
       console.log(`[DepartmentService] onUpdate called with id: ${id}, data:`, data)
       try {
-        const result = await db.Department.update({ data, where: { id } })
+        const result = await db.department.update({ data, where: { id } })
         console.log(`[DepartmentService] onUpdate completed for id: ${id}`)
         return result
       }

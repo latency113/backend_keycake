@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { SortOrderSchema } from './SortOrderSchema';
-import { ClassroomOrderByRelationAggregateInputSchema } from './ClassroomOrderByRelationAggregateInputSchema';
-import { CakeRequestOrderByRelationAggregateInputSchema } from './CakeRequestOrderByRelationAggregateInputSchema';
+import { z } from "zod"
+import { CakeRequestOrderByRelationAggregateInputSchema } from "./CakeRequestOrderByRelationAggregateInputSchema"
+import { ClassroomOrderByRelationAggregateInputSchema } from "./ClassroomOrderByRelationAggregateInputSchema"
+import { SortOrderSchema } from "./SortOrderSchema"
 
 export const DepartmentOrderByWithRelationInputSchema: z.ZodType<Prisma.DepartmentOrderByWithRelationInput> = z.object({
+  CakeRequest: z.lazy(() => CakeRequestOrderByRelationAggregateInputSchema).optional(),
+  classroom: z.lazy(() => ClassroomOrderByRelationAggregateInputSchema).optional(),
+  group_number: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  group_number: z.lazy(() => SortOrderSchema).optional(),
-  classroom: z.lazy(() => ClassroomOrderByRelationAggregateInputSchema).optional(),
-  CakeRequest: z.lazy(() => CakeRequestOrderByRelationAggregateInputSchema).optional()
-}).strict();
+}).strict()
 
-export default DepartmentOrderByWithRelationInputSchema;
+export default DepartmentOrderByWithRelationInputSchema

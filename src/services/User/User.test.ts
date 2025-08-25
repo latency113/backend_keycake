@@ -13,8 +13,8 @@ describe("userService", () => {
         create: vi
           .fn()
           .mockResolvedValue({
-            departmentId: "b1",
             createdAt: new Date(),
+            departmentId: "b1",
             email: "jane@example.com",
             fname: "Jane",
             id: "2",
@@ -28,8 +28,8 @@ describe("userService", () => {
         findFirst: vi
           .fn()
           .mockResolvedValue({
-            departmentId: "b1",
             createdAt: new Date(),
+            departmentId: "b1",
             email: "john@example.com",
             fname: "John",
             id: "1",
@@ -43,8 +43,8 @@ describe("userService", () => {
           .fn()
           .mockResolvedValue([
             {
-              departmentId: "b1",
               createdAt: new Date(),
+              departmentId: "b1",
               email: "john@example.com",
               fname: "John",
               id: "1",
@@ -58,8 +58,8 @@ describe("userService", () => {
         update: vi
           .fn()
           .mockResolvedValue({
-            departmentId: "b1",
             createdAt: new Date(),
+            departmentId: "b1",
             email: "john@example.com",
             fname: "John",
             id: "1",
@@ -102,9 +102,9 @@ describe("userService", () => {
 
   it("should create a user", async () => {
     const data = {
+      createdAt: new Date(),
       department: { connect: { id: "b1" } },
       departmentId: "b1",
-      createdAt: new Date(),
       email: "jane@example.com",
       fname: "Jane",
       lastname: "Smith",

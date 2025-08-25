@@ -2,16 +2,16 @@ import type { TypeApplication } from "@/configure/create-application.js"
 import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { RoomService } from "@/services/index.js"
+import { ClassroomService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { RoomOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { ClassroomOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
-const RequestSchema = RoomOptionalDefaultsSchema
+const RequestSchema = ClassroomOptionalDefaultsSchema
 
 const ResponseSchema = z.object({
-  data: RoomOptionalDefaultsSchema,
-  message: z.string().default("Room created successfully"),
+  data: ClassroomOptionalDefaultsSchema,
+  message: z.string().default("Classroom created successfully"),
 })
 
 export default (app: TypeApplication) =>
@@ -20,14 +20,14 @@ export default (app: TypeApplication) =>
     async ({ body, set }) => {
       try {
         const deps = {
-          RoomService: RoomService({ db: DatabaseContext }),
+          ClassroomService: ClassroomService({ db: DatabaseContext }),
         }
-        const result = await deps.RoomService.onCreate(body)
+        const result = await deps.ClassroomService.onCreate(body)
         if (result === null)
-          throw NewError("Failed to create Room", "CREATION_FAILED", 500)
+          throw NewError("Failed to create Classroom", "CREATION_FAILED", 500)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Room created successfully",
+          message: "Classroom created successfully",
         })
         if (!parse.success)
           throw NewError(`Failed to parse response object: ${JSON.stringify(parse.error)}`, "RESPONSE_PARSING_FAILED", 500)
@@ -35,7 +35,7 @@ export default (app: TypeApplication) =>
         return parse.data
       }
       catch (error) {
-        console.error("Error creating Room:", error)
+        console.error("Error creating Classroom:", error)
         const err = ParseError(error)
         const fail = FailResponseSchema.safeParse({
           code: err.code,
@@ -61,7 +61,7 @@ export default (app: TypeApplication) =>
           content: {
             "application/json": {
               example: {
-                branch_id: "",
+                department_id: "",
                 grade_level_id: "",
                 name: "",
               },
@@ -76,7 +76,7 @@ export default (app: TypeApplication) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Room creation success",
+            description: "Classroom creation success",
           },
           500: {
             content: {
@@ -84,10 +84,10 @@ export default (app: TypeApplication) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Room creation fail",
+            description: "Classroom creation fail",
           },
         },
-        tags: ["Class"],
+        tags: ["Classroom"],
       },
     },
   )

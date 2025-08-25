@@ -7,12 +7,12 @@ describe("orderService", () => {
   let service: ReturnType<typeof OrderService>
   const baseOrder = {
     book_number: 1,
+    classroom_id: "classroom1",
     createdAt: new Date("2025-07-14T00:00:00.000Z"),
     customerName: "John",
     id: "order1",
     number: 1,
     orderDate: new Date("2025-07-14T00:00:00.000Z"),
-    class_id: "class1",
     team_id: "team1",
     totalPrice: 100.5,
     updatedAt: new Date("2025-07-14T00:00:00.000Z"),
@@ -33,35 +33,35 @@ describe("orderService", () => {
   })
 
   it("should count Orders", async () => {
-    const count = await service.count({ class_id: "class1" })
+    const count = await service.count({ classroom_id: "classroom1" })
     expect(count).toBe(3)
-    expect(db.order.count).toHaveBeenCalledWith({ where: { class_id: "class1" } })
+    expect(db.order.count).toHaveBeenCalledWith({ where: { classroom_id: "classroom1" } })
   })
 
   it("should get all Orders", async () => {
-    const orders = await service.getAll({ where: { class_id: "class1" } })
+    const orders = await service.getAll({ where: { classroom_id: "classroom1" } })
     expect(Array.isArray(orders)).toBe(true)
     expect(orders.length).toBeGreaterThan(0)
-    expect(orders[0]).toMatchObject({ id: "order1", class_id: "class1" })
+    expect(orders[0]).toMatchObject({ classroom_id: "classroom1", id: "order1" })
     expect(db.order.findMany).toHaveBeenCalledWith({
-      skip: 0,
-      take: undefined,
-      where: { class_id: "class1" },
       include: {
         orderItems: true,
       },
+      skip: 0,
+      take: undefined,
+      where: { classroom_id: "classroom1" },
     })
   })
 
   it("should get Order by id", async () => {
     const order = await service.getById("order1")
     expect(order).toBeTruthy()
-    expect(order).toMatchObject({ id: "order1", class_id: "class1" })
+    expect(order).toMatchObject({ classroom_id: "classroom1", id: "order1" })
     expect(db.order.findFirst).toHaveBeenCalledWith({
-      where: { id: "order1" },
       include: {
         orderItems: true,
       },
+      where: { id: "order1" },
     })
   })
 
@@ -70,20 +70,20 @@ describe("orderService", () => {
     expect(order).toBeTruthy()
     expect(order).toMatchObject({ customerName: "John", id: "order1" })
     expect(db.order.findFirst).toHaveBeenCalledWith({
-      where: { customerName: "John" },
       include: {
         orderItems: true,
       },
+      where: { customerName: "John" },
     })
   })
 
   it("should create an Order", async () => {
     const data = {
       book_number: 1,
+      classroom: { connect: { id: "classroom1" } },
       customerName: "John",
       number: 1,
       orderDate: new Date("2025-07-14T00:00:00.000Z"),
-      class: { connect: { id: "class1" } },
       team: { connect: { id: "team1" } },
       totalPrice: 100.5,
     }

@@ -42,13 +42,13 @@ describe("orderItemService", () => {
     expect(items.length).toBeGreaterThan(0)
     expect(items[0]).toMatchObject({ id: "item1", order_id: "order1" })
     expect(db.orderItem.findMany).toHaveBeenCalledWith({
-      skip: 0,
-      take: undefined,
-      where: { order_id: "order1" },
       include: {
         order: true,
         product: true,
       },
+      skip: 0,
+      take: undefined,
+      where: { order_id: "order1" },
     })
   })
 
@@ -57,11 +57,11 @@ describe("orderItemService", () => {
     expect(item).toBeTruthy()
     expect(item).toMatchObject({ id: "item1", order_id: "order1" })
     expect(db.orderItem.findFirst).toHaveBeenCalledWith({
-      where: { id: "item1" },
       include: {
         order: true,
         product: true,
       },
+      where: { id: "item1" },
     })
   })
 
@@ -70,11 +70,11 @@ describe("orderItemService", () => {
     expect(item).toBeTruthy()
     expect(item).toMatchObject({ id: "item1", product_id: "prod1" })
     expect(db.orderItem.findFirst).toHaveBeenCalledWith({
-      where: { product_id: "prod1" },
       include: {
         order: true,
         product: true,
       },
+      where: { product_id: "prod1" },
     })
   })
 

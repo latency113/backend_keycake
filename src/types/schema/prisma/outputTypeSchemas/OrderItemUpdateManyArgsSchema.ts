@@ -1,13 +1,13 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { OrderItemUpdateManyMutationInputSchema } from '../inputTypeSchemas/OrderItemUpdateManyMutationInputSchema'
-import { OrderItemUncheckedUpdateManyInputSchema } from '../inputTypeSchemas/OrderItemUncheckedUpdateManyInputSchema'
-import { OrderItemWhereInputSchema } from '../inputTypeSchemas/OrderItemWhereInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { OrderItemUncheckedUpdateManyInputSchema } from "../inputTypeSchemas/OrderItemUncheckedUpdateManyInputSchema"
+import { OrderItemUpdateManyMutationInputSchema } from "../inputTypeSchemas/OrderItemUpdateManyMutationInputSchema"
+import { OrderItemWhereInputSchema } from "../inputTypeSchemas/OrderItemWhereInputSchema"
 
 export const OrderItemUpdateManyArgsSchema: z.ZodType<Prisma.OrderItemUpdateManyArgs> = z.object({
-  data: z.union([ OrderItemUpdateManyMutationInputSchema,OrderItemUncheckedUpdateManyInputSchema ]),
-  where: OrderItemWhereInputSchema.optional(),
+  data: z.union([OrderItemUpdateManyMutationInputSchema, OrderItemUncheckedUpdateManyInputSchema]),
   limit: z.number().optional(),
-}).strict() ;
+  where: OrderItemWhereInputSchema.optional(),
+}).strict()
 
-export default OrderItemUpdateManyArgsSchema;
+export default OrderItemUpdateManyArgsSchema

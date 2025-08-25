@@ -1,7 +1,7 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
 
 export const DepartmentIncludeSchema: z.ZodType<Prisma.DepartmentInclude> = z.object({
 }).strict()
 
-export default DepartmentIncludeSchema;
+export default DepartmentIncludeSchema

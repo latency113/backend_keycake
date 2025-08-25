@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod"
 
 /////////////////////////////////////////
 // CAKE REQUEST ITEMS SCHEMA
@@ -6,10 +6,10 @@ import { z } from 'zod';
 
 export const CakeRequestItemsSchema = z.object({
   id: z.string(),
-  request_id: z.string(),
-  product_id: z.string(),
   order_item_id: z.string(),
+  product_id: z.string(),
   quantity: z.number().int(),
+  request_id: z.string(),
 })
 
 export type CakeRequestItems = z.infer<typeof CakeRequestItemsSchema>
@@ -32,4 +32,4 @@ export const CakeRequestItemsOptionalDefaultsSchema = CakeRequestItemsSchema.mer
 
 export type CakeRequestItemsOptionalDefaults = z.infer<typeof CakeRequestItemsOptionalDefaultsSchema>
 
-export default CakeRequestItemsSchema;
+export default CakeRequestItemsSchema

@@ -1,21 +1,21 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
-import { RequestStatusSchema } from './RequestStatusSchema';
-import { EnumRequestStatusFieldUpdateOperationsInputSchema } from './EnumRequestStatusFieldUpdateOperationsInputSchema';
-import { NullableStringFieldUpdateOperationsInputSchema } from './NullableStringFieldUpdateOperationsInputSchema';
-import { DepartmentUpdateOneRequiredWithoutCakeRequestNestedInputSchema } from './DepartmentUpdateOneRequiredWithoutCakeRequestNestedInputSchema';
-import { UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema } from './UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema';
+import { z } from "zod"
+import { DateTimeFieldUpdateOperationsInputSchema } from "./DateTimeFieldUpdateOperationsInputSchema"
+import { DepartmentUpdateOneRequiredWithoutCakeRequestNestedInputSchema } from "./DepartmentUpdateOneRequiredWithoutCakeRequestNestedInputSchema"
+import { EnumRequestStatusFieldUpdateOperationsInputSchema } from "./EnumRequestStatusFieldUpdateOperationsInputSchema"
+import { NullableStringFieldUpdateOperationsInputSchema } from "./NullableStringFieldUpdateOperationsInputSchema"
+import { RequestStatusSchema } from "./RequestStatusSchema"
+import { UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema } from "./UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema"
 
 export const CakeRequestUpdateWithoutItemsInputSchema: z.ZodType<Prisma.CakeRequestUpdateWithoutItemsInput> = z.object({
-  requestDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  status: z.union([ z.lazy(() => RequestStatusSchema),z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
   department: z.lazy(() => DepartmentUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
-  user: z.lazy(() => UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional()
-}).strict();
+  note: z.union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)]).optional().nullable(),
+  requestDate: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
+  status: z.union([z.lazy(() => RequestStatusSchema), z.lazy(() => EnumRequestStatusFieldUpdateOperationsInputSchema)]).optional(),
+  updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutCakeRequestNestedInputSchema).optional(),
+}).strict()
 
-export default CakeRequestUpdateWithoutItemsInputSchema;
+export default CakeRequestUpdateWithoutItemsInputSchema

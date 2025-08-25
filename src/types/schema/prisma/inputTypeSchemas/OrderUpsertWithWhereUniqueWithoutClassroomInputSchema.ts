@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client"
 
-import { z } from 'zod';
-import { OrderWhereUniqueInputSchema } from './OrderWhereUniqueInputSchema';
-import { OrderUpdateWithoutClassroomInputSchema } from './OrderUpdateWithoutClassroomInputSchema';
-import { OrderUncheckedUpdateWithoutClassroomInputSchema } from './OrderUncheckedUpdateWithoutClassroomInputSchema';
-import { OrderCreateWithoutClassroomInputSchema } from './OrderCreateWithoutClassroomInputSchema';
-import { OrderUncheckedCreateWithoutClassroomInputSchema } from './OrderUncheckedCreateWithoutClassroomInputSchema';
+import { z } from "zod"
+import { OrderCreateWithoutClassroomInputSchema } from "./OrderCreateWithoutClassroomInputSchema"
+import { OrderUncheckedCreateWithoutClassroomInputSchema } from "./OrderUncheckedCreateWithoutClassroomInputSchema"
+import { OrderUncheckedUpdateWithoutClassroomInputSchema } from "./OrderUncheckedUpdateWithoutClassroomInputSchema"
+import { OrderUpdateWithoutClassroomInputSchema } from "./OrderUpdateWithoutClassroomInputSchema"
+import { OrderWhereUniqueInputSchema } from "./OrderWhereUniqueInputSchema"
 
 export const OrderUpsertWithWhereUniqueWithoutClassroomInputSchema: z.ZodType<Prisma.OrderUpsertWithWhereUniqueWithoutClassroomInput> = z.object({
+  create: z.union([z.lazy(() => OrderCreateWithoutClassroomInputSchema), z.lazy(() => OrderUncheckedCreateWithoutClassroomInputSchema)]),
+  update: z.union([z.lazy(() => OrderUpdateWithoutClassroomInputSchema), z.lazy(() => OrderUncheckedUpdateWithoutClassroomInputSchema)]),
   where: z.lazy(() => OrderWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => OrderUpdateWithoutClassroomInputSchema),z.lazy(() => OrderUncheckedUpdateWithoutClassroomInputSchema) ]),
-  create: z.union([ z.lazy(() => OrderCreateWithoutClassroomInputSchema),z.lazy(() => OrderUncheckedCreateWithoutClassroomInputSchema) ]),
-}).strict();
+}).strict()
 
-export default OrderUpsertWithWhereUniqueWithoutClassroomInputSchema;
+export default OrderUpsertWithWhereUniqueWithoutClassroomInputSchema

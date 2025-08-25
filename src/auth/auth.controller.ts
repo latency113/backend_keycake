@@ -1,46 +1,46 @@
-import { Elysia, t } from "elysia"
-import { jwtConfig } from "@/configure/jwt"
-import { authHook } from "@/middleware/auth"
-import DatabaseContext from "@/repositories/prisma"
-import { AuthService } from "./auth.service"
+import { Elysia, t } from "elysia";
+import { jwtConfig } from "@/configure/jwt";
+import { authHook } from "@/middleware/auth";
+import DatabaseContext from "@/repositories/prisma";
+import { AuthService } from "./auth.service";
 
 const LoginSchema = t.Object({
-  password: t.String(),
   username: t.String(),
-})
+  password: t.String(),
+});
 
 export const authController = new Elysia()
   .use(jwtConfig)
-  .group("/auth", app =>
+  .group("/auth", (app) =>
     app
       .post(
         "/login",
         async ({ body, jwt }) => {
-          const authService = AuthService({ db: DatabaseContext })
-          const user = await authService.login(body)
-          const token = await jwt.sign({ id: user.id, role: user.role })
+          const authService = AuthService({ db: DatabaseContext });
+          const user = await authService.login(body);
+          const token = await jwt.sign({ id: user.id, role: user.role });
 
-          return { token }
+          return { token };
         },
         {
           body: LoginSchema,
           detail: {
             description:
-              "Login with username and password to get a JWT token. Then, click the \"Authorize\" button and enter `Bearer <token>` to access protected endpoints.",
+              'Login with username and password to get a JWT token. Then, click the "Authorize" button and enter `Bearer <token>` to access protected endpoints.',
             tags: ["Auth"],
           },
-        },
+        }
       )
       .get(
         "/me",
         (ctx) => {
-          const user = (ctx as any).user
-          const set = (ctx as any).set
+          const user = (ctx as any).user;
+          const set = (ctx as any).set;
           if (!user) {
-            set.status = 401
-            return { message: "Unauthorized" }
+            set.status = 401;
+            return { message: "Unauthorized" };
           }
-          return { user }
+          return { user };
         },
         {
           beforeHandle: [authHook],
@@ -50,5 +50,6 @@ export const authController = new Elysia()
             security: [{ bearerAuth: [] }],
             tags: ["Auth"],
           },
-        },
-      ))
+        }
+      )
+  );

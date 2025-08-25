@@ -6,16 +6,16 @@ import { GradeLevelService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 import {
+  ClassroomOptionalDefaultsSchema,
   GradeLevelOptionalDefaultsSchema,
-  RoomOptionalDefaultsSchema,
 } from "@/types/schema/prisma/index.js"
 
-const GradeLevelWithRoomsSchema = GradeLevelOptionalDefaultsSchema.extend({
-  rooms: z.lazy(() => RoomOptionalDefaultsSchema).array(),
+const GradeLevelWithClassroomsSchema = GradeLevelOptionalDefaultsSchema.extend({
+  classroom: z.lazy(() => ClassroomOptionalDefaultsSchema).array(),
 })
 
 const ResponseSchema = z.object({
-  data: GradeLevelWithRoomsSchema.array(),
+  data: GradeLevelWithClassroomsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

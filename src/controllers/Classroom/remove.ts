@@ -2,13 +2,13 @@ import type { TypeApplication } from "@/configure/create-application.js"
 import z from "zod"
 import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
-import { RoomService } from "@/services/index.js"
+import { ClassroomService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { RoomOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
+import { ClassroomOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
-  data: RoomOptionalDefaultsSchema,
+  data: ClassroomOptionalDefaultsSchema,
   message: z.string(),
 })
 
@@ -19,14 +19,14 @@ export default (app: TypeApplication) =>
       try {
         const { id } = params
         const deps = {
-          RoomService: RoomService({ db: DatabaseContext }),
+          ClassroomService: ClassroomService({ db: DatabaseContext }),
         }
-        const result = await deps.RoomService.onDelete(id)
+        const result = await deps.ClassroomService.onDelete(id)
         if (!result)
-          throw NewError("Failed to DeleteRoom Not Found", "Delete_FAILED", 404)
+          throw NewError("Failed to Delete Classroom Not Found", "Delete_FAILED", 404)
         const parse = ResponseSchema.safeParse({
           data: result,
-          message: "Room Deleted successfully",
+          message: "Classroom Deleted successfully",
 
         })
         if (!parse.success)
@@ -35,7 +35,7 @@ export default (app: TypeApplication) =>
         return parse.data
       }
       catch (error) {
-        console.error("Error DeletingRoom:", error)
+        console.error("Error Deleting Classroom:", error)
         const err = ParseError(error)
         set.status = err.status
         return {
@@ -48,7 +48,7 @@ export default (app: TypeApplication) =>
     {
       detail: {
         params: z.object({
-          id: z.string().min(1, "Room ID is required"),
+          id: z.string().min(1, "Classroom ID is required"),
         }),
         responses: {
           200: {
@@ -57,19 +57,19 @@ export default (app: TypeApplication) =>
                 schema: ResponseSchema,
               },
             },
-            description: "Room Delete data success",
+            description: "Classroom Delete data success",
           },
           404: {
             content: {
               "application/json": {
                 schema: FailResponseSchema.default({
                   code: "Delete_FAILED",
-                  message: "Failed to DeleteRoom Not Found",
+                  message: "Failed to Delete Classroom Not Found",
                   status: 404,
                 }),
               },
             },
-            description: "Room not found",
+            description: "Classroom not found",
           },
           500: {
             content: {
@@ -77,10 +77,10 @@ export default (app: TypeApplication) =>
                 schema: FailResponseSchema,
               },
             },
-            description: "Room Delete data fail",
+            description: "Classroom Delete data fail",
           },
         },
-        tags: ["Class"],
+        tags: ["Classroom"],
       },
     },
   )

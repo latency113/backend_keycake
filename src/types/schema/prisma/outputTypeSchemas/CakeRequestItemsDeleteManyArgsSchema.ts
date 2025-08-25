@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { CakeRequestItemsWhereInputSchema } from '../inputTypeSchemas/CakeRequestItemsWhereInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { CakeRequestItemsWhereInputSchema } from "../inputTypeSchemas/CakeRequestItemsWhereInputSchema"
 
 export const CakeRequestItemsDeleteManyArgsSchema: z.ZodType<Prisma.CakeRequestItemsDeleteManyArgs> = z.object({
-  where: CakeRequestItemsWhereInputSchema.optional(),
   limit: z.number().optional(),
-}).strict() ;
+  where: CakeRequestItemsWhereInputSchema.optional(),
+}).strict()
 
-export default CakeRequestItemsDeleteManyArgsSchema;
+export default CakeRequestItemsDeleteManyArgsSchema

@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { TeamWhereInputSchema } from '../inputTypeSchemas/TeamWhereInputSchema'
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { TeamWhereInputSchema } from "../inputTypeSchemas/TeamWhereInputSchema"
 
 export const TeamDeleteManyArgsSchema: z.ZodType<Prisma.TeamDeleteManyArgs> = z.object({
-  where: TeamWhereInputSchema.optional(),
   limit: z.number().optional(),
-}).strict() ;
+  where: TeamWhereInputSchema.optional(),
+}).strict()
 
-export default TeamDeleteManyArgsSchema;
+export default TeamDeleteManyArgsSchema

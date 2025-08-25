@@ -1,11 +1,11 @@
-import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
-import { GradeLevelSelectSchema } from '../inputTypeSchemas/GradeLevelSelectSchema';
-import { GradeLevelIncludeSchema } from '../inputTypeSchemas/GradeLevelIncludeSchema';
+import type { Prisma } from "@prisma/client"
+import { z } from "zod"
+import { GradeLevelIncludeSchema } from "../inputTypeSchemas/GradeLevelIncludeSchema"
+import { GradeLevelSelectSchema } from "../inputTypeSchemas/GradeLevelSelectSchema"
 
 export const GradeLevelArgsSchema: z.ZodType<Prisma.GradeLevelDefaultArgs> = z.object({
-  select: z.lazy(() => GradeLevelSelectSchema).optional(),
   include: z.lazy(() => GradeLevelIncludeSchema).optional(),
-}).strict();
+  select: z.lazy(() => GradeLevelSelectSchema).optional(),
+}).strict()
 
-export default GradeLevelArgsSchema;
+export default GradeLevelArgsSchema
