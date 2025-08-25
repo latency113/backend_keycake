@@ -57,7 +57,7 @@ export function DepartmentService({ db }: DepartmentDependencies) {
             }
           })
 
-          return {
+                              return {
             ...Department,
             gradeLevels: Array.from(gradeLevelsMap.values()),
           }

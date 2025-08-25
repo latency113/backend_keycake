@@ -42,7 +42,10 @@ export default (app: Elysia) =>
         if (!result)
           throw NewError("Failed to fetch Department", "FETCH_FAILED", 500)
         const parse = ResponseSchema.safeParse({
-          data: result,
+          data: result.map((department) => ({
+            ...department,
+            classrooms: department.classroom,
+          })),
           message: "Department fetched successfully",
           meta_data: {
             limit,
