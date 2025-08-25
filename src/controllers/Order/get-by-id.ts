@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { OrderService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { OrderWithOrderItemsSchema } from "@/types/schema/prisma/"
+import { OrderWithOrderItemsSchema } from "@/types/customs"
 
 const ResponseSchema = z.object({
   data: OrderWithOrderItemsSchema,
