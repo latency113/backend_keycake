@@ -35,7 +35,7 @@ app.use(
     path: "/docs",
   }),
 )
-  .listen(port)
+  .listen(port, "0.0.0.0")
 
 console.log(
   `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}/docs`,
