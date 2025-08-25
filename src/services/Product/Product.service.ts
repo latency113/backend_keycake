@@ -1,4 +1,4 @@
-import type { Prisma, type PrismaClient, type Product } from "@prisma/client"
+import type { Prisma,  PrismaClient,  Product } from "@prisma/client"
 
 import type {
   TypeProductService,
