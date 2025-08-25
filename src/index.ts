@@ -6,6 +6,8 @@ import controllers from "@/controllers"
 
 dotenvx.config()
 
+
+const port = process.env.PORT || 3001
 const app = new Elysia()
 app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -33,7 +35,7 @@ app.use(
     path: "/docs",
   }),
 )
-  .listen(3001)
+  .listen(port)
 
 console.log(
   `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}/docs`,
