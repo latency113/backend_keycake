@@ -1,4 +1,4 @@
-import type { type CakeRequestItems, Prisma, type PrismaClient } from "@prisma/client"
+import type { CakeRequestItems, Prisma, PrismaClient } from "@prisma/client"
 
 import type { TypeCakeRequestItemsService, TypeCakeRequestItemsWhereInput } from "./CakeRequestItem.type.js"
 

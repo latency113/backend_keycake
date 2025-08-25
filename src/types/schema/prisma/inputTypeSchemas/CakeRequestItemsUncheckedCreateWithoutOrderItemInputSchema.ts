@@ -4,9 +4,7 @@ import { z } from 'zod';
 
 export const CakeRequestItemsUncheckedCreateWithoutOrderItemInputSchema: z.ZodType<Prisma.CakeRequestItemsUncheckedCreateWithoutOrderItemInput> = z.object({
   id: z.string().optional(),
-  request_id: z.string(),
-  product_id: z.string(),
-  quantity: z.number().int()
+  request_id: z.string()
 }).strict();
 
 export default CakeRequestItemsUncheckedCreateWithoutOrderItemInputSchema;

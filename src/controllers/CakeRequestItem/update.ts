@@ -63,8 +63,7 @@ export default (app: TypeApplication) =>
           content: {
             "application/json": {
               example: {
-                product_id: "",
-                quantity: "",
+                order_item_id: "",
                 request_id: "",
               },
               schema: RequestSchema,

@@ -17,7 +17,7 @@ generator zod {
   useDefaultValidators             = "true"
   useMultipleFiles                 = "true"
   validateWhereUniqueInput         = "true"
-  writeBarrelFiles                 = "false"
+  writeBarrelFiles                 = "true"
   writeNullishInModelTypes         = "true"
 }
 
@@ -111,7 +111,6 @@ model Product {
   price   Float
 
   orderItems OrderItem[]
-  items      CakeRequestItems[]
 }
 
 model Order {
@@ -177,11 +176,8 @@ model CakeRequest {
 model CakeRequestItems {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   request_id    String @db.ObjectId
-  product_id    String @db.ObjectId
   order_item_id String @db.ObjectId
-  quantity      Int
 
-  product   Product     @relation(fields: [product_id], references: [id])
   request   CakeRequest @relation(fields: [request_id], references: [id])
   orderItem OrderItem   @relation(fields: [order_item_id], references: [id])
 

@@ -61,7 +61,7 @@ export default (app: TypeApplication) =>
           content: {
             "application/json": {
               example: {
-                class_id: "",
+                classroom_id: "",
                 name: "",
               },
               schema: RequestSchema,

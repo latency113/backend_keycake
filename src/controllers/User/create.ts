@@ -62,7 +62,7 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 email: "",
-                fname: "",
+                firstname: "",
                 lastname: "",
                 password: "",
                 username: "",

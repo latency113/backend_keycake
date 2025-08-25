@@ -64,7 +64,7 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 level: "",
-                year: "",
+                year: 0,
               },
               schema: RequestSchema,
             },

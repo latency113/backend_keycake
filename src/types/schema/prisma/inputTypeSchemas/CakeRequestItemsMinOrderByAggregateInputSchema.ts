@@ -6,9 +6,7 @@ import { SortOrderSchema } from './SortOrderSchema';
 export const CakeRequestItemsMinOrderByAggregateInputSchema: z.ZodType<Prisma.CakeRequestItemsMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   request_id: z.lazy(() => SortOrderSchema).optional(),
-  product_id: z.lazy(() => SortOrderSchema).optional(),
-  order_item_id: z.lazy(() => SortOrderSchema).optional(),
-  quantity: z.lazy(() => SortOrderSchema).optional()
+  order_item_id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export default CakeRequestItemsMinOrderByAggregateInputSchema;

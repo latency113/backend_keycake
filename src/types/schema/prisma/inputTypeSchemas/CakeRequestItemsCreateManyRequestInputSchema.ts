@@ -4,9 +4,7 @@ import { z } from 'zod';
 
 export const CakeRequestItemsCreateManyRequestInputSchema: z.ZodType<Prisma.CakeRequestItemsCreateManyRequestInput> = z.object({
   id: z.string().optional(),
-  product_id: z.string(),
-  order_item_id: z.string(),
-  quantity: z.number().int()
+  order_item_id: z.string()
 }).strict();
 
 export default CakeRequestItemsCreateManyRequestInputSchema;

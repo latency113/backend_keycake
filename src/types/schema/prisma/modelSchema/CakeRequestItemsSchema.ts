@@ -7,9 +7,7 @@ import { z } from 'zod';
 export const CakeRequestItemsSchema = z.object({
   id: z.string(),
   request_id: z.string(),
-  product_id: z.string(),
   order_item_id: z.string(),
-  quantity: z.number().int(),
 })
 
 export type CakeRequestItems = z.infer<typeof CakeRequestItemsSchema>

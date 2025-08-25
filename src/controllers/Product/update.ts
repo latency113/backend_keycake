@@ -65,7 +65,6 @@ export default (app: TypeApplication) =>
               example: {
                 name: "",
                 price: 0,
-                unit_id: "",
               },
               schema: RequestSchema,
             },
