@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { ClassroomService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { ClassroomWithDepartmentSchema } from "@/types/schema/prisma/index"
+import { ClassroomWithDepartmentSchema } from "@/types/schema/prisma"
 
 const ResponseSchema = z.object({
   data: ClassroomWithDepartmentSchema.array(),
