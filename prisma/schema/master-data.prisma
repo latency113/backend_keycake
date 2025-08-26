@@ -1,0 +1,157 @@
+enum Role {
+    ADMIN
+    OFFICER
+    USER
+}
+
+enum GradeLevelType {
+    VOCATIONAL // ปวช.
+    HIGHER // ปวส.
+}
+
+enum RequestStatus {
+    pending
+    approved
+    rejected
+}
+
+enum OrderStatus {
+    pending
+    complete
+}
+
+model Department {
+    id           String @id @default(uuid()) @db.Uuid
+    name         String @unique
+    group_number String
+
+    classroom   Classroom[]
+    CakeRequest CakeRequest[]
+}
+
+model Classroom {
+    id             String @id @default(uuid()) @db.Uuid
+    name           String
+    department_id  String @db.Uuid
+    grade_level_id String @db.Uuid
+
+    department  Department  @relation(fields: [department_id], references: [id])
+    grade_level GradeLevel? @relation(fields: [grade_level_id], references: [id])
+
+    teams  Team[]
+    orders Order[]
+
+    @@index([department_id], name: "idx_classroom_department_id")
+}
+
+model GradeLevel {
+    id    String         @id @default(uuid()) @db.Uuid
+    level GradeLevelType
+    year  Int
+
+    classroom Classroom[]
+
+    @@unique([level, year])
+}
+
+model User {
+    id        String  @id @default(uuid()) @db.Uuid
+    firstname String
+    lastname  String
+    username  String  @unique
+    password  String
+    email     String?
+    role      Role    @default(USER)
+
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    CakeRequest CakeRequest[]
+}
+
+model Team {
+    id           String @id @default(uuid()) @db.Uuid
+    name         String
+    classroom_id String @db.Uuid
+
+    classroom Classroom @relation(fields: [classroom_id], references: [id])
+    orders    Order[]
+}
+
+model Product {
+    id    String @id @default(uuid()) @db.Uuid
+    name  String
+    price Float
+
+    orderItems OrderItem[]
+}
+
+model Order {
+    id           String      @id @default(uuid()) @db.Uuid
+    customerName String
+    classroom_id String?     @db.Uuid
+    team_id      String?     @db.Uuid
+    orderDate    DateTime
+    totalPrice   Float
+    book_number  Int
+    number       Int
+    phone        String
+    pickup_date  DateTime
+    depository   String?
+    deposit      Int
+    advisor      String
+    status       OrderStatus @default(pending)
+    createdAt    DateTime    @default(now())
+    updatedAt    DateTime    @updatedAt
+    orderItems   OrderItem[]
+
+    team      Team?      @relation(fields: [team_id], references: [id])
+    classroom Classroom? @relation(fields: [classroom_id], references: [id])
+
+    @@unique([book_number, number])
+    @@index([classroom_id], name: "idx_order_classroom_id")
+    @@index([team_id], name: "idx_order_team_id")
+}
+
+model OrderItem {
+    id         String   @id @default(uuid()) @db.Uuid
+    order_id   String   @db.Uuid
+    product_id String   @db.Uuid
+    pound      Int
+    quantity   Int
+    unitPrice  Float
+    subtotal   Float
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    order            Order              @relation(fields: [order_id], references: [id])
+    product          Product            @relation(fields: [product_id], references: [id])
+    CakeRequestItems CakeRequestItems[]
+}
+
+model CakeRequest {
+    id            String        @id @default(uuid()) @db.Uuid
+    requestDate   DateTime
+    status        RequestStatus @default(pending)
+    note          String?
+    user_id       String        @db.Uuid
+    department_id String        @db.Uuid
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
+
+    department Department         @relation(fields: [department_id], references: [id])
+    user       User               @relation(fields: [user_id], references: [id])
+    items      CakeRequestItems[]
+
+    @@map("cake_requests")
+}
+
+model CakeRequestItems {
+    id            String @id @default(uuid()) @db.Uuid
+    request_id    String @db.Uuid
+    order_item_id String @db.Uuid
+
+    request   CakeRequest @relation(fields: [request_id], references: [id])
+    orderItem OrderItem   @relation(fields: [order_item_id], references: [id])
+
+    @@map("cake_request_items")
+}

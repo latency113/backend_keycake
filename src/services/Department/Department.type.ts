@@ -2,7 +2,6 @@ import type { Department, Prisma } from "@prisma/client"
 import type z from "zod"
 import type { TypePagination } from "@/types/global/pagination.js"
 import type { DepartmentWhereInputSchema } from "@/types/schema/prisma/index.js"
-import type { DepartmentWithClassrooms } from "@/types/schema/prisma/DepartmentWithClassroomsSchema.js"
 
 export type TypeDepartmentWhereInput = {
   where?: z.infer<typeof DepartmentWhereInputSchema>
@@ -14,7 +13,7 @@ export type TypeDepartmentService = {
   onUpdate: (id: string, data: Prisma.DepartmentCreateInput) => Promise<Department>
   onDelete: (id: string) => Promise<Department | null>
   getOne: (param: TypeDepartmentWhereInput["where"]) => Promise<Department | null>
-  getById: (id: string) => Promise<DepartmentWithClassrooms | null>
-  getAll: (param?: TypeDepartmentWhereInput) => Promise<DepartmentWithClassrooms[]>
+  getById: (id: string) => Promise<Department | null>
+  getAll: (param?: TypeDepartmentWhereInput) => Promise<Department[]>
   count: (where?: TypeDepartmentWhereInput["where"]) => Promise<number>
 }

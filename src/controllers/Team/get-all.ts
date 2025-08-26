@@ -6,10 +6,10 @@ import { TeamService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { TeamWithClassroomSchema } from "@/types/schema/prisma/"
+import { TeamWithRelationsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
-  data: TeamWithClassroomSchema.array(),
+  data: TeamWithRelationsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

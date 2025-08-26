@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { UserService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { UserOptionalDefaultsSchema } from "@/types/schema/prisma/"
+import { UserOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
   data: UserOptionalDefaultsSchema.array(),

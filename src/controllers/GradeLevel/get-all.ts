@@ -8,7 +8,7 @@ import { FailResponseSchema } from "@/types/global/response.js"
 import {
   ClassroomOptionalDefaultsSchema,
   GradeLevelOptionalDefaultsSchema,
-} from "@/types/schema/prisma"
+} from "@/types/schema/prisma/index.js"
 
 const GradeLevelWithClassroomsSchema = GradeLevelOptionalDefaultsSchema.extend({
   classroom: z.lazy(() => ClassroomOptionalDefaultsSchema).array(),

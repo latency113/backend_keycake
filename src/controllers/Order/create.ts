@@ -4,7 +4,7 @@ import { NewError, ParseError } from "@/helper/error.js"
 import DatabaseContext from "@/repositories/prisma.js"
 import { OrderService } from "@/services/Order/Order.service.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { OrderOptionalDefaultsSchema } from "@/types/schema/prisma/"
+import { OrderOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = OrderOptionalDefaultsSchema
 

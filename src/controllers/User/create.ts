@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { UserService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { UserOptionalDefaultsSchema } from "@/types/schema/prisma/"
+import { UserOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = UserOptionalDefaultsSchema
 
@@ -62,10 +62,10 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 email: "",
-                fname: "",
+                firstname: "",
                 lastname: "",
-                password: "",
                 username: "",
+                password: "",
               },
               schema: RequestSchema,
             },

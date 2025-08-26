@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { OrderItemService } from "@/services/index.js"
 import { BaseRequestQuerySchema } from "@/types/global/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
-import { OrderItemOptionalDefaultsSchema } from "@/types/schema/prisma/"
+import { OrderItemOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
   data: OrderItemOptionalDefaultsSchema.array(),

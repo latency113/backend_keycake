@@ -1,4 +1,4 @@
-import type { Prisma, type PrismaClient, type Team } from "@prisma/client"
+import type { Prisma, PrismaClient, Team } from "@prisma/client"
 
 import type { TypeTeamService, TypeTeamWhereInput } from "./Team.type.js"
 

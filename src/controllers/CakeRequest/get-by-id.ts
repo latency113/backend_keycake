@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { CakeRequestService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { CakeRequestOptionalDefaultsSchema } from "@/types/schema/prisma/"
+import { CakeRequestOptionalDefaultsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
   data: CakeRequestOptionalDefaultsSchema,

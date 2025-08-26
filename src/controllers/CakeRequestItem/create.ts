@@ -4,7 +4,7 @@ import { NewError, ParseError } from "@/helper/error.js";
 import DatabaseContext from "@/repositories/prisma.js";
 import { CakeRequestItemsService } from "@/services/CakeRequestItem/CakeRequestItem.service.js";
 import { FailResponseSchema } from "@/types/global/response.js";
-import { CakeRequestItemsOptionalDefaultsSchema } from "@/types/schema/prisma/";
+import { CakeRequestItemsOptionalDefaultsSchema } from "@/types/schema/prisma/index.js";
 
 const RequestSchema = CakeRequestItemsOptionalDefaultsSchema.omit({
   id: true,

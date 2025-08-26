@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { OrderItemService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { OrderItemPartialSchema } from "@/types/schema/prisma/"
+import { OrderItemPartialSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = OrderItemPartialSchema
 

@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { DepartmentService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { DepartmentPartialSchema } from "@/types/schema/prisma"
+import { DepartmentPartialSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = DepartmentPartialSchema
 

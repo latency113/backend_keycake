@@ -4,7 +4,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { UserService } from "@/services/index.js"
 import { FailResponseSchema, SuccessResponseSchema } from "@/types/global/response.js"
 
-import { UserPartialSchema } from "@/types/schema/prisma/"
+import { UserPartialSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = UserPartialSchema
 
@@ -71,11 +71,11 @@ export default (app: TypeApplication) =>
             "application/json": {
               example: {
                 email: "",
-                fname: "",
+                firstname: "",
                 lastname: "",
+                username: "",
                 password: "",
                 role: "",
-                username: "",
               },
               schema: RequestSchema,
             },

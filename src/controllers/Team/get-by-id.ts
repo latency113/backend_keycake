@@ -5,10 +5,10 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { TeamService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { TeamWithClassroomSchema } from "@/types/schema/prisma/"
+import { TeamWithRelationsSchema } from "@/types/schema/prisma/index.js"
 
 const ResponseSchema = z.object({
-  data: TeamWithClassroomSchema,
+  data: TeamWithRelationsSchema,
   message: z.string(),
 })
 

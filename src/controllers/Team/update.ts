@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { TeamService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { TeamPartialSchema } from "@/types/schema/prisma/"
+import { TeamPartialSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = TeamPartialSchema
 

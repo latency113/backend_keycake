@@ -1,4 +1,4 @@
-import type { type Order, Prisma, type PrismaClient } from "@prisma/client"
+import type {  Order, Prisma,  PrismaClient } from "@prisma/client"
 
 import type { TypeOrderService, TypeOrderWhereInput } from "./Order.type.js"
 

@@ -5,10 +5,10 @@ import DatabaseContext from "@/repositories/prisma.js";
 import { OrderService } from "@/services/index.js";
 import { BaseRequestQuerySchema } from "@/types/global/index.js";
 import { FailResponseSchema } from "@/types/global/response.js";
-import { OrderWithOrderItemsSchema } from "@/types/schema/prisma";
+import { OrderWithRelationsSchema } from "@/types/schema/prisma/index.js";
 
 const ResponseSchema = z.object({
-  data: OrderWithOrderItemsSchema.array(),
+  data: OrderWithRelationsSchema.array(),
   message: z.string(),
   meta_data: z.object({
     limit: z.number().optional(),

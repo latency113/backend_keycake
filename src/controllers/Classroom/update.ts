@@ -5,7 +5,7 @@ import DatabaseContext from "@/repositories/prisma.js"
 import { ClassroomService } from "@/services/index.js"
 import { FailResponseSchema } from "@/types/global/response.js"
 
-import { ClassroomPartialSchema } from "@/types/schema/prisma"
+import { ClassroomPartialSchema } from "@/types/schema/prisma/index.js"
 
 const RequestSchema = ClassroomPartialSchema
 
